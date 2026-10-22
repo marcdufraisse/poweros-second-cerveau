@@ -1,0 +1,167 @@
+<!doctype html>
+<!--
+  HARRIS ATLAS · custom · map · JOURNEY
+  A-to-B route showpiece. Abstract sage-ocean map with two parchment
+  landmasses at opposite edges (SVG coastlines). A dashed accent route
+  curve draws across the open water from dot A to dot B; both endpoints
+  carry a boxed slate label. A small solid dot travels the route afterward,
+  stepping through the same waypoints the curve was drawn through. A
+  Courier distance/duration line sits bottom-center. Slow push-in on the
+  map ground only.
+  Slots: from, to, note.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #c-journey {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--sage); color: var(--ink);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      #c-journey .ground { position: absolute; inset: -60px; z-index: 1; }
+      #c-journey .ground svg { width: 100%; height: 100%; }
+
+      #c-journey .paper {
+        position: absolute; inset: 0; z-index: 2; pointer-events: none;
+        background-image: var(--tex-paper); background-size: 240px 240px;
+        mix-blend-mode: multiply; opacity: 0.16;
+      }
+      #c-journey .age { position: absolute; inset: 0; z-index: 2; background: var(--paper-edge); pointer-events: none; }
+      #c-journey .vig { position: absolute; inset: 0; z-index: 8; background: var(--vignette); pointer-events: none; }
+
+      #c-journey .plate {
+        position: absolute; inset: 40px; z-index: 4;
+        border: var(--frame); border-radius: var(--radius-sm);
+        pointer-events: none;
+      }
+      #c-journey .coord {
+        position: absolute; z-index: 5;
+        font-family: var(--font-mono); font-size: var(--size-tiny);
+        color: rgba(var(--ink-rgb), 0.65); letter-spacing: 0.06em;
+      }
+      #c-journey .coord.tl { top: 54px; left: 62px; }
+      #c-journey .coord.br { bottom: 54px; right: 62px; }
+
+      /* route + endpoints — screen space, stays pin-sharp */
+      #c-journey .route { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+
+      #c-journey .traveler {
+        position: absolute; width: 20px; height: 20px; margin: -10px 0 0 -10px;
+        border-radius: 50%; background: var(--accent);
+        box-shadow: 0 2px 6px rgba(var(--ink-rgb), 0.35);
+        z-index: 6;
+      }
+
+      #c-journey .endpoint {
+        position: absolute; z-index: 6;
+        display: flex; flex-direction: column; align-items: center; gap: 12px;
+      }
+      #c-journey .endpoint.from { left: 300px; top: 590px; transform: translate(-50%, 0); }
+      #c-journey .endpoint.to   { left: 1600px; top: 510px; transform: translate(-50%, 0); }
+
+      #c-journey .boxed {
+        background: var(--label-bg); color: var(--white);
+        padding: var(--label-pad); border-radius: var(--radius-sm);
+        font-weight: var(--wt-med); font-size: var(--size-label);
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      #c-journey .note {
+        position: absolute; bottom: 96px; left: 50%; transform: translateX(-50%);
+        z-index: 6; font-family: var(--font-mono); font-size: var(--size-tiny);
+        letter-spacing: 0.08em; color: rgba(var(--ink-rgb), 0.72);
+        text-align: center; white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="c-journey" data-composition-id="c-journey" data-start="0" data-width="1920" data-height="1080">
+
+      <div class="ground">
+        <svg viewBox="0 0 2040 1200" preserveAspectRatio="xMidYMid slice">
+          <rect x="0" y="0" width="2040" height="1200" fill="var(--sage)"/>
+          <path d="M -80 -80 L 420 -80 C 500 60, 380 180, 440 340 C 500 500, 340 620, 380 760 C 420 900, 260 980, 120 940 C -20 900, -80 760, -80 600 Z"
+                fill="var(--parchment)"/>
+          <path d="M 2120 -80 L 1600 -80 C 1520 80, 1660 200, 1600 360 C 1540 520, 1700 640, 1660 800 C 1620 960, 1780 1040, 1920 980 C 2040 930, 2120 800, 2120 600 Z"
+                fill="var(--parchment)"/>
+        </svg>
+      </div>
+
+      <div class="paper"></div>
+      <div class="age"></div>
+      <div class="plate"></div>
+      <div class="coord tl">PLATE 13 · SURVEYED CROSSING</div>
+      <div class="coord br">ACME ARCHIVE · SHEET 27</div>
+
+      <svg class="route" viewBox="0 0 1920 1080">
+        <defs>
+          <mask id="c-journey-reveal" maskUnits="userSpaceOnUse">
+            <rect class="reveal-rect" x="260" y="380" width="0" height="460" fill="white"/>
+          </mask>
+        </defs>
+        <path class="curve" d="M 300 560 Q 525 430, 750 470 Q 950 500, 1150 660 Q 1375 800, 1600 480"
+              fill="none" stroke="var(--accent)" stroke-width="5" stroke-dasharray="16 12"
+              mask="url(#c-journey-reveal)"/>
+        <circle class="dot dot-a" cx="300" cy="560" r="12" fill="var(--slate)"/>
+        <circle class="dot dot-b" cx="1600" cy="480" r="12" fill="var(--slate)"/>
+      </svg>
+
+      <div class="traveler" style="left:300px; top:560px;"></div>
+
+      <div class="endpoint from">
+        <div class="boxed" data-slot="from">Manual Process</div>
+      </div>
+      <div class="endpoint to">
+        <div class="boxed" data-slot="to">Certified Agent</div>
+      </div>
+
+      <div class="note" data-slot="note">EST. 14 WEEKS · AVG. MEMBER PACE</div>
+
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#c-journey";
+
+      /* slow documentary push-in — GROUND ONLY */
+      tl.fromTo(root + " .ground", { scale: 1.0 }, { scale: 1.06, transformOrigin: "50% 50%", duration: 8, ease: "power2.inOut" }, 0)
+
+        .from(root + " .plate", { opacity: 0, duration: 0.7, ease: "power2.out" }, 0.15)
+        .from(root + " .coord.tl", { opacity: 0, y: -8, duration: 0.5, ease: "expo.out" }, 0.55)
+        .from(root + " .coord.br", { opacity: 0, y: 8, duration: 0.5, ease: "expo.out" }, 0.7)
+
+        .from(root + " .dot-a", { scale: 0, duration: 0.35, ease: "expo.out", transformOrigin: "50% 50%" }, 1.0)
+        .from(root + " .endpoint.from", { autoAlpha: 0, scale: 1.1, y: 14, duration: 0.5, ease: "expo.out" }, 1.15)
+
+        /* dashed route curve draws from A to B — a growing reveal mask keeps the
+           dash pattern intact (a big-number dasharray reveal would render solid) */
+        .from(root + " .curve", { opacity: 0, duration: 0.4, ease: "power2.out" }, 1.5)
+        .to(root + " .reveal-rect", { attr: { width: 1400 }, duration: 1.7, ease: "power1.inOut" }, 1.5)
+        /* the dashes gently march along the drawn line — finite, using stroke-dashoffset */
+        .to(root + " .curve", { strokeDashoffset: -84, duration: 2.2, ease: "none", repeat: 2 }, 3.3)
+
+        .from(root + " .dot-b", { scale: 0, duration: 0.35, ease: "expo.out", transformOrigin: "50% 50%" }, 3.05)
+        .from(root + " .endpoint.to", { autoAlpha: 0, scale: 1.1, y: 14, duration: 0.5, ease: "expo.out" }, 3.2)
+
+        /* the traveling dot steps through the same waypoints, matching the curve */
+        .to(root + " .traveler", { left: 750, top: 470, duration: 0.7, ease: "power1.inOut" }, 1.6)
+        .to(root + " .traveler", { left: 1150, top: 660, duration: 0.7, ease: "power1.inOut" }, 2.3)
+        .to(root + " .traveler", { left: 1600, top: 480, duration: 0.7, ease: "power1.inOut" }, 3.0)
+
+        .from(root + " .note", { autoAlpha: 0, y: 10, duration: 0.6, ease: "power2.out" }, 3.8)
+
+        .set({}, {}, 8);
+
+      window.__timelines["c-journey"] = tl;
+    </script>
+  </body>
+</html>

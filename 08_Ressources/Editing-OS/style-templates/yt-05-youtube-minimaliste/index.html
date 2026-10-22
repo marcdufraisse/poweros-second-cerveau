@@ -1,0 +1,339 @@
+<!doctype html>
+<!--
+  SCAFFOLD · FORMAT 05 — YOUTUBE MINIMALISTE (vidéo longue, 1920×1080, 30 fps)
+  Spec : ../../formats/05-youtube-minimaliste.md
+
+  Le cadre :
+    - un paysage de nuit violet (THEME "violet", charte de marque) ou en noir et blanc, avec du grain
+    - au centre, une fenêtre Mac sobre (3 pastilles) qui contient la vidéo en 16:9 (1280 × 720)
+    - une notification macOS en haut à droite à chaque chapitre et élément clé, logo GIF animé en icône
+  Rien d'autre : pas de titre, pas de sous-titres, pas de couleur. Le minimalisme est le style.
+
+  Ce qu'il faut remplacer :
+    - assets/video.mp4 (la vidéo à montrer dans la fenêtre, n'importe quel format : object-fit cover)
+    - assets/voix.m4a (le son)
+    - INFOS (temps SOURCE, titre, commentaire) : chapitres et éléments clés, construits par Claude au montage
+    - SEG / CUTS (l'EDL du montage parole), DUR suit tout seul
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html, body { margin: 0; background: #000; }
+
+      #yt {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        overflow: hidden; background: #8f8f8f;
+      }
+
+      /* ---------- le paysage (SVG en niveaux de gris, figé) ---------- */
+      #land { position: absolute; inset: -40px; will-change: transform; }
+      #land svg { width: 100%; height: 100%; display: block; }
+
+      /* ---------- grain de pellicule + vignette ---------- */
+      #grain {
+        position: absolute; inset: -200px;
+        background: url("assets/grain.png") repeat; background-size: 384px 384px;
+        opacity: 0.16; mix-blend-mode: overlay; pointer-events: none; z-index: 8;
+      }
+      #vignette {
+        position: absolute; inset: 0; pointer-events: none; z-index: 7;
+        background: radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.45) 100%);
+      }
+
+      /* ---------- la fenêtre ---------- */
+      #win {
+        position: absolute; left: 320px; top: 165px; width: 1280px; height: 750px;
+        border-radius: 8px; overflow: hidden; z-index: 5;
+        background: #1c1c1e;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.10);
+      }
+      #win .bar {
+        position: absolute; left: 0; right: 0; top: 0; height: 30px;
+        background: linear-gradient(#3a3a3c, #2c2c2e);
+        display: flex; align-items: center; gap: 8px; padding-left: 12px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+      }
+      #win .bar i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+      #win .bar i:nth-child(1) { background: #FF5F57; }
+      #win .bar i:nth-child(2) { background: #FEBC2E; }
+      #win .bar i:nth-child(3) { background: #28C840; }
+      #win .view { position: absolute; left: 0; right: 0; top: 30px; bottom: 0; overflow: hidden; }
+      #win .view video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+      /* ---------- l'info, en notification macOS ---------- */
+      #notif {
+        position: absolute; right: 40px; top: 36px; width: 420px; z-index: 9;
+        box-sizing: border-box; padding: 16px 20px 16px 18px;
+        display: flex; gap: 14px; align-items: flex-start;
+        border-radius: 20px; color: #fff; visibility: hidden;
+        background: rgba(40, 40, 44, 0.72);
+        -webkit-backdrop-filter: blur(30px) saturate(160%);
+                backdrop-filter: blur(30px) saturate(160%);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+        font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+      /* l'icône : le logo GIF de l'utilisateur (boule de cristal), en planche de 162 images,
+         rejouée image par image par la timeline (rendu déterministe) */
+      #notif .ico {
+        width: 44px; height: 44px; flex: none; margin-top: -2px;
+        background: url("assets/logo-sprite.png") 0 0 no-repeat;
+        background-size: calc(44px * 162) 44px;
+        filter: drop-shadow(0 2px 6px rgba(139, 92, 246, 0.45));
+      }
+      #notif .t { font-weight: 600; font-size: 17px; line-height: 1.2; }
+      #notif .m { margin-top: 3px; font-size: 16px; line-height: 1.3; color: rgba(255, 255, 255, 0.82); }
+
+      /* ============ THÈME VIOLET (charte de marque, univers du site de la marque) ============ */
+      #yt .sky-violet, #yt .violet-only { display: none; }
+      #yt[data-theme="violet"] .sky-nb { display: none; }
+      #yt[data-theme="violet"] .sky-violet, #yt[data-theme="violet"] .violet-only { display: block; }
+      #yt[data-theme="violet"] { background: #06060C; }
+      #yt[data-theme="violet"] #grain { opacity: 0.09; }
+      #yt[data-theme="violet"] #vignette {
+        background: radial-gradient(120% 95% at 50% 45%, transparent 50%, rgba(6, 6, 12, 0.75) 100%);
+      }
+      #yt .grid {
+        position: absolute; inset: 0; z-index: 2; pointer-events: none;
+        background:
+          linear-gradient(rgba(139, 92, 246, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(139, 92, 246, 0.08) 1px, transparent 1px);
+        background-size: 60px 60px;
+        -webkit-mask-image: linear-gradient(#000 0%, rgba(0,0,0,0.6) 45%, transparent 70%);
+                mask-image: linear-gradient(#000 0%, rgba(0,0,0,0.6) 45%, transparent 70%);
+      }
+      #yt .orb { position: absolute; border-radius: 50%; filter: blur(90px); z-index: 1; will-change: transform; }
+      #yt .orb.o1 { width: 760px; height: 560px; left: -160px; top: -140px;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.42) 0%, transparent 70%); }
+      #yt .orb.o2 { width: 680px; height: 520px; right: -120px; top: 60px;
+        background: radial-gradient(circle, rgba(167, 139, 250, 0.30) 0%, transparent 70%); }
+      #yt .orb.o3 { width: 900px; height: 360px; left: 520px; top: 520px;
+        background: radial-gradient(circle, rgba(124, 58, 237, 0.30) 0%, transparent 70%); }
+      #yt[data-theme="violet"] #win {
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 80px rgba(139, 92, 246, 0.18), 0 0 0 1px rgba(167, 139, 250, 0.22);
+      }
+      #yt[data-theme="violet"] #notif {
+        background: rgba(14, 11, 26, 0.62);
+        -webkit-backdrop-filter: blur(18px) saturate(150%);
+                backdrop-filter: blur(18px) saturate(150%);
+        border: 1px solid rgba(140, 100, 220, 0.28);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), 0 0 40px rgba(139, 92, 246, 0.15);
+      }
+      #yt[data-theme="violet"] #notif .m { color: #B0A8C8; }
+    </style>
+  </head>
+
+  <body>
+    <div id="yt" data-composition-id="yt" data-start="0" data-width="1920" data-height="1080" data-fps="30">
+
+      <div id="land">
+        <svg class="sky-nb" viewBox="0 0 2000 1160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#5e5e5e" />
+              <stop offset="0.55" stop-color="#9a9a9a" />
+              <stop offset="1" stop-color="#c4c4c4" />
+            </linearGradient>
+            <filter id="clouds" x="0" y="0" width="100%" height="100%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.0026 0.0058" numOctaves="4" seed="11" result="n0" />
+              <feGaussianBlur in="n0" stdDeviation="3" result="n" />
+              <feColorMatrix in="n" type="matrix"
+                values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -2.4 1.45" />
+            </filter>
+            <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#8c8c8c" />
+              <stop offset="1" stop-color="#4e4e4e" />
+            </linearGradient>
+            <filter id="grass" x="0" y="0" width="100%" height="100%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9 0.06" numOctaves="2" seed="4" result="g" />
+              <feColorMatrix in="g" type="matrix"
+                values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 -0.25" result="ga" />
+              <feComposite in="ga" in2="SourceGraphic" operator="in" />
+            </filter>
+          </defs>
+          <rect width="2000" height="1160" fill="url(#sky)" />
+          <rect width="2000" height="940" filter="url(#clouds)" opacity="0.72" />
+          <path d="M0,820 C380,700 760,640 1120,690 C1480,740 1760,700 2000,650 L2000,1160 L0,1160 Z" fill="url(#hill)" />
+          <path d="M0,820 C380,700 760,640 1120,690 C1480,740 1760,700 2000,650 L2000,1160 L0,1160 Z" fill="#000" filter="url(#grass)" />
+        </svg>
+
+        <!-- paysage violet : nuit de la charte de marque, nappes de nuages violets, étoiles, colline en silhouette -->
+        <svg class="sky-violet" viewBox="0 0 2000 1160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="vsky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#06060C" />
+              <stop offset="0.40" stop-color="#0E0A20" />
+              <stop offset="0.66" stop-color="#211442" />
+              <stop offset="0.80" stop-color="#3A2270" />
+            </linearGradient>
+            <filter id="vclouds" x="0" y="0" width="100%" height="100%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.0024 0.0062" numOctaves="4" seed="23" result="n0" />
+              <feGaussianBlur in="n0" stdDeviation="4" result="n" />
+              <feColorMatrix in="n" type="matrix"
+                values="0 0 0 0 0.66  0 0 0 0 0.55  0 0 0 0 0.98  0 0 0 -2.1 1.25" />
+            </filter>
+            <linearGradient id="vhill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#160F2C" />
+              <stop offset="1" stop-color="#06060C" />
+            </linearGradient>
+            <filter id="vgrass" x="0" y="0" width="100%" height="100%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9 0.06" numOctaves="2" seed="4" result="g" />
+              <feColorMatrix in="g" type="matrix"
+                values="0 0 0 0 0.65  0 0 0 0 0.55  0 0 0 0 1  0 0 0 0.35 -0.12" result="ga" />
+              <feComposite in="ga" in2="SourceGraphic" operator="in" />
+            </filter>
+            <linearGradient id="rim" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#A78BFA" stop-opacity="0.15" />
+              <stop offset="0.5" stop-color="#C4B5FD" stop-opacity="0.55" />
+              <stop offset="1" stop-color="#A78BFA" stop-opacity="0.15" />
+            </linearGradient>
+          </defs>
+          <rect width="2000" height="1160" fill="url(#vsky)" />
+          <g id="stars"></g>
+          <rect width="2000" height="940" filter="url(#vclouds)" opacity="0.38" />
+          <path d="M0,820 C380,700 760,640 1120,690 C1480,740 1760,700 2000,650 L2000,1160 L0,1160 Z" fill="url(#vhill)" />
+          <path d="M0,820 C380,700 760,640 1120,690 C1480,740 1760,700 2000,650 L2000,1160 L0,1160 Z" fill="#000" filter="url(#vgrass)" />
+          <path d="M0,820 C380,700 760,640 1120,690 C1480,740 1760,700 2000,650" fill="none" stroke="url(#rim)" stroke-width="2.5" />
+        </svg>
+      </div>
+
+      <div class="orb o1 violet-only" id="o1"></div>
+      <div class="orb o2 violet-only" id="o2"></div>
+      <div class="orb o3 violet-only" id="o3"></div>
+      <div class="grid violet-only"></div>
+
+      <div id="vignette"></div>
+      <div id="grain"></div>
+
+      <div id="win">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <div class="view">
+          <video id="vmain" src="assets/video.mp4"
+                 data-start="0" data-duration="20" data-media-start="0"
+                 data-track-index="0" muted playsinline></video>
+        </div>
+      </div>
+
+      <div id="notif"><div class="ico"></div><div><div class="t" id="notif-t"></div><div class="m" id="notif-m"></div></div></div>
+
+      <audio id="voix" src="assets/voix.m4a" data-start="0" data-duration="20" data-track-index="1"></audio>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      /* ==========================================================
+         0. LE THÈME — "violet" (charte de marque, univers du site de la marque)
+            ou "noir-et-blanc" (paysage gris et grain, la version d'origine).
+         ========================================================== */
+      const THEME = "violet";
+      document.getElementById("yt").dataset.theme = THEME;
+
+      /* étoiles du thème violet : positions tirées d'un générateur à graine fixe (rendu identique à chaque fois) */
+      (function () {
+        let seed = 42;
+        const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+        const g = document.getElementById("stars");
+        for (let i = 0; i < 90; i++) {
+          const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          c.setAttribute("cx", (rnd() * 2000).toFixed(1));
+          c.setAttribute("cy", (rnd() * 620).toFixed(1));
+          c.setAttribute("r", (0.6 + rnd() * 1.6).toFixed(2));
+          c.setAttribute("fill", rnd() > 0.5 ? "#C4B5FD" : "#F0F0F8");
+          c.setAttribute("opacity", (0.25 + rnd() * 0.6).toFixed(2));
+          if (i % 9 === 0) c.setAttribute("class", "twinkle");
+          g.appendChild(c);
+        }
+      })();
+
+      /* ==========================================================
+         1. LES NOTIFICATIONS — repères en haut à droite : une à chaque
+            chapitre (« Introduction »...) et une quand un élément clé entre
+            en scène (« Claude Code »...). [temps SOURCE, titre de 1 à 3 mots,
+            commentaire descriptif de 8 mots max]. Construites par Claude au
+            montage depuis le transcript (règles dans
+            formats/05-youtube-minimaliste.md). Jamais deux à moins de 30 s.
+         ========================================================== */
+      const INFOS = [
+        [0.8, "Introduction", "Ce que tu vas apprendre ici"],
+        [9,   "Claude Code",  "Comment setup ses fichiers .md"],
+      ];
+      const TENUE = 4;   // secondes à l'écran
+
+      /* ==========================================================
+         2. L'EDL — même convention que les autres formats :
+            SEG en temps SOURCE, CUTS en temps BAKÉ, ed(t) convertit.
+         ========================================================== */
+      const SEG = [[0, 20]];
+      const CUTS = [];
+
+      const STARTS = []; let acc = 0;
+      SEG.forEach(([a, b]) => { STARTS.push(acc); acc += b - a; });
+      const DUR = acc - CUTS.reduce((s, [a, b]) => s + (b - a), 0);
+      function shiftCut(t) {
+        let d = 0;
+        for (const [a, b] of CUTS) { if (t >= b) d += b - a; else if (t > a) d += t - a; }
+        return t - d;
+      }
+      function ed(src) {
+        for (let i = 0; i < SEG.length; i++)
+          if (src >= SEG[i][0] - 0.01 && src <= SEG[i][1] + 0.01)
+            return shiftCut(STARTS[i] + (src - SEG[i][0]));
+        return null;
+      }
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* ==========================================================
+         3. OUVERTURE — comme une fenêtre qu'on ouvre sur macOS : un zoom
+            rapide depuis le centre, avec un fondu, sans rebond.
+         ========================================================== */
+      tl.fromTo("#win", { autoAlpha: 0, scale: 0.86, transformOrigin: "50% 50%" },
+        { autoAlpha: 1, scale: 1, duration: 0.32, ease: "power2.out" }, 0.25);
+
+      /* ==========================================================
+         4. INFOS — la notification glisse depuis la droite, reste
+            TENUE secondes, puis repart vers la droite (comme macOS).
+         ========================================================== */
+      INFOS.forEach(([src, titre, texte]) => {
+        const t = ed(src);
+        if (t === null) return;
+        tl.set("#notif-t", { textContent: titre }, t);
+        tl.set("#notif-m", { textContent: texte }, t);
+        tl.set("#notif", { visibility: "visible" }, t);
+        /* le logo GIF tourne pendant toute la notification (162 images à 30 i/s) */
+        tl.fromTo("#notif .ico", { backgroundPositionX: "0px" },
+          { backgroundPositionX: (-44 * 161) + "px", duration: 161 / 30, ease: "steps(161)" }, t);
+        tl.fromTo("#notif", { x: 480, autoAlpha: 1 }, { x: 0, duration: 0.45, ease: "power3.out" }, t);
+        tl.to("#notif", { x: 480, duration: 0.35, ease: "power2.in" }, t + TENUE);
+        tl.set("#notif", { visibility: "hidden" }, t + TENUE + 0.35);
+      });
+
+      /* ==========================================================
+         5. ENTRETIEN — le paysage dérive très lentement (Ken Burns)
+            et le grain saute à 12 images par seconde, comme une pellicule.
+         ========================================================== */
+      tl.fromTo("#land", { scale: 1.0, x: 0 }, { scale: 1.06, x: -30, duration: DUR, ease: "none" }, 0);
+      if (THEME === "violet") {
+        /* nappes de lumière qui dérivent lentement, comme sur le site */
+        tl.to("#o1", { x: 140, y: 60, scale: 1.07, duration: DUR, ease: "sine.inOut" }, 0);
+        tl.to("#o2", { x: -120, y: 50, scale: 1.05, duration: DUR, ease: "sine.inOut" }, 0);
+        tl.to("#o3", { x: -160, y: -30, duration: DUR, ease: "sine.inOut" }, 0);
+        /* quelques étoiles scintillent */
+        document.querySelectorAll("#stars .twinkle").forEach((c, i) => {
+          const debut = (i * 0.37) % 2;
+          const cycles = Math.floor((DUR - debut) / 1.4);   // jamais au-delà de la fin
+          if (cycles >= 2) tl.to(c, { opacity: 0.1, duration: 1.4, ease: "sine.inOut", yoyo: true,
+            repeat: cycles - 1 }, debut);
+        });
+      }
+      const pas = Math.max(1, Math.round(DUR * 12));
+      tl.fromTo("#grain", { x: 0, y: 0 }, { x: 384 * 3 + 97, y: 384 * 2 + 53, duration: DUR, ease: "steps(" + pas + ")" }, 0);
+
+      tl.set({}, {}, DUR);
+      window.__timelines["yt"] = tl;
+    </script>
+  </body>
+</html>

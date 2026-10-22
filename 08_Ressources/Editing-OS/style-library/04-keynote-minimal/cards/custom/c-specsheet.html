@@ -1,0 +1,165 @@
+<!doctype html>
+<!--
+  KEYNOTE MINIMAL · custom · specs · SHEET
+  Full-screen spec-sheet takeover. Product/course name sits top-left at
+  --size-title; below it, six spec rows split into two three-row columns —
+  mono uppercase label + semi-bold value — with a hairline that draws in
+  under each row as the rows cascade top-to-bottom, column by column.
+  Slots: title, l1, v1, l2, v2, l3, v3, l4, v4, l5, v5, l6, v6.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #c-specsheet {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      #c-specsheet .stage-glow {
+        position: absolute; inset: 0; background: var(--glow-stage); z-index: 1;
+      }
+      #c-specsheet .edge { position: absolute; inset: 0; background: var(--edge-falloff); z-index: 5; pointer-events: none; }
+
+      #c-specsheet .frame {
+        position: absolute; inset: 0; z-index: 3;
+        padding: var(--pad);
+        display: flex; flex-direction: column;
+      }
+
+      #c-specsheet .title {
+        font-weight: var(--wt-bold); font-size: var(--size-title);
+        letter-spacing: var(--track-display); color: var(--text);
+        max-width: 1400px; line-height: 1.05;
+      }
+
+      #c-specsheet .sheet {
+        margin-top: 96px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 140px;
+      }
+
+      #c-specsheet .col {
+        display: flex; flex-direction: column;
+      }
+
+      #c-specsheet .row {
+        padding: 30px 0;
+      }
+
+      #c-specsheet .row .l {
+        font-family: var(--font-mono); font-weight: var(--wt-reg);
+        font-size: var(--size-label); letter-spacing: var(--track-wide);
+        text-transform: uppercase; color: var(--text-faint);
+        margin-bottom: 10px;
+      }
+
+      #c-specsheet .row .v {
+        font-family: var(--font-display); font-weight: var(--wt-semi);
+        font-size: var(--size-headline); letter-spacing: var(--track-snug);
+        color: var(--text);
+      }
+
+      #c-specsheet .rule {
+        width: 100%; height: 1px; background: var(--hairline);
+        transform: scaleX(0); transform-origin: 0% 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="c-specsheet" data-composition-id="c-specsheet" data-start="0" data-width="1920" data-height="1080">
+      <div class="stage-glow"></div>
+
+      <div class="frame">
+        <div class="title" data-slot="title">Acme Certified Agent Track</div>
+
+        <div class="sheet">
+          <div class="col">
+            <div class="row" data-row="1">
+              <div class="l" data-slot="l1">Format</div>
+              <div class="v" data-slot="v1">Self-paced + live labs</div>
+            </div>
+            <div class="rule" data-rule="1"></div>
+
+            <div class="row" data-row="2">
+              <div class="l" data-slot="l2">Duration</div>
+              <div class="v" data-slot="v2">6 weeks</div>
+            </div>
+            <div class="rule" data-rule="2"></div>
+
+            <div class="row" data-row="3">
+              <div class="l" data-slot="l3">Cohort size</div>
+              <div class="v" data-slot="v3">Capped at 40</div>
+            </div>
+            <div class="rule" data-rule="3"></div>
+          </div>
+
+          <div class="col">
+            <div class="row" data-row="4">
+              <div class="l" data-slot="l4">Tooling</div>
+              <div class="v" data-slot="v4">Agents, RAG, automations</div>
+            </div>
+            <div class="rule" data-rule="4"></div>
+
+            <div class="row" data-row="5">
+              <div class="l" data-slot="l5">Support</div>
+              <div class="v" data-slot="v5">Weekly office hours</div>
+            </div>
+            <div class="rule" data-rule="5"></div>
+
+            <div class="row" data-row="6">
+              <div class="l" data-slot="l6">Outcome</div>
+              <div class="v" data-slot="v6">Acme Certified badge</div>
+            </div>
+            <div class="rule" data-rule="6"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edge"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#c-specsheet";
+
+      tl.from(root + " .stage-glow", { autoAlpha: 0, scale: 0.9, transformOrigin: "50% 90%", duration: 1.6, ease: "expo.out" }, 0)
+
+        .from(root + " .title", { autoAlpha: 0, y: 30, filter: "blur(10px)", duration: 1.1, ease: "expo.out" }, 0.25)
+
+        /* rows cascade — column 1 top-to-bottom, then column 2, each row
+           followed immediately by its hairline drawing in */
+        .from(root + " .row[data-row='1']", { autoAlpha: 0, y: 20, duration: 0.7, ease: "expo.out" }, 1.1)
+        .to(root + " .rule[data-rule='1']", { scaleX: 1, duration: 0.6, ease: "expo.out" }, 1.55)
+
+        .from(root + " .row[data-row='2']", { autoAlpha: 0, y: 20, duration: 0.7, ease: "expo.out" }, 1.55)
+        .to(root + " .rule[data-rule='2']", { scaleX: 1, duration: 0.6, ease: "expo.out" }, 2.0)
+
+        .from(root + " .row[data-row='3']", { autoAlpha: 0, y: 20, duration: 0.7, ease: "expo.out" }, 2.0)
+        .to(root + " .rule[data-rule='3']", { scaleX: 1, duration: 0.6, ease: "expo.out" }, 2.45)
+
+        .from(root + " .row[data-row='4']", { autoAlpha: 0, y: 20, duration: 0.7, ease: "expo.out" }, 1.35)
+        .to(root + " .rule[data-rule='4']", { scaleX: 1, duration: 0.6, ease: "expo.out" }, 1.8)
+
+        .from(root + " .row[data-row='5']", { autoAlpha: 0, y: 20, duration: 0.7, ease: "expo.out" }, 1.8)
+        .to(root + " .rule[data-rule='5']", { scaleX: 1, duration: 0.6, ease: "expo.out" }, 2.25)
+
+        .from(root + " .row[data-row='6']", { autoAlpha: 0, y: 20, duration: 0.7, ease: "expo.out" }, 2.25)
+        .to(root + " .rule[data-rule='6']", { scaleX: 1, duration: 0.6, ease: "expo.out" }, 2.7)
+
+        /* silent hold on the fully resolved sheet, then a slow breathing glow */
+        .to(root + " .stage-glow", { scale: 1.05, transformOrigin: "50% 90%", duration: 1.8, ease: "sine.inOut", repeat: 1, yoyo: true }, 4.4)
+
+        .set({}, {}, 8);
+
+      window.__timelines["c-specsheet"] = tl;
+    </script>
+  </body>
+</html>

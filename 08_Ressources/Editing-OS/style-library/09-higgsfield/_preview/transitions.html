@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>09 · Higgsfield · transitions</title>
+    <style>
+      body { margin: 0; background: #06080c; color: #fff; font-family: "Inter", system-ui, sans-serif; padding: 40px 48px; }
+      h1 { font-size: 26px; font-weight: 800; margin: 0 0 6px; }
+      .lime { color: #D6FD03; }
+      p.note { color: rgba(255,255,255,.55); font-size: 14px; margin: 0 0 28px; max-width: 900px; }
+      .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px; }
+      .cell .frame { position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden; border-radius: 10px; background: #02060F; border: 1px solid rgba(255,255,255,.12); }
+      .cell iframe { width: 1920px; height: 1080px; border: 0; transform-origin: 0 0; position: absolute; left: 0; top: 0; }
+      .cell .cap { margin-top: 10px; font-size: 13px; color: rgba(255,255,255,.75); }
+      .cell .cap b { color: #D6FD03; font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <h1>09 · Higgsfield · <span class="lime">transitions</span></h1>
+    <p class="note">Six transition moves derived from the cut analysis of the three reference videos (36 sampled cuts). Each card loops; the grey/olive planes stand in for real scenes. The rule everywhere: the swap is a hard cut hidden under motion or full cover — nothing crossfades.</p>
+    <div class="grid" id="grid"></div>
+
+    <script>
+      const CARDS = [
+        ["tr-whip-pan",      "WHIP PAN — one world whips left, blur peaks, overshoot settle"],
+        ["tr-spin-whip",     "SPIN WHIP — rotation carries through the cut, un-spins to level"],
+        ["tr-zoom-punch",    "ZOOM PUNCH — crash in with a rotation kiss, cut at peak, settle out"],
+        ["tr-push-parallax", "PUSH PARALLAX — B pushes A off at depth, shade + overshoot"],
+        ["tr-match-carry",   "MATCH CARRY — prop flies through, cut hides under it at center"],
+        ["tr-flash-cut",     "FLASH CUT — three frames of lime lightning, micro-punch settle"],
+        ["tr-punch-cut",     "PUNCH CUT — instant scale steps, then hard cut back to rest"],
+        ["tr-glass-wipe",    "GLASS WIPE — frosted pane whips across, swap at full cover"],
+        ["tr-venetian-slats","VENETIAN SLATS — staggered mask drop, lime leading edges"],
+        ["tr-circle-reveal", "CIRCLE REVEAL — iris opens from the click point, ring leads the edge"],
+        ["tr-type-wiper",    "TYPE WIPER — the word IS the transition, swap under its pass"],
+        ["tr-letterbox-crush","LETTERBOX CRUSH — the blink, for the biggest pivots"],
+        ["tr-panel-slide",   "PANEL SLIDE — the b-roll comes to you, base scene never cuts"],
+        ["tr-zoom-through",  "ZOOM THROUGH — dive into the panel until it IS the next scene"],
+        ["tr-pip-expand",    "PIP EXPAND — the window becomes the world, inverse zoom-through"],
+        ["tr-dot-boot-gate", "DOT BOOT GATE — LED shutter chapter turn between sections"],
+      ];
+      const grid = document.getElementById("grid");
+      for (const [slug, cap] of CARDS) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.innerHTML = `<div class="frame"><iframe src="../cards/transitions/${slug}.html" scrolling="no"></iframe></div><div class="cap"><b>${cap.split(" — ")[0]}</b> — ${cap.split(" — ")[1]}</div>`;
+        grid.appendChild(cell);
+        const iframe = cell.querySelector("iframe");
+        const fit = () => { iframe.style.transform = "scale(" + (cell.querySelector(".frame").clientWidth / 1920) + ")"; };
+        iframe.addEventListener("load", () => {
+          fit();
+          const w = iframe.contentWindow; let tries = 0;
+          (function go() {
+            const t = w.__timelines, keys = t ? Object.keys(t) : [];
+            if (!keys.length) { if (tries++ < 100) setTimeout(go, 90); return; }
+            keys.forEach(k => {
+              const tl = t[k];
+              tl.eventCallback("onComplete", () => setTimeout(() => tl.restart(), 900));
+              tl.play(0);
+            });
+          })();
+        });
+        window.addEventListener("resize", fit);
+      }
+    </script>
+  </body>
+</html>

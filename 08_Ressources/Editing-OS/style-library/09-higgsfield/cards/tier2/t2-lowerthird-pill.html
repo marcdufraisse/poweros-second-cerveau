@@ -1,0 +1,87 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · tier2 · lower-third · PILL
+  Dark den-tone lower-third: lime dot pulses once, name types on in mono,
+  role fades under it. Compact, bottom-left, face-safe.
+  Slots: name, role.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-lowerthird-pill {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; overflow: hidden; font-family: var(--font-display);
+      }
+      #t2-lowerthird-pill .bar {
+        position: absolute; left: 96px; bottom: 88px; z-index: 3;
+        display: inline-flex; align-items: center; gap: 18px;
+        background: rgba(25, 35, 42, 0.88);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 100px; padding: 18px 34px 18px 24px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+      }
+      #t2-lowerthird-pill .dot {
+        width: 14px; height: 14px; border-radius: 50%;
+        background: var(--lime); box-shadow: 0 0 12px rgba(var(--lime-rgb), 0.7);
+      }
+      #t2-lowerthird-pill .text { display: flex; flex-direction: column; gap: 3px; }
+      #t2-lowerthird-pill .name {
+        font-family: var(--font-mono); font-weight: var(--wt-bold);
+        font-size: 26px; letter-spacing: 0.06em; text-transform: uppercase;
+        color: var(--white);
+      }
+      #t2-lowerthird-pill .name .ch { display: inline-block; }
+      #t2-lowerthird-pill .role {
+        font-weight: var(--wt-med); font-size: 17px; letter-spacing: 0.14em;
+        text-transform: uppercase; color: rgba(255, 255, 255, 0.55);
+        font-family: var(--font-body);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-lowerthird-pill" data-composition-id="t2-lowerthird-pill" data-start="0" data-width="1920" data-height="1080">
+      <div class="bar">
+        <div class="dot"></div>
+        <div class="text">
+          <div class="name" data-slot="name">NATE HERK</div>
+          <div class="role" data-slot="role">AI AUTOMATION</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t2-lowerthird-pill";
+
+      function splitChars(el) {
+        const text = el.textContent; el.textContent = "";
+        text.split("").forEach((ch) => {
+          const s = document.createElement("span");
+          s.className = "ch"; s.textContent = ch === " " ? "\u00A0" : ch;
+          el.appendChild(s);
+        });
+      }
+      splitChars(document.querySelector(root + " .name"));
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .bar", { autoAlpha: 0, x: -60, duration: 0.5, ease: "expo.out" }, 0.1)
+        /* dot pulses once */
+        .fromTo(root + " .dot", { scale: 0.4 }, { scale: 1, duration: 0.4, ease: "back.out(2.5)" }, 0.3)
+        .fromTo(root + " .dot", { boxShadow: "0 0 0px rgba(214,253,3,0.7)" },
+                { boxShadow: "0 0 14px rgba(214,253,3,0.7)", duration: 0.5, ease: "sine.out" }, 0.45)
+        /* name types on */
+        .from(root + " .name .ch", { autoAlpha: 0, duration: 0.01, stagger: 0.03, ease: "none" }, 0.5)
+        /* role fades under */
+        .from(root + " .role", { autoAlpha: 0, y: 6, duration: 0.35, ease: "power2.out" }, 1.05)
+        .set({}, {}, 5.5);
+
+      window.__timelines["t2-lowerthird-pill"] = tl;
+    </script>
+  </body>
+</html>

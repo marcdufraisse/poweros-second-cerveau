@@ -1,0 +1,108 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · tier1 · section · STAGE BOOT
+  The olive dot-matrix "boot" card: title materializes from an LED-dot shimmer
+  (blur + letter stagger) into solid white with a faint lime glow; a mono pill
+  sublabel types on underneath. Bokeh blobs drift very slowly behind.
+  Slots: title, pill.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t1-stage-boot {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--olive); overflow: hidden; font-family: var(--font-display);
+      }
+      #t1-stage-boot .bokeh {
+        position: absolute; inset: -6%; width: 112%; height: 112%;
+        background: var(--olive-bokeh); filter: blur(46px);
+      }
+      #t1-stage-boot .dots {
+        position: absolute; inset: 0;
+        background-image: var(--dot-grid); background-size: var(--dot-grid-size);
+      }
+      #t1-stage-boot .vig { position: absolute; inset: 0; background: var(--vignette); }
+
+      #t1-stage-boot .wrap {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 40px; z-index: 2;
+      }
+      #t1-stage-boot .title {
+        font-weight: var(--wt-black); font-size: var(--size-display); line-height: 1;
+        letter-spacing: 0.04em; text-transform: uppercase; color: var(--white);
+        text-shadow: 0 0 26px rgba(var(--lime-rgb), 0.28);
+      }
+      #t1-stage-boot .title .ch { display: inline-block; }
+      #t1-stage-boot .pill {
+        font-family: var(--font-mono); font-weight: var(--wt-med);
+        font-size: var(--size-tiny); letter-spacing: var(--track-pill);
+        text-transform: uppercase; color: var(--olive);
+        background: rgba(255, 255, 255, 0.92); border-radius: 4px;
+        padding: 8px 16px;
+      }
+      #t1-stage-boot .pill .ch { display: inline-block; }
+    </style>
+  </head>
+  <body>
+    <div id="t1-stage-boot" data-composition-id="t1-stage-boot" data-start="0" data-width="1920" data-height="1080">
+      <div class="bokeh"></div>
+      <div class="dots"></div>
+      <div class="vig"></div>
+      <div class="wrap">
+        <div class="title" data-slot="title">STAGE 1</div>
+        <div class="pill" data-slot="pill">CREATING THE ASSETS</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-stage-boot";
+
+      function splitChars(el) {
+        const text = el.textContent; el.textContent = "";
+        text.split("").forEach((ch) => {
+          const s = document.createElement("span");
+          s.className = "ch"; s.textContent = ch === " " ? " " : ch;
+          el.appendChild(s);
+        });
+      }
+      splitChars(document.querySelector(root + " .title"));
+      splitChars(document.querySelector(root + " .pill"));
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* dot-matrix resolve: letters shimmer in sparse -> solid. Scatter order
+         comes from a seeded LCG (determinism rule: no Math.random). */
+      function seededOrder(n, seed) {
+        let s = seed; const idx = Array.from({ length: n }, (_, i) => i);
+        for (let i = n - 1; i > 0; i--) {
+          s = (s * 1103515245 + 12345) % 2147483648;
+          const j = s % (i + 1); [idx[i], idx[j]] = [idx[j], idx[i]];
+        }
+        const rank = new Array(n); idx.forEach((v, i) => (rank[v] = i)); return rank;
+      }
+      const chs = gsap.utils.toArray(root + " .title .ch");
+      const rank = seededOrder(chs.length, 9);
+      chs.forEach((ch, i) => {
+        tl.from(ch, { autoAlpha: 0, filter: "blur(8px)", duration: 0.55, ease: "power2.out" }, 0.15 + rank[i] * 0.055);
+      });
+      tl.from(root + " .title", { scale: 0.97, duration: 1.0, ease: "expo.out" }, 0.15)
+
+        /* pill types on after the title lands */
+        .from(root + " .pill", { autoAlpha: 0, duration: 0.2, ease: "power2.out" }, 0.95)
+        .from(root + " .pill .ch", { autoAlpha: 0, duration: 0.01, stagger: 0.022, ease: "none" }, 1.05)
+
+        /* bokeh breathes very slowly while the card holds */
+        .to(root + " .bokeh", { xPercent: 1.6, yPercent: -1.2, duration: 3.4, ease: "sine.inOut" }, 0)
+
+        .set({}, {}, 4.5);
+
+      window.__timelines["t1-stage-boot"] = tl;
+    </script>
+  </body>
+</html>

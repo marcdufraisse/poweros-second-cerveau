@@ -1,0 +1,164 @@
+<!doctype html>
+<!--
+  ABRAM OPTIMIST · tier1 · stat · DUO
+  Full-screen takeover. A sentence-case Manrope headline sits above a row
+  of two white chips: the first holds a plain ink mono-label + Manrope
+  count-up value, the second holds the same shape but its value IS the
+  prism moment (gradient-clipped, panning once). Between them a bold
+  geometric arrow — a shaft + two rotated ink bars, no glyph — pops in
+  last, connecting "before" to "after".
+  Slots: title, l1, v1, l2, v2.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-stat-duo {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--ink);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      #t1-stat-duo .title {
+        position: absolute; top: 224px; left: 0; right: 0;
+        text-align: center;
+        font-weight: var(--wt-bold); font-size: var(--size-headline);
+        letter-spacing: var(--track-tight); color: var(--ink);
+      }
+
+      #t1-stat-duo .row {
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -46%);
+        display: flex; align-items: center; gap: 64px;
+        z-index: 3;
+      }
+
+      #t1-stat-duo .chip {
+        width: 480px; padding: 56px 48px;
+        background: var(--white); border-radius: var(--radius);
+        box-shadow: var(--lift);
+        text-align: center;
+      }
+
+      #t1-stat-duo .chip .l {
+        font-family: var(--font-mono); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-mono);
+        text-transform: uppercase; color: var(--ink-soft);
+        margin-bottom: 22px;
+      }
+
+      #t1-stat-duo .chip .v {
+        font-weight: var(--wt-black); font-size: 116px;
+        letter-spacing: var(--track-tight); line-height: 1;
+        color: var(--ink);
+      }
+
+      /* second chip's value — THE prism moment */
+      #t1-stat-duo .chip.after .v {
+        padding: 0 6px;
+        background-image: var(--prism);
+        background-size: 220% 100%; background-position: 0% 50%;
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent; color: transparent;
+      }
+
+      /* geometric arrow: shaft + two rotated ink bars, no glyph */
+      #t1-stat-duo .arrow {
+        position: relative; width: 130px; height: 60px; flex: none;
+      }
+      #t1-stat-duo .arrow .shaft {
+        position: absolute; top: 50%; left: 0; width: 96px; height: 9px;
+        background: var(--accent); border-radius: 5px;
+        transform: translateY(-50%); transform-origin: left center;
+      }
+      #t1-stat-duo .arrow .head1, #t1-stat-duo .arrow .head2 {
+        position: absolute; right: 0; top: 50%; width: 46px; height: 9px;
+        background: var(--accent); border-radius: 5px;
+        transform-origin: right center;
+      }
+      #t1-stat-duo .arrow .head1 { transform: translateY(-50%) rotate(34deg); }
+      #t1-stat-duo .arrow .head2 { transform: translateY(-50%) rotate(-34deg); }
+    </style>
+  </head>
+  <body>
+    <div id="t1-stat-duo" data-composition-id="t1-stat-duo" data-start="0" data-width="1920" data-height="1080">
+      <div class="title" data-slot="title">Before Acme vs. after Acme</div>
+
+      <div class="row">
+        <div class="chip before">
+          <div class="l" data-slot="l1">AVG MONTHLY REVENUE</div>
+          <div class="v" data-slot="v1">$4.2k</div>
+        </div>
+
+        <div class="arrow">
+          <div class="shaft"></div>
+          <div class="head1"></div>
+          <div class="head2"></div>
+        </div>
+
+        <div class="chip after">
+          <div class="l" data-slot="l2">AVG MONTHLY REVENUE</div>
+          <div class="v" data-slot="v2">$18.9k</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t1-stat-duo";
+
+      function countUp(sel, opts) {
+        const el = document.querySelector(sel);
+        const raw = el.textContent.trim();
+        const m = raw.match(/^([^\d]*)([\d,]+\.?\d*)(.*)$/);
+        if (!m) return gsap.timeline();
+        const prefix = m[1], suffix = m[3];
+        const numStr = m[2].replace(/,/g, "");
+        const isFloat = numStr.indexOf(".") !== -1;
+        const decimals = isFloat ? numStr.split(".")[1].length : 0;
+        const target = parseFloat(numStr);
+        const obj = { v: 0 };
+        el.textContent = prefix + (isFloat ? (0).toFixed(decimals) : "0") + suffix;
+        return gsap.to(obj, {
+          v: target,
+          duration: opts.duration || 1.1,
+          ease: opts.ease || "power3.out",
+          onUpdate: function () {
+            const disp = isFloat ? obj.v.toFixed(decimals) : Math.round(obj.v).toLocaleString("en-US");
+            el.textContent = prefix + disp + suffix;
+          }
+        });
+      }
+
+      tl
+        /* headline rises and settles */
+        .from(root + " .title", { autoAlpha: 0, y: 26, duration: 0.6, ease: "expo.out" }, 0)
+
+        /* first chip POPS */
+        .from(root + " .chip.before", { autoAlpha: 0, scale: 0.6, duration: 0.45, ease: "back.out(1.7)" }, 0.35)
+        .from(root + " .chip.before .v", { autoAlpha: 0, duration: 0.2 }, 0.4)
+        .add(countUp(root + " .chip.before .v", { duration: 0.9 }), 0.45)
+
+        /* second chip POPS staggered after the first */
+        .from(root + " .chip.after", { autoAlpha: 0, scale: 0.6, duration: 0.45, ease: "back.out(1.7)" }, 0.65)
+        .from(root + " .chip.after .v", { autoAlpha: 0, duration: 0.2 }, 0.7)
+        .add(countUp(root + " .chip.after .v", { duration: 1.0 }), 0.75)
+        .to(root + " .chip.after .v", { backgroundPosition: "100% 50%", duration: 1.0, ease: "power2.inOut" }, 0.9)
+
+        /* the arrow pops in last, connecting the two */
+        .from(root + " .arrow", { autoAlpha: 0, scale: 0.5, duration: 0.5, ease: "back.out(1.7)" }, 1.15)
+
+        /* one gentle bob on the arrow, finite */
+        .to(root + " .arrow", { y: -6, duration: 1.1, ease: "sine.inOut", repeat: 3, yoyo: true }, 1.9)
+
+        .set({}, {}, 7);
+
+      window.__timelines["t1-stat-duo"] = tl;
+    </script>
+  </body>
+</html>

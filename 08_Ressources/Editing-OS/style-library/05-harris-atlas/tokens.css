@@ -1,0 +1,111 @@
+/* ============================================================================
+   HARRIS ATLAS — style tokens
+   Single source of palette / type / motion / texture for every card in this
+   style. Cards reference these vars and never hardcode colors, fonts,
+   easings, or textures. Tweak here, all cards update. See DESIGN.md.
+   Aesthetic: Johnny-Harris cinematic map journalism — aged parchment maps,
+   sage oceans, slate country fills with white boxed labels, one highlighted
+   region, typewriter metadata, film grain + burn transitions, slow
+   documentary push-ins. History told through cartography.
+   ============================================================================ */
+
+/* The HyperFrames compiler embeds supported fonts by name at render time;
+   this @import makes standalone / browser preview show the right faces. */
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap");
+
+:root {
+  /* --- palette (mirror style.json + DESIGN.md) ----------------------------- */
+  --parchment:    #E7DDC4;   /* aged paper — land, card grounds */
+  --parchment-hi: #F2EAD6;   /* lit paper — highlights, label plates */
+  --sage:         #C2CDB4;   /* map ocean / secondary ground */
+  --slate:        #57646A;   /* country fill — the dark cartographic gray */
+  --slate-deep:   #3C4649;   /* deeper slate — shadows, borders on slate */
+  --ink:          #2A241C;   /* warm ink — primary text on paper */
+  --film:         #14110C;   /* projector black — archival / full-dark grounds */
+
+  --white:        #FFFFFF;   /* boxed map labels, text on slate */
+  --cream:        #F4EDDC;   /* text on film black */
+
+  --accent:       #37BDF8;   /* brand blue — THE highlighted-region / key-word color */
+  --red:          #BE3B2B;   /* editorial red — conflict, borders, secondary punctuation */
+
+  --accent-rgb:   55, 189, 248;
+  --red-rgb:      190, 59, 43;
+  --ink-rgb:      42, 36, 28;
+  --film-rgb:     20, 17, 12;
+
+  /* semantic aliases the blueprint contract expects */
+  --bg:    var(--parchment);
+  --fg:    var(--ink);
+  --muted: rgba(42, 36, 28, 0.60);
+
+  /* --- typography ----------------------------------------------------------
+     Oswald (condensed) is the cartographic voice: map labels, headlines,
+     dates. Source Serif 4 is the narrative voice: definitions, quotes, body.
+     Courier Prime is the archival metadata voice: file numbers, coordinates,
+     dates, footnotes. */
+  --font-display: "Oswald", "Archivo Narrow", system-ui, sans-serif;
+  --font-body:    "Source Serif 4", Georgia, serif;
+  --font-mono:    "Courier Prime", "Courier New", monospace;
+  --font-label:   var(--font-display);
+  --font-hand:    var(--font-mono);
+
+  --wt-reg: 400; --wt-med: 500; --wt-semi: 600; --wt-bold: 700;
+
+  /* sizes for 1920x1080 */
+  --size-mega:     280px;   /* giant map date ("1802") */
+  --size-display:  132px;   /* takeover headline */
+  --size-title:    80px;    /* section title */
+  --size-headline: 50px;    /* card headline */
+  --size-body:     31px;    /* serif body / definitions */
+  --size-label:    24px;    /* boxed map labels, kickers */
+  --size-tiny:     19px;    /* typewriter footnotes */
+
+  --track-caps:   0.10em;   /* Oswald uppercase tracking (map labels) */
+  --track-wide:   0.22em;   /* kicker tracking */
+
+  /* --- the boxed map label — signature component ---------------------------
+     White condensed caps in a slate box (or ink box on paper). Cards build:
+     background var(--label-bg); color var(--white); padding var(--label-pad);
+     letter-spacing var(--track-caps); text-transform uppercase. */
+  --label-bg:     rgba(60, 70, 73, 0.92);
+  --label-pad:    10px 22px 12px;
+
+  /* --- textures (deterministic) -------------------------------------------- */
+  /* paper grain — warm speckle over parchment */
+  --tex-paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+  /* film grain — for the projector-black grounds */
+  --tex-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' seed='19' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  /* film burn — warm flash wash used at transition moments (overlay div) */
+  --burn: radial-gradient(120% 90% at 110% 50%,
+            rgba(255, 176, 82, 0.85) 0%,
+            rgba(222, 92, 40, 0.55) 34%,
+            rgba(120, 32, 18, 0.25) 58%, transparent 75%);
+
+  /* warm vignette — heavier than other styles; the projector look */
+  --vignette: radial-gradient(120% 120% at 50% 46%,
+                transparent 48%, rgba(30, 22, 12, 0.42) 100%);
+
+  /* aged-edge tint on paper cards */
+  --paper-edge: radial-gradient(115% 115% at 50% 50%,
+                  transparent 55%, rgba(150, 118, 62, 0.28) 100%);
+
+  /* --- shape ---------------------------------------------------------------- */
+  --radius:     6px;        /* barely rounded — printed matter */
+  --radius-sm:  3px;
+  --pad:        90px;
+  --frame:      2px solid rgba(42, 36, 28, 0.75);  /* map border rule */
+  --hairline:   1px solid rgba(42, 36, 28, 0.35);
+
+  /* --- motion — documentary. Deliberate, weighty, never springy. ------------ */
+  --ease-push:   cubic-bezier(0.25, 0.1, 0.25, 1);  /* slow map push-in */
+  --ease-stamp:  cubic-bezier(0.19, 1, 0.22, 1);    /* label/region lands */
+  --ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  /* GSAP string eases */
+  --gsap-push:   power2.inOut;
+  --gsap-stamp:  expo.out;
+  --gsap-draw:   power1.inOut;   /* route lines drawing */
+  --dur-in:  0.7s;
+  --dur-out: 0.4s;
+}

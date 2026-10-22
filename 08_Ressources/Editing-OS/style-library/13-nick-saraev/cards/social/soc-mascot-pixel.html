@@ -1,0 +1,92 @@
+<!doctype html>
+<!--
+  NICK SARAEV · social · mascot · LA MASCOTTE PIXEL
+  Le robot corail en pixel-art, cellules NETTES (jamais lissées), qui
+  sautille en boucle : bob ±4° + translation sinusoïdale. Seul sur blanc
+  ou noir, entre deux idées. C'est le personnage qui recoud le reel.
+  slot theme = "white" | "black".
+  Slots: theme.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-mascot-pixel {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden; background: var(--white);
+      }
+      #soc-mascot-pixel.black { background: var(--black); }
+
+      #soc-mascot-pixel .bot {
+        position: absolute; left: 50%; top: 42%;
+        width: 396px; height: 352px; margin: -176px 0 0 -198px;
+        display: grid;
+        grid-template-columns: repeat(9, 44px);
+        grid-template-rows: repeat(8, 44px);
+      }
+      /* chaque cellule est un div plein — le rendu reste net à toute échelle */
+      #soc-mascot-pixel .bot i { background: var(--coral); }
+      #soc-mascot-pixel .bot i.k { background: var(--black); }
+      #soc-mascot-pixel .bot i.o { background: transparent; }
+      #soc-mascot-pixel.black .bot i.k { background: var(--white); }
+    </style>
+  </head>
+  <body>
+    <div id="soc-mascot-pixel" data-composition-id="soc-mascot-pixel" data-start="0" data-width="1080" data-height="1920">
+      <!-- 9×8 : oreilles, tête large, deux yeux carrés noirs, trois pattes -->
+      <div class="bot" id="smp-bot"></div>
+      <div style="display:none" data-slot="theme">white</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-mascot-pixel";
+      const el = document.querySelector(root);
+      if (el.querySelector('[data-slot="theme"]').textContent.trim() === "black") el.classList.add("black");
+
+      /* la grille du robot — o = vide, c = corail, k = noir (yeux) */
+      const rows = [
+        "oocccccoo",
+        "occccccco",
+        "ccckcckcc",
+        "ccccccccc",
+        "ccccccccc",
+        "ccccccccc",
+        "ocoocooco",
+        "ocoocooco"
+      ];
+      const bot = document.getElementById("smp-bot");
+      rows.forEach(r => { for (const ch of r) {
+        const i = document.createElement("i");
+        if (ch === "k") i.className = "k"; else if (ch === "o") i.className = "o";
+        bot.appendChild(i);
+      }});
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* arrivée : pop sec */
+      tl.fromTo(root + " .bot", { scale: 0.7, autoAlpha: 0 },
+        { scale: 1, autoAlpha: 1, duration: 0.26, ease: "back.out(1.9)" }, 0.03);
+
+      /* le bob en boucle : rotation ±4° + sautillement */
+      tl.to(root + " .bot", {
+        keyframes: [
+          { rotation: -4, y: -14, duration: 0.4 },
+          { rotation: 3,  y: 0,   duration: 0.4 },
+          { rotation: -3, y: -10, duration: 0.4 },
+          { rotation: 4,  y: 0,   duration: 0.4 },
+          { rotation: 0,  y: -12, duration: 0.4 },
+          { rotation: 0,  y: 0,   duration: 0.4 }
+        ],
+        ease: "sine.inOut"
+      }, 0.3);
+
+      tl.set({}, {}, 2.8);
+      window.__timelines["soc-mascot-pixel"] = tl;
+    </script>
+  </body>
+</html>

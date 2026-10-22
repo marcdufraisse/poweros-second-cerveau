@@ -1,0 +1,125 @@
+<!doctype html>
+<!--
+  HOUSE · social 9:16 · FINDER SYSTEM
+  A mock macOS Finder window (dark) showing a real-looking folder: traffic
+  lights, toolbar with the folder name, rows cascading in like the Finder
+  populating. The key row flips jaune a beat later. Proof-of-deliverable
+  card ("le système complet") — the CTA becomes tangible.
+  Top ~58% of the 9:16 frame, transparent below.
+  Slots: title, r1..r5 (row names), m1..m5 (row metas). Empty row name hides
+  the row.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-finder-system {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        background: transparent; overflow: hidden; font-family: var(--font-body);
+      }
+      #soc-finder-system .win {
+        position: absolute; top: 150px; left: 70px; right: 70px;
+        background: #1d2025; border-radius: 22px; overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+      }
+      #soc-finder-system .glare {
+        position: absolute; top: -20%; bottom: -20%; width: 30%; z-index: 5;
+        background: var(--glare); transform: var(--glare-skew); pointer-events: none;
+      }
+      #soc-finder-system .bar {
+        display: flex; align-items: center; gap: 20px;
+        padding: 22px 28px; background: #26292f;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      #soc-finder-system .lights { display: flex; gap: 10px; }
+      #soc-finder-system .lights span { width: 16px; height: 16px; border-radius: 50%; }
+      #soc-finder-system .lights .r { background: #ff5f57; }
+      #soc-finder-system .lights .y { background: #febc2e; }
+      #soc-finder-system .lights .g { background: #28c840; }
+      #soc-finder-system .path {
+        display: flex; align-items: center; gap: 12px;
+        font-weight: 600; font-size: 28px; color: rgba(255, 255, 255, 0.9);
+      }
+      #soc-finder-system .path svg { width: 34px; height: 34px; }
+      #soc-finder-system .rows { padding: 10px 0 16px; }
+      #soc-finder-system .row {
+        display: flex; align-items: center; gap: 20px;
+        padding: 18px 30px; visibility: hidden;
+      }
+      #soc-finder-system .row:nth-child(even) { background: rgba(255, 255, 255, 0.025); }
+      #soc-finder-system .row svg { width: 44px; height: 44px; flex: none; }
+      #soc-finder-system .row .name {
+        flex: 1; font-weight: 500; font-size: 29px; color: #fff;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      #soc-finder-system .row .meta {
+        font-family: var(--font-mono); font-size: 22px; color: rgba(255, 255, 255, 0.45);
+      }
+      #soc-finder-system .row.key {
+        border: 2px solid transparent; border-radius: 12px; margin: 0 12px;
+        padding: 16px 18px;
+      }
+      #soc-finder-system .row.key .name { color: var(--jaune); font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <div id="soc-finder-system" data-composition-id="soc-finder-system" data-start="0" data-width="1080" data-height="1920">
+      <div class="win">
+        <div class="glare"></div>
+        <div class="bar">
+          <div class="lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+          <div class="path">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" fill="#58a6ff"/></svg>
+            <span data-slot="title">montage-ia-le-systeme</span>
+          </div>
+        </div>
+        <div class="rows">
+          <div class="row"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" fill="#58a6ff"/></svg><span class="name" data-slot="r1">01-installation</span><span class="meta" data-slot="m1">3 fichiers</span></div>
+          <div class="row"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" fill="#58a6ff"/></svg><span class="name" data-slot="r2">02-agents-de-montage</span><span class="meta" data-slot="m2">5 agents</span></div>
+          <div class="row"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" fill="#58a6ff"/></svg><span class="name" data-slot="r3">03-templates</span><span class="meta" data-slot="m3">123 cartes</span></div>
+          <div class="row"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" fill="#58a6ff"/></svg><span class="name" data-slot="r4">04-prompts</span><span class="meta" data-slot="m4">12 prompts</span></div>
+          <div class="row key"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="2" fill="#e8ecf4"/><path d="M8 8h8M8 12h8M8 16h5" stroke="#1d2025" stroke-width="1.6" stroke-linecap="round"/></svg><span class="name" data-slot="r5">COMMENCE-ICI.md</span><span class="meta" data-slot="m5">2 min</span></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-finder-system";
+      const css = getComputedStyle(document.documentElement);
+      const JAUNE = css.getPropertyValue("--jaune").trim();
+
+      /* hide rows whose name slot was emptied */
+      document.querySelectorAll(root + " .row").forEach((r) => {
+        const n = r.querySelector(".name");
+        if (n && !n.textContent.trim()) r.style.display = "none";
+      });
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .win", { autoAlpha: 0, y: -60, scale: 0.96, duration: 0.5, ease: "expo.out" }, 0.1)
+        .fromTo(root + " .glare", { xPercent: -160 }, { xPercent: 420, duration: 0.7, ease: "power2.inOut" }, 0.25)
+
+        /* rows populate like the Finder loading, quick cascade */
+        .fromTo(root + " .row",
+          { autoAlpha: 0, x: -24, visibility: "visible" },
+          { autoAlpha: 1, x: 0, visibility: "visible", duration: 0.3, ease: "power3.out", stagger: 0.14 }, 0.55)
+
+        /* the key row lights up jaune a beat later */
+        .to(root + " .row.key", { borderColor: JAUNE, duration: 0.25, ease: "power2.out" }, 1.9)
+        .fromTo(root + " .row.key", { scale: 1 }, { scale: 1.03, duration: 0.16, ease: "back.out(2)", yoyo: true, repeat: 1 }, 1.9)
+
+        /* subtle drift while alive */
+        .to(root + " .win", { y: -8, duration: 2.8, ease: "sine.inOut", yoyo: true, repeat: 1 }, 1.4)
+
+        .set({}, {}, 7);
+
+      window.__timelines["soc-finder-system"] = tl;
+    </script>
+  </body>
+</html>

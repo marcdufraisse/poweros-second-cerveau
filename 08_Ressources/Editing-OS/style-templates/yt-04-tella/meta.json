@@ -1,0 +1,13 @@
+{
+  "slug": "yt-04-tella",
+  "title": "YouTube · Format 04 — Tella",
+  "family": "youtube",
+  "type": "format-scaffold",
+  "format": "04-tella",
+  "style": "charte-v2",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "spec": "formats/04-tella.md",
+  "notes": "Squelette de la vidéo longue YouTube : partage d'écran à gauche dans une fenêtre arrondie, panneau chapitres en haut à droite (le chapitre en cours est surligné), cam verticale en bas à droite. Fond charte de marque, panneaux en verre. Assets de démo : une landing page qui défile et 20 s d'un rush du présentateur."
+}

@@ -1,0 +1,239 @@
+{
+  "id": "dankieft",
+  "name": "Dan Kieft",
+  "number": "11",
+  "status": "draft",
+  "inspiration": "The AI-filmmaking tutorial channel youtube.com/@Dankieft (refs pulled from 0B_xyflXrwc, UxwV16jDglA, e9ZupmL9BcM). Screens that stand in a room in perspective and are pushed into continuously, zooms onto a named region of a screen, prompt walls that get highlighted live marker by marker, a permanent periwinkle-ringed PIP, serif chapter titles. Reference frames in references/.",
+  "summary": "The long-form YouTube tutorial style. Use for 10-30 min walkthroughs, tool teardowns and courses — anywhere a lot of screen has to stay watchable while someone talks over it.",
+  "format": "long-form YouTube (16:9). Not built for reels.",
+  "palette": {
+    "bg": "#002085",
+    "fg": "#FFFFFF",
+    "accent": "#FFE930",
+    "electric": "#0200FF",
+    "charcoal": "#262626",
+    "royalLit": "#0B3AC4",
+    "royalDeep": "#00112F",
+    "ink": "#000000",
+    "charcoalLit": "#343431",
+    "periwinkle": "#8889FF",
+    "bone": "#CDCDCB",
+    "ember": "#CF785A",
+    "notes": "Exactly three saturated colours: yellow (the accent), royal (the graphics stage), electric blue (the second marker). Two stages that never mix in one shot — royal for built graphics, charcoal for 3D screen work. Sampled per-pixel from the refs. Mirrored in tokens.css."
+  },
+  "fonts": {
+    "display": "Inter Tight",
+    "body": "Inter",
+    "serif": "Instrument Serif",
+    "mono": "JetBrains Mono",
+    "notes": "Inter Tight ITALIC 800 caps is the signature — every pill leans forward. Instrument Serif is reserved for chapter titles and annotation labels, nothing else. Inter 24px carries prompt walls (small on purpose, it is a document). JetBrains Mono for badges and counters only."
+  },
+  "motion": "Three speeds. SNAP (markers, pills, numbers) expo.out ~0.36s. SETTLE (surfaces) ~0.62s with slight overshoot. DRIFT (the continuous camera push on any screen) 8-14s, power1.inOut, never eases out. The rule that defines the style: a screen is NEVER on frame without drifting, and the drift is still moving when the cut happens. The signature is the de-skew — rotateY eases from -13deg to -2.5deg during the approach; a flat scale() does not reproduce it.",
+  "transitions": "Hard cuts between the two stages, never a dissolve. Prompt walls arrive whole and unhighlighted, then markers sweep left-to-right in sequence while the wall itself stays put. The PIP is permanent whenever a screen is up.",
+  "pacing": {
+    "cutsPerMinute": 9.3,
+    "medianShotSeconds": 3.3,
+    "meanShotSeconds": 6.5,
+    "hookCutsPerMinute": 30,
+    "notes": "Measured on 0B_xyflXrwc (1003s, 156 detected cuts). The hook is twice as fast as the body and is a 30-60s AI short film with tiny dialogue subtitles, not talking head."
+  },
+  "cards": [
+    {
+      "id": "dankieft.custom.screen.push3d",
+      "tier": "custom",
+      "purpose": "screen",
+      "treatment": "3d-push-in",
+      "file": "cards/custom/screen-3d-push.html",
+      "slots": [
+        {
+          "name": "chapter",
+          "type": "text",
+          "maxChars": 34
+        },
+        {
+          "name": "screen",
+          "type": "media"
+        }
+      ],
+      "duration": {
+        "min": 8,
+        "max": 14
+      },
+      "notes": "THE signature move. Set --z-near to ~240px when no chapter line is used."
+    },
+    {
+      "id": "dankieft.custom.screen.zoomregion",
+      "tier": "custom",
+      "purpose": "screen",
+      "treatment": "region-punch",
+      "file": "cards/custom/screen-zoom-region.html",
+      "slots": [
+        {
+          "name": "label",
+          "type": "text",
+          "maxChars": 28
+        },
+        {
+          "name": "screen",
+          "type": "media"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "notes": "Region is described as --rx / --ry / --rw (percent of the screen, 16:9 box). Agent 3 sets those three per beat."
+    },
+    {
+      "id": "dankieft.t1.overview.prompthighlight",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "prompt-wall-marker",
+      "file": "cards/tier1/t1-prompt-highlight.html",
+      "slots": [
+        {
+          "name": "heading",
+          "type": "text",
+          "maxChars": 72
+        },
+        {
+          "name": "line1",
+          "type": "text",
+          "maxChars": 96
+        },
+        {
+          "name": "line2",
+          "type": "text",
+          "maxChars": 96
+        },
+        {
+          "name": "line3",
+          "type": "text",
+          "maxChars": 96
+        },
+        {
+          "name": "line4",
+          "type": "text",
+          "maxChars": 96
+        },
+        {
+          "name": "line5",
+          "type": "text",
+          "maxChars": 96
+        },
+        {
+          "name": "line6",
+          "type": "text",
+          "maxChars": 96
+        },
+        {
+          "name": "pip",
+          "type": "media"
+        }
+      ],
+      "duration": {
+        "min": 8,
+        "max": 40
+      },
+      "notes": "Le geste pedagogique central. Le pave arrive ENTIER et eteint, puis chaque bloc s'allume au marqueur. Deux couleurs : jaune et bleu electrique, pour opposer deux natures de contenu. Le texte passe en encre sur le jaune, en BLANC sur le bleu. Le corps reste a 24px : c'est un document, pas un titre — pour aider, zoomer (custom/screen-zoom-region), pas grossir."
+    },
+    {
+      "id": "dankieft.t1.section.technique",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "pill-reveal",
+      "file": "cards/tier1/t1-technique-card.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text",
+          "maxChars": 22
+        },
+        {
+          "name": "sub",
+          "type": "text",
+          "maxChars": 52
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 10
+      },
+      "notes": "Releve sur RlKg6oXLf7Y 1:21-1:28. Le titre entre PETIT et grossit pendant tout le plan ; la barre-pilule se deploie sous lui, PUIS le sous-titre la remplit de gauche a droite. Le contenant avant le contenu. Vignette inversee : centre plus sombre que les bords."
+    },
+    {
+      "id": "dankieft.custom.overview.lockribbon",
+      "tier": "custom",
+      "purpose": "overview",
+      "treatment": "scrolling-locked-ribbon",
+      "file": "cards/custom/lock-ribbon.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text",
+          "maxChars": 34
+        },
+        {
+          "name": "thumb1",
+          "type": "media"
+        },
+        {
+          "name": "thumb2",
+          "type": "media"
+        },
+        {
+          "name": "thumb3",
+          "type": "media"
+        },
+        {
+          "name": "thumb4",
+          "type": "media"
+        },
+        {
+          "name": "thumb5",
+          "type": "media"
+        },
+        {
+          "name": "thumb6",
+          "type": "media"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 9
+      },
+      "notes": "Releve sur RlKg6oXLf7Y 1:09-1:13. Sommaire qui PROMET au lieu d'expliquer : des extraits defilent, un cadenas ouvert numerote chacun. Le ruban est duplique pour boucler sans couture. Defilement lineaire, jamais resolu."
+    },
+    {
+      "id": "dankieft.custom.screen.brandglow",
+      "tier": "custom",
+      "purpose": "screen",
+      "treatment": "product-tinted",
+      "file": "cards/custom/screen-brand-glow.html",
+      "slots": [
+        {
+          "name": "screen",
+          "type": "media"
+        },
+        {
+          "name": "line",
+          "type": "text",
+          "maxChars": 34
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 9
+      },
+      "notes": "Releve sur RlKg6oXLf7Y 1:19-1:21. La scene abandonne le bleu maison et prend la couleur de l'outil montre : brume, lisere, texte. Agent 3 ne change que --tint. La frappe est un clip-path en paliers, pas un onUpdate — GSAP supprime ses callbacks au seek et le moteur rend en seekant."
+    }
+  ],
+  "backlog": [
+    "t1-chapter-serif — full-frame serif chapter card",
+    "t1-section-segment — SEGMENT N pill + payoff word",
+    "t1-two-paths — two italic pills + ghost numeral + arrows",
+    "t2-pip-ring — the ringed circular PIP",
+    "t2-spec-inline — yellow figure + white label burned onto b-roll",
+    "custom/thumb-strip — thumbnail ribbon on a blue light ribbon"
+  ]
+}

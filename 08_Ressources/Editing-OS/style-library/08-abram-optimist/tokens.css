@@ -1,0 +1,109 @@
+/* ============================================================================
+   ABRAM OPTIMIST — style tokens
+   Single source of palette / type / motion / texture for every card in this
+   style. Cards reference these vars and never hardcode colors, fonts,
+   easings, or textures. Tweak here, all cards update. See DESIGN.md.
+   Aesthetic: Cleo-Abram bright tech optimism — light airy canvas, big
+   friendly rounded type, ONE prismatic gradient moment per card, springy
+   pops, light-leak flare sweeps, "REWIND" mono tags. The only light-and-
+   energetic style in the library: the future is good here.
+   ============================================================================ */
+
+/* The HyperFrames compiler embeds supported fonts by name at render time;
+   this @import makes standalone / browser preview show the right faces. */
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap");
+
+:root {
+  /* --- palette (mirror style.json + DESIGN.md) ----------------------------- */
+  --canvas:      #FAFAF7;   /* warm off-white — the airy stage */
+  --canvas-dim:  #F0EFEA;   /* soft panel tint */
+  --ink:         #16161A;   /* near-black text */
+  --ink-soft:    rgba(22, 22, 26, 0.62);
+  --ink-faint:   rgba(22, 22, 26, 0.34);
+  --white:       #FFFFFF;
+
+  --accent:      #37BDF8;   /* brand blue — the functional accent */
+  --prism-pink:  #FF4D9D;   /* prism gradient stops */
+  --prism-orange:#FF9A3D;
+  --prism-violet:#8B5CF6;
+  --sun:         #FFD449;   /* sunshine yellow — small marks only */
+
+  --accent-rgb:  55, 189, 248;
+  --pink-rgb:    255, 77, 157;
+  --orange-rgb:  255, 154, 61;
+  --violet-rgb:  139, 92, 246;
+  --ink-rgb:     22, 22, 26;
+
+  /* semantic aliases the blueprint contract expects */
+  --bg:    var(--canvas);
+  --fg:    var(--ink);
+  --muted: var(--ink-soft);
+
+  /* --- typography ----------------------------------------------------------
+     Manrope 800 is the voice: big, friendly, rounded-but-serious. Inter is
+     supporting copy. Space Mono is the "tape deck" voice: REWIND tags,
+     timestamps, technical asides. */
+  --font-display: "Manrope", system-ui, sans-serif;
+  --font-body:    "Inter", system-ui, sans-serif;
+  --font-mono:    "Space Mono", ui-monospace, monospace;
+  --font-label:   var(--font-mono);
+  --font-hand:    var(--font-display);
+
+  --wt-reg: 400; --wt-med: 500; --wt-semi: 600; --wt-bold: 700; --wt-black: 800;
+
+  /* sizes for 1920x1080 */
+  --size-mega:     280px;   /* giant friendly number */
+  --size-display:  132px;   /* takeover headline */
+  --size-title:    82px;    /* section title */
+  --size-headline: 50px;    /* card headline */
+  --size-body:     31px;    /* supporting copy */
+  --size-label:    23px;    /* mono tags, kickers */
+  --size-tiny:     18px;
+
+  --track-tight:  -0.025em; /* Manrope display tracking */
+  --track-mono:    0.04em;  /* mono tag tracking */
+
+  /* --- THE PRISM — signature gradient. One moment per card. ----------------
+     Use as background-image on clipped text (background-clip:text — NEVER
+     with will-change; give horizontal padding) or as a bar/underline fill. */
+  --prism: linear-gradient(100deg,
+             var(--prism-pink) 0%, var(--prism-orange) 30%,
+             var(--accent) 62%, var(--prism-violet) 100%);
+  /* soft ambient wash version for backgrounds (very low alpha stops) */
+  --prism-wash: linear-gradient(115deg,
+                  rgba(var(--pink-rgb), 0.14) 0%,
+                  rgba(var(--orange-rgb), 0.10) 30%,
+                  rgba(var(--accent-rgb), 0.12) 62%,
+                  rgba(var(--violet-rgb), 0.14) 100%);
+
+  /* --- the light-leak flare — a skewed bright band swept across the frame
+     at transition moments. Build as an absolutely-positioned div. ----------- */
+  --flare: linear-gradient(100deg,
+             transparent 0%,
+             rgba(255, 255, 255, 0.0) 30%,
+             rgba(255, 255, 255, 0.85) 46%,
+             rgba(var(--pink-rgb), 0.35) 52%,
+             rgba(var(--accent-rgb), 0.35) 58%,
+             rgba(255, 255, 255, 0.0) 72%,
+             transparent 100%);
+
+  /* soft shadow for floating chips/cards on the light canvas */
+  --lift: 0 18px 50px rgba(22, 22, 26, 0.12), 0 4px 14px rgba(22, 22, 26, 0.08);
+
+  /* --- shape — friendly and rounded ------------------------------------------ */
+  --radius:     26px;       /* cards, chips */
+  --radius-sm:  14px;
+  --radius-pill: 999px;     /* pills, tags */
+  --pad:        96px;
+
+  /* --- motion — springy optimism. Quick pops, confident settles. ------------ */
+  --ease-pop:    cubic-bezier(0.34, 1.56, 0.64, 1);  /* THE spring pop */
+  --ease-snap:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  /* GSAP string eases */
+  --gsap-pop:    back.out(1.7);   /* friendly spring — the signature */
+  --gsap-snap:   expo.out;
+  --gsap-sweep:  power2.inOut;    /* flare sweeps, gradient pans */
+  --dur-in:  0.5s;
+  --dur-out: 0.35s;
+}

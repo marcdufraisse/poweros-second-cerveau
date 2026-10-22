@@ -1,0 +1,113 @@
+<!doctype html>
+<!--
+  BLOOMBERG DATA · tier2 · ticker · STRIP
+  Full-width --panel ticker strip pinned to the very bottom, rules top and
+  bottom. The strip grows up from the bottom edge, rules draw, then a mono
+  tape of label + amber value + green delta (repeated 3x, bullet-separated)
+  translates linearly right-to-left across the frame — a finite crawl, not
+  a loop. Numerals mono amber, delta mono --up with a CSS-triangle arrow.
+  Slots: tape.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-ticker-strip {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; color: var(--text);
+        font-family: var(--font-mono); overflow: hidden;
+      }
+
+      #t2-ticker-strip .stripbar {
+        position: absolute; left: 0; right: 0; bottom: 0; height: 64px;
+        background: var(--panel);
+        border-top: 1px solid var(--rule);
+        border-bottom: 1px solid var(--rule);
+        transform-origin: 100% 100%;
+        overflow: hidden;
+      }
+
+      #t2-ticker-strip .track {
+        position: absolute; top: 0; left: 0; height: 64px;
+        display: flex; align-items: center; white-space: nowrap;
+        will-change: transform;
+      }
+      #t2-ticker-strip .cell {
+        display: inline-flex; align-items: center; gap: 16px;
+        padding: 0 36px;
+      }
+      #t2-ticker-strip .clabel {
+        font-family: var(--font-mono); font-weight: var(--wt-med);
+        font-size: 21px; letter-spacing: 0.02em;
+        color: var(--text-dim); text-transform: uppercase;
+      }
+      #t2-ticker-strip .cvalue {
+        font-family: var(--font-mono); font-weight: var(--wt-semi);
+        font-size: 24px; color: var(--amber);
+      }
+      #t2-ticker-strip .cdelta {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-family: var(--font-mono); font-weight: var(--wt-med);
+        font-size: 21px; color: var(--up);
+      }
+      #t2-ticker-strip .cdelta .tri {
+        width: 0; height: 0;
+        border-left: 7px solid transparent; border-right: 7px solid transparent;
+        border-bottom: 10px solid var(--up);
+      }
+      #t2-ticker-strip .bullet {
+        color: var(--rule); font-size: 24px; margin: 0 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-ticker-strip" data-composition-id="t2-ticker-strip" data-start="0" data-width="1920" data-height="1080">
+      <div class="stripbar">
+        <div class="track">
+          <div class="cell">
+            <span class="clabel" data-slot="tape">AI CERT COMPLETIONS</span>
+            <span class="cvalue">12,400</span>
+            <span class="cdelta"><span class="tri"></span>+38%</span>
+          </div>
+          <span class="bullet">&bull;</span>
+          <div class="cell">
+            <span class="clabel" data-slot="tape">AI CERT COMPLETIONS</span>
+            <span class="cvalue">12,400</span>
+            <span class="cdelta"><span class="tri"></span>+38%</span>
+          </div>
+          <span class="bullet">&bull;</span>
+          <div class="cell">
+            <span class="clabel" data-slot="tape">AI CERT COMPLETIONS</span>
+            <span class="cvalue">12,400</span>
+            <span class="cdelta"><span class="tri"></span>+38%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t2-ticker-strip";
+
+      /* triple the tape content so the strip stays full for the whole crawl */
+      const trackEl = document.querySelector(root + " .track");
+      trackEl.innerHTML = trackEl.innerHTML + trackEl.innerHTML + trackEl.innerHTML;
+
+      tl
+        /* strip grows up from the bottom edge */
+        .fromTo(root + " .stripbar", { scaleY: 0 }, { scaleY: 1, duration: 0.4, ease: "power3.inOut" }, 0.05)
+
+        /* tape starts just off the right edge, crawls a finite distance left */
+        .fromTo(root + " .track", { x: 40 }, { x: -1500, duration: 5.2, ease: "none" }, 0.5)
+
+        .set({}, {}, 6);
+
+      window.__timelines["t2-ticker-strip"] = tl;
+    </script>
+  </body>
+</html>

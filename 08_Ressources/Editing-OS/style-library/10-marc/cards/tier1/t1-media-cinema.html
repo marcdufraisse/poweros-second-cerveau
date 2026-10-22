@@ -1,0 +1,108 @@
+<!doctype html>
+<!--
+  HOUSE · tier1 · media · CINEMA
+  Full-frame horizontal media showcase. One 16:9 media slot fills most of the
+  navy canvas inside a glass frame; mono kicker top-left, caption bar below.
+  The jaune frame outline flips on a beat after landing (house callback).
+  For YouTube clips, screen recordings, any landscape footage or still.
+  Slots: media1 (media 16:9), kicker, caption.
+  Agent 3 swaps the <img> src at assembly time (or replaces it with a muted
+  <video> in a wrapper — never animate the video element itself).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t1-media-cinema {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        overflow: hidden; font-family: var(--font-display);
+        background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 55%);
+        color: var(--white);
+      }
+      #t1-media-cinema .streaks { position: absolute; inset: 0; background: var(--streaks); }
+      #t1-media-cinema .warm { position: absolute; inset: 0; background: var(--warm-creep); }
+      #t1-media-cinema .vignette { position: absolute; inset: 0; background: var(--vignette); pointer-events: none; }
+
+      #t1-media-cinema .wrap {
+        position: absolute; inset: 0; z-index: 2;
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: center; gap: 30px; padding: 70px 150px;
+        box-sizing: border-box;
+      }
+      #t1-media-cinema .kicker {
+        align-self: flex-start;
+        font-family: var(--font-mono); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-eyebrow);
+        text-transform: uppercase; color: var(--jaune);
+      }
+      #t1-media-cinema .frame {
+        width: 1480px; height: 832px; border-radius: var(--radius);
+        overflow: hidden; position: relative;
+        outline: 3px solid rgba(255, 255, 255, 0.18); outline-offset: 4px;
+        box-shadow: var(--glass-shadow);
+        background: var(--den);
+      }
+      #t1-media-cinema .frame img {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+      #t1-media-cinema .frame .glare {
+        position: absolute; top: -20%; bottom: -20%; width: 30%;
+        background: var(--glare);
+        transform: var(--glare-skew); pointer-events: none;
+      }
+      #t1-media-cinema .caption {
+        font-family: var(--font-body); font-weight: var(--wt-semi);
+        font-size: var(--size-body); color: var(--grey-pre);
+        max-width: 1280px; text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-media-cinema" data-composition-id="t1-media-cinema" data-start="0" data-width="1920" data-height="1080">
+      <div class="streaks"></div>
+      <div class="warm"></div>
+
+      <div class="wrap">
+        <div class="kicker" data-slot="kicker">ON SCREEN · DEMO</div>
+        <div class="frame"><img data-slot="media1" alt=""
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1480' height='832'%3E%3Crect width='1480' height='832' fill='%23151b28'/%3E%3Ctext x='740' y='432' text-anchor='middle' font-family='monospace' font-size='54' fill='%235a6478'%3E16:9 MEDIA%3C/text%3E%3C/svg%3E" /><div class="glare"></div></div>
+        <div class="caption" data-slot="caption">What the workflow looks like in real time</div>
+      </div>
+
+      <div class="vignette"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-media-cinema";
+      const css = getComputedStyle(document.documentElement);
+      const JAUNE = css.getPropertyValue("--jaune").trim();
+      const WHITE = css.getPropertyValue("--white").trim();
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .kicker", { autoAlpha: 0, x: -30, duration: 0.45, ease: "expo.out" }, 0.15)
+        .from(root + " .frame", { autoAlpha: 0, y: 90, scale: 0.94, duration: 0.6, ease: "expo.out" }, 0.3)
+        .from(root + " .caption", { autoAlpha: 0, y: 24, duration: 0.45, ease: "expo.out" }, 0.75)
+
+        /* glare sweep across the frame as it settles */
+        .fromTo(root + " .frame .glare", { xPercent: -160 }, { xPercent: 500, duration: 0.7, ease: "power2.inOut" }, 0.55)
+
+        /* caption grey → white flip as the frame settles */
+        .to(root + " .caption", { color: WHITE, duration: 0.22, ease: "power2.inOut" }, 1.15)
+        /* the jaune outline flip — house callback */
+        .to(root + " .frame", { outlineColor: JAUNE, duration: 0.25, ease: "power2.out" }, 1.35)
+
+        /* slow push-in while alive (camera never sleeps) */
+        .to(root + " .frame", { scale: 1.015, duration: 4.6, ease: "sine.inOut" }, 1.0)
+
+        .set({}, {}, 7);
+
+      window.__timelines["t1-media-cinema"] = tl;
+    </script>
+  </body>
+</html>

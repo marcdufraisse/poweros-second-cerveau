@@ -1,0 +1,142 @@
+<!doctype html>
+<!--
+  BLOOMBERG DATA · custom · wall · TICKERWALL
+  The ticker-wall moment. Three stacked full-width panel strips each carry a
+  mono ticker line (label + value + CSS-triangle delta, repeated 3x with
+  bullet separators) translating linearly at slightly different finite
+  speeds. A huge Archivo headline overlays center on the bare black between
+  the strips, under a white label-box kicker with its accent underline.
+  Slots: kicker, headline, t1, t2, t3.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #c-tickerwall {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-display); overflow: hidden;
+      }
+      #c-tickerwall .scan { position: absolute; inset: 0; background: var(--tex-scan); z-index: 2; pointer-events: none; }
+
+      #c-tickerwall .strip {
+        position: absolute; left: 0; right: 0; height: 96px;
+        background: var(--panel); border-top: var(--hairline); border-bottom: var(--hairline);
+        overflow: hidden; transform-origin: 0% 50%;
+      }
+      #c-tickerwall .strip-1 { top: 64px; }
+      #c-tickerwall .strip-2 { top: 200px; }
+      #c-tickerwall .strip-3 { top: 920px; }
+
+      #c-tickerwall .tickerline {
+        position: absolute; left: 0; top: 0; bottom: 0;
+        display: flex; align-items: center; gap: 56px;
+        white-space: nowrap; padding-left: 48px;
+        font-family: var(--font-mono); font-weight: var(--wt-semi);
+        font-size: 30px; color: var(--amber);
+      }
+      #c-tickerwall .titem { display: inline-flex; align-items: center; gap: 16px; }
+      #c-tickerwall .bullet { color: var(--text-faint); }
+      #c-tickerwall .ttri {
+        width: 0; height: 0;
+        border-left: 8px solid transparent; border-right: 8px solid transparent;
+      }
+      #c-tickerwall .ttri.up { border-bottom: 12px solid var(--up); }
+      #c-tickerwall .ttri.down { border-top: 12px solid var(--down); }
+
+      #c-tickerwall .center {
+        position: absolute; left: 0; right: 0; top: 400px; bottom: 200px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        z-index: 1;
+      }
+      #c-tickerwall .kickerbox {
+        overflow: hidden; margin-bottom: 30px;
+      }
+      #c-tickerwall .kickerinner {
+        background: var(--white); color: var(--black);
+        font-family: var(--font-label); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-caps);
+        text-transform: uppercase; padding: var(--label-pad);
+      }
+      #c-tickerwall .kickerbar {
+        width: 100%; height: var(--bar-h); background: var(--accent);
+        transform-origin: 0% 50%;
+      }
+      #c-tickerwall .headline {
+        font-weight: var(--wt-black); font-size: var(--size-title);
+        letter-spacing: var(--track-tight); line-height: 1.05;
+        color: var(--white); text-align: center; max-width: 1500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="c-tickerwall" data-composition-id="c-tickerwall" data-start="0" data-width="1920" data-height="1080">
+      <div class="scan"></div>
+
+      <div class="strip strip-1">
+        <div class="tickerline">
+          <span class="titem"><span class="ttri up"></span><span data-slot="t1">CERT COMPLETIONS +18% YOY</span></span>
+          <span class="bullet">•</span>
+          <span class="titem"><span class="ttri up"></span><span data-slot="t1">CERT COMPLETIONS +18% YOY</span></span>
+          <span class="bullet">•</span>
+          <span class="titem"><span class="ttri up"></span><span data-slot="t1">CERT COMPLETIONS +18% YOY</span></span>
+        </div>
+      </div>
+
+      <div class="strip strip-2">
+        <div class="tickerline">
+          <span class="titem"><span class="ttri up"></span><span data-slot="t2">AGENT ADOPTION +62% QOQ</span></span>
+          <span class="bullet">•</span>
+          <span class="titem"><span class="ttri down"></span><span data-slot="t2">AGENT ADOPTION +62% QOQ</span></span>
+          <span class="bullet">•</span>
+          <span class="titem"><span class="ttri up"></span><span data-slot="t2">AGENT ADOPTION +62% QOQ</span></span>
+        </div>
+      </div>
+
+      <div class="strip strip-3">
+        <div class="tickerline">
+          <span class="titem"><span class="ttri up"></span><span data-slot="t3">MEMBER RETENTION +91% TTM</span></span>
+          <span class="bullet">•</span>
+          <span class="titem"><span class="ttri up"></span><span data-slot="t3">MEMBER RETENTION +91% TTM</span></span>
+          <span class="bullet">•</span>
+          <span class="titem"><span class="ttri up"></span><span data-slot="t3">MEMBER RETENTION +91% TTM</span></span>
+        </div>
+      </div>
+
+      <div class="center">
+        <div class="kickerbox"><div class="kickerinner" data-slot="kicker">MARKET PULSE</div></div>
+        <div class="kickerbar"></div>
+        <div class="headline" data-slot="headline" style="margin-top: 30px;">AI CERTIFICATION DEMAND IS ACCELERATING</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#c-tickerwall";
+
+      tl.fromTo(root + " .strip-1", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 0.05)
+        .fromTo(root + " .strip-2", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 0.2)
+        .fromTo(root + " .strip-3", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 0.35)
+
+        /* each ticker line drifts a finite distance at a slightly different
+           speed once its strip has revealed — mechanical, no easing (linear) */
+        .fromTo(root + " .strip-1 .tickerline", { x: 60 }, { x: -860, duration: 6.2, ease: "none" }, 0.6)
+        .fromTo(root + " .strip-2 .tickerline", { x: 60 }, { x: -720, duration: 7.0, ease: "none" }, 0.75)
+        .fromTo(root + " .strip-3 .tickerline", { x: 60 }, { x: -960, duration: 5.6, ease: "none" }, 0.9)
+
+        /* headline overlay: kicker clip-reveals, underline draws, headline snaps in */
+        .from(root + " .kickerinner", { xPercent: -101, duration: 0.5, ease: "power3.inOut" }, 1.1)
+        .fromTo(root + " .kickerbar", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.inOut" }, 1.35)
+        .from(root + " .headline", { autoAlpha: 0, y: 24, duration: 0.5, ease: "expo.out" }, 1.6)
+
+        .set({}, {}, 8);
+
+      window.__timelines["c-tickerwall"] = tl;
+    </script>
+  </body>
+</html>

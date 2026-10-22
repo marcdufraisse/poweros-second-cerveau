@@ -1,0 +1,131 @@
+<!doctype html>
+<!--
+  DAN KIEFT · custom · overview · RUBAN DE SOMMAIRE VERROUILLÉ
+  Relevé sur RlKg6oXLf7Y (1:09 → 1:13).
+
+  Une bande de vignettes 16:9 défile lentement de droite à gauche, en continu,
+  débordant des deux côtés du cadre. Chaque vignette porte un badge cadenas
+  OUVERT avec son numéro, posé à cheval sur son bord droit. Un titre fixe reste
+  en bas.
+
+  C'est un sommaire qui promet plutôt qu'il n'explique : on voit six extraits
+  sans un mot dessus, et le cadenas dit « tu vas les débloquer ». Quatre
+  secondes, à la place d'une liste à puces.
+
+  Le défilement est LINÉAIRE et ne s'arrête pas : il est encore en route à la
+  coupe, comme tout le reste de ce style.
+
+  Le ruban est dupliqué une fois pour que la boucle soit sans couture : quand
+  la première copie a fini de passer, la seconde est exactement à sa place.
+
+  Slots: title, et thumb1..thumb6 (les <img> des vignettes).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #lock-ribbon {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        overflow: hidden; background: var(--royal-mist);
+        font-family: var(--font-display);
+      }
+      #lock-ribbon .stage {
+        position: absolute; inset: 0;
+        background:
+          radial-gradient(60% 64% at 50% 46%, var(--mist-core) 0%, transparent 76%),
+          var(--royal-mist);
+      }
+
+      /* la piste : elle déborde volontairement des deux côtés */
+      #lock-ribbon .track {
+        position: absolute; left: 0; top: 50%; margin-top: -186px;
+        display: flex; gap: 26px;
+        width: max-content;
+        will-change: transform;
+      }
+      #lock-ribbon .cell { position: relative; flex: none; }
+      #lock-ribbon .cell img,
+      #lock-ribbon .cell video {
+        display: block; width: 540px; height: 304px;   /* 16:9 */
+        object-fit: cover; border-radius: var(--thumb-radius);
+        background: var(--ink-soft);
+      }
+
+      /* le cadenas à cheval sur le bord droit de la vignette */
+      #lock-ribbon .lock {
+        position: absolute; right: -34px; top: 50%; margin-top: -34px;
+        width: 68px; height: 68px;
+        display: flex; align-items: center; justify-content: center;
+        border: 4px solid var(--white); border-radius: 12px;
+        background: rgba(0, 0, 0, 0.55);
+        font-weight: var(--wt-black); font-size: 30px; color: var(--white);
+      }
+      /* l'anse, ouverte : décalée à droite du corps — un cadenas déverrouillé,
+         pas un cadenas de travers (une rotation le faisait paraître cassé). */
+      #lock-ribbon .lock::before {
+        content: ""; position: absolute; left: 26px; top: -26px;
+        width: 30px; height: 28px;
+        border: 4px solid var(--white); border-bottom: 0;
+        border-radius: 15px 15px 0 0;
+      }
+
+      /* juste sous le ruban : à 200px il flottait dans le vide et la carte
+         se lisait comme deux blocs sans rapport */
+      #lock-ribbon .title {
+        position: absolute; left: 0; right: 0; top: 50%; margin-top: 168px;
+        text-align: center;
+        font-weight: var(--wt-bold); font-size: 34px;
+        letter-spacing: 0.04em; text-transform: uppercase;
+        color: var(--white);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="lock-ribbon" data-composition-id="lock-ribbon" data-start="0" data-width="1920" data-height="1080">
+      <div class="stage"></div>
+
+      <div class="track">
+        <div class="cell"><img data-slot="thumb1" src="../../references/titre-jaune-broll.png" alt="" /><div class="lock">1</div></div>
+        <div class="cell"><img data-slot="thumb2" src="../../references/chiffre-jaune-broll.png" alt="" /><div class="lock">2</div></div>
+        <div class="cell"><img data-slot="thumb3" src="../../references/talking-head.png" alt="" /><div class="lock">3</div></div>
+        <div class="cell"><img data-slot="thumb4" src="../../references/screencast-pip.png" alt="" /><div class="lock">4</div></div>
+        <div class="cell"><img data-slot="thumb5" src="../../references/duo-real-ai.png" alt="" /><div class="lock">5</div></div>
+        <div class="cell"><img data-slot="thumb6" src="../../references/grille-badge.png" alt="" /><div class="lock">6</div></div>
+      </div>
+
+      <div class="title" data-slot="title">6 techniques différentes</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#lock-ribbon";
+      const track = document.querySelector(root + " .track");
+
+      // On duplique la piste pour que la boucle soit sans couture : quand la
+      // première copie est sortie, la seconde occupe exactement sa place.
+      const cells = Array.from(track.children);
+      cells.forEach((c) => track.appendChild(c.cloneNode(true)));
+      // largeur d'une copie = la moitié du total, moins l'écart ajouté au raccord
+      const gap = parseFloat(getComputedStyle(track).gap) || 0;
+      const loopWidth = (track.scrollWidth + gap) / 2;
+
+      const tl = gsap.timeline({ paused: true });
+
+      // le défilement : linéaire, il ne ralentit jamais et n'atterrit pas
+      tl.fromTo(track, { x: 0 }, { x: -loopWidth, duration: 9, ease: "none" }, 0);
+
+      tl.fromTo(root + " .title", { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.2);
+      // les vignettes se posent en cascade, mais le ruban avance déjà
+      tl.fromTo(root + " .cell",
+        { opacity: 0, scale: 0.9 },
+        { opacity: 1, scale: 1, duration: 0.34, ease: "power3.out", stagger: 0.07 }, 0);
+
+      window.__timelines["lock-ribbon"] = tl;
+    </script>
+  </body>
+</html>

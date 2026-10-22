@@ -1,0 +1,150 @@
+<!doctype html>
+<!--
+  HARRIS ATLAS · tier1 · stat · DATE
+  Full-screen takeover. A printed atlas plate: parchment ground with paper
+  grain, sage ocean + abstract slate landmass (SVG), plate frame with corner
+  coordinates. A giant Oswald date/number stamps in over the map, a boxed
+  white-on-slate label pins beneath it, serif claim below. Slow push-in on
+  the map ground only; text stays sharp.
+  Slots: kicker, stat, label, coord.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-stat-date {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--sage); color: var(--ink);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      /* map ground — pushed-in by the timeline (background only, text stays sharp) */
+      #t1-stat-date .ground {
+        position: absolute; inset: -60px; z-index: 1;
+      }
+      #t1-stat-date .ground svg { width: 100%; height: 100%; }
+
+      /* paper grain + aged edge + vignette over the ground */
+      #t1-stat-date .paper {
+        position: absolute; inset: 0; z-index: 2; pointer-events: none;
+        background-image: var(--tex-paper); background-size: 240px 240px;
+        mix-blend-mode: multiply; opacity: 0.16;
+      }
+      #t1-stat-date .age  { position: absolute; inset: 0; z-index: 2; background: var(--paper-edge); pointer-events: none; }
+      #t1-stat-date .vig  { position: absolute; inset: 0; z-index: 6; background: var(--vignette); pointer-events: none; }
+
+      /* printed plate frame */
+      #t1-stat-date .plate {
+        position: absolute; inset: 40px; z-index: 4;
+        border: var(--frame); border-radius: var(--radius-sm);
+        pointer-events: none;
+      }
+      #t1-stat-date .coord {
+        position: absolute; z-index: 5;
+        font-family: var(--font-mono); font-size: var(--size-tiny);
+        color: rgba(var(--ink-rgb), 0.65); letter-spacing: 0.06em;
+      }
+      #t1-stat-date .coord.tl { top: 54px; left: 62px; }
+      #t1-stat-date .coord.br { bottom: 54px; right: 62px; }
+
+      /* content */
+      #t1-stat-date .center {
+        position: absolute; inset: 0; z-index: 5;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-align: center;
+      }
+      #t1-stat-date .kicker {
+        font-family: var(--font-mono); font-size: var(--size-label);
+        color: rgba(var(--ink-rgb), 0.72); letter-spacing: 0.10em;
+        margin-bottom: 6px;
+      }
+      #t1-stat-date .stat {
+        font-weight: var(--wt-semi); font-size: var(--size-mega);
+        line-height: 1; letter-spacing: 0.02em; color: var(--ink);
+        text-transform: uppercase;
+      }
+      #t1-stat-date .boxed {
+        display: inline-block; margin-top: 26px;
+        background: var(--label-bg); color: var(--white);
+        padding: var(--label-pad); border-radius: var(--radius-sm);
+        font-weight: var(--wt-med); font-size: var(--size-label);
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+      }
+      #t1-stat-date .claim {
+        font-family: var(--font-body); font-style: italic;
+        font-size: var(--size-body); color: rgba(var(--ink-rgb), 0.85);
+        max-width: 980px; margin-top: 30px; line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-stat-date" data-composition-id="t1-stat-date" data-start="0" data-width="1920" data-height="1080">
+
+      <div class="ground">
+        <!-- abstract coastline: sage ocean, parchment landmass, slate region -->
+        <svg viewBox="0 0 2040 1200" preserveAspectRatio="xMidYMid slice">
+          <rect x="0" y="0" width="2040" height="1200" fill="var(--sage)"/>
+          <path d="M -80 180 C 260 60, 620 150, 860 90 C 1120 30, 1300 170, 1540 140 C 1800 110, 1980 220, 2120 190 L 2120 1300 L 1400 1300 C 1180 1180, 980 1260, 760 1180 C 520 1090, 300 1220, -80 1120 Z"
+                fill="var(--parchment)"/>
+          <path d="M 300 390 C 400 330, 550 355, 640 415 C 730 475, 740 580, 660 640 C 580 700, 440 692, 365 625 C 290 558, 240 448, 300 390 Z"
+                fill="var(--slate)" class="region"/>
+          <path d="M 300 390 C 400 330, 550 355, 640 415 C 730 475, 740 580, 660 640 C 580 700, 440 692, 365 625 C 290 558, 240 448, 300 390 Z"
+                fill="none" stroke="var(--accent)" stroke-width="5" class="region-edge"/>
+        </svg>
+      </div>
+
+      <div class="paper"></div>
+      <div class="age"></div>
+      <div class="plate"></div>
+      <div class="coord tl" data-slot="coord">PLATE 07 · 38.90° N, 77.03° W</div>
+      <div class="coord br">ACME ARCHIVE · SHEET 12</div>
+
+      <div class="center">
+        <div class="kicker" data-slot="kicker">THE YEAR EVERYTHING CHANGED</div>
+        <div class="stat" data-slot="stat">2023</div>
+        <div class="boxed" data-slot="label">FIRST AI AGENTS SHIP</div>
+        <div class="claim" data-slot="claim">Within eighteen months, one in three Acme members had an agent running in production.</div>
+      </div>
+
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t1-stat-date";
+
+      /* slow documentary push-in — GROUND ONLY, text stays pin-sharp */
+      tl.fromTo(root + " .ground", { scale: 1.0 }, { scale: 1.06, transformOrigin: "48% 45%", duration: 7, ease: "power2.inOut" }, 0)
+
+        /* region highlight settles first: slate fill dims in, blue edge draws */
+        .from(root + " .region", { opacity: 0, duration: 0.9, ease: "power2.out" }, 0.25)
+        .fromTo(root + " .region-edge",
+          { strokeDasharray: 2200, strokeDashoffset: 2200, opacity: 1 },
+          { strokeDashoffset: 0, duration: 1.6, ease: "power1.inOut" }, 0.45)
+
+        /* plate + coordinates print on */
+        .from(root + " .plate", { opacity: 0, duration: 0.7, ease: "power2.out" }, 0.15)
+        .from(root + " .coord.tl", { opacity: 0, y: -8, duration: 0.5, ease: "expo.out" }, 0.7)
+        .from(root + " .coord.br", { opacity: 0, y: 8, duration: 0.5, ease: "expo.out" }, 0.85)
+
+        /* kicker types-in feel (fade+rise), then the date STAMPS */
+        .from(root + " .kicker", { autoAlpha: 0, y: 14, duration: 0.55, ease: "expo.out" }, 1.1)
+        .from(root + " .stat", { autoAlpha: 0, scale: 1.14, duration: 0.5, ease: "expo.out" }, 1.4)
+
+        /* boxed label stamps under it */
+        .from(root + " .boxed", { autoAlpha: 0, scale: 1.12, duration: 0.45, ease: "expo.out" }, 1.85)
+
+        /* serif claim settles last */
+        .from(root + " .claim", { autoAlpha: 0, y: 18, duration: 0.7, ease: "power2.out" }, 2.3)
+
+        .set({}, {}, 7);
+
+      window.__timelines["t1-stat-date"] = tl;
+    </script>
+  </body>
+</html>

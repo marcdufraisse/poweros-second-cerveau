@@ -1,0 +1,848 @@
+{
+  "$schema": "../registry.schema.json",
+  "id": "keynote-minimal",
+  "name": "Keynote Minimal",
+  "number": "04",
+  "status": "draft",
+  "inspiration": "Apple product-film / keynote graphics. True-black stage, enormous tight grotesk type (white or metallic gradient), one soft light source per beat, hairline dividers, silky expo motion, radical negative space. Reference frames in references/ (iPhone 17 Pro film, MacBook reveal).",
+  "summary": "The premium restraint style. Use for certification-course content, product-grade claims, and any video that should feel expensive and confident — one idea per beat, huge type, silence around it.",
+  "palette": {
+    "bg": "#000000",
+    "fg": "#F5F5F7",
+    "accent": "#37BDF8",
+    "copper": "#E8804C",
+    "violet": "#7D5CFF",
+    "notes": "Black + white carry 90% of the frame. brand blue is the single functional accent (one element per card). Copper/violet live only inside gradients and glows. Mirrored in tokens.css."
+  },
+  "fonts": {
+    "display": "Inter Tight",
+    "body": "Inter",
+    "mono": "IBM Plex Mono",
+    "notes": "Inter Tight 600-800 with -0.035em tracking is the SF Pro stand-in (headlines, numbers). Inter is quiet supporting copy. IBM Plex Mono is spec metadata only."
+  },
+  "motion": "Silk. expo.out / power3.out entrances ~1.1s with a blur-resolve; slow sine.inOut glow breathing; silky count-ups. No bounce, no overshoot, no whips (those belong to other styles).",
+  "transitions": "Cross-dissolves and hairline draws. Internal state changes dissolve; nothing wipes or whips.",
+  "cards": [
+    {
+      "id": "keynote-minimal.t1.stat.metal",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "metal",
+      "file": "cards/tier1/t1-stat-metal.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "foot",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.stat.metal.mp4",
+        "poster": "preview/keynote-minimal.t1.stat.metal.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.custom.reveal.megaword",
+      "tier": "custom",
+      "purpose": "reveal",
+      "treatment": "megaword",
+      "file": "cards/custom/c-megaword.html",
+      "slots": [
+        {
+          "name": "word",
+          "type": "text"
+        },
+        {
+          "name": "sub",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.custom.reveal.megaword.mp4",
+        "poster": "preview/keynote-minimal.custom.reveal.megaword.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.custom.specs.sheet",
+      "tier": "custom",
+      "purpose": "specs",
+      "treatment": "sheet",
+      "file": "cards/custom/c-specsheet.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "l1",
+          "type": "text"
+        },
+        {
+          "name": "v1",
+          "type": "text"
+        },
+        {
+          "name": "l2",
+          "type": "text"
+        },
+        {
+          "name": "v2",
+          "type": "text"
+        },
+        {
+          "name": "l3",
+          "type": "text"
+        },
+        {
+          "name": "v3",
+          "type": "text"
+        },
+        {
+          "name": "l4",
+          "type": "text"
+        },
+        {
+          "name": "v4",
+          "type": "text"
+        },
+        {
+          "name": "l5",
+          "type": "text"
+        },
+        {
+          "name": "v5",
+          "type": "text"
+        },
+        {
+          "name": "l6",
+          "type": "text"
+        },
+        {
+          "name": "v6",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.custom.specs.sheet.mp4",
+        "poster": "preview/keynote-minimal.custom.specs.sheet.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.custom.tease.onemore",
+      "tier": "custom",
+      "purpose": "tease",
+      "treatment": "onemore",
+      "file": "cards/custom/c-onemore.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.custom.tease.onemore.mp4",
+        "poster": "preview/keynote-minimal.custom.tease.onemore.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.custom.thesis.blobclaim",
+      "tier": "custom",
+      "purpose": "thesis",
+      "treatment": "blobclaim",
+      "file": "cards/custom/c-blobclaim.html",
+      "slots": [
+        {
+          "name": "headline",
+          "type": "richtext"
+        },
+        {
+          "name": "foot",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.custom.thesis.blobclaim.mp4",
+        "poster": "preview/keynote-minimal.custom.thesis.blobclaim.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.quote.center",
+      "tier": "tier1",
+      "purpose": "quote",
+      "treatment": "center",
+      "file": "cards/tier1/t1-quote-center.html",
+      "slots": [
+        {
+          "name": "quote",
+          "type": "text"
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "role",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.quote.center.mp4",
+        "poster": "preview/keynote-minimal.t1.quote.center.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.quote.mark",
+      "tier": "tier1",
+      "purpose": "quote",
+      "treatment": "mark",
+      "file": "cards/tier1/t1-quote-mark.html",
+      "slots": [
+        {
+          "name": "quote",
+          "type": "text"
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "role",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.quote.mark.mp4",
+        "poster": "preview/keynote-minimal.t1.quote.mark.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.overview.specs",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "specs",
+      "file": "cards/tier1/t1-overview-specs.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "l1",
+          "type": "text"
+        },
+        {
+          "name": "v1",
+          "type": "text"
+        },
+        {
+          "name": "l2",
+          "type": "text"
+        },
+        {
+          "name": "v2",
+          "type": "text"
+        },
+        {
+          "name": "l3",
+          "type": "text"
+        },
+        {
+          "name": "v3",
+          "type": "text"
+        },
+        {
+          "name": "l4",
+          "type": "text"
+        },
+        {
+          "name": "v4",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.overview.specs.mp4",
+        "poster": "preview/keynote-minimal.t1.overview.specs.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.overview.trio",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "trio",
+      "file": "cards/tier1/t1-overview-trio.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "h1",
+          "type": "text"
+        },
+        {
+          "name": "b1",
+          "type": "text"
+        },
+        {
+          "name": "h2",
+          "type": "text"
+        },
+        {
+          "name": "b2",
+          "type": "text"
+        },
+        {
+          "name": "h3",
+          "type": "text"
+        },
+        {
+          "name": "b3",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.overview.trio.mp4",
+        "poster": "preview/keynote-minimal.t1.overview.trio.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.overview.steps",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "steps",
+      "file": "cards/tier1/t1-overview-steps.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "s1",
+          "type": "text"
+        },
+        {
+          "name": "d1",
+          "type": "text"
+        },
+        {
+          "name": "s2",
+          "type": "text"
+        },
+        {
+          "name": "d2",
+          "type": "text"
+        },
+        {
+          "name": "s3",
+          "type": "text"
+        },
+        {
+          "name": "d3",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.overview.steps.mp4",
+        "poster": "preview/keynote-minimal.t1.overview.steps.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.stat.copper",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "copper",
+      "file": "cards/tier1/t1-stat-copper.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "foot",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.stat.copper.mp4",
+        "poster": "preview/keynote-minimal.t1.stat.copper.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.stat.left",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "left",
+      "file": "cards/tier1/t1-stat-left.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "spec1",
+          "type": "text"
+        },
+        {
+          "name": "spec2",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.stat.left.mp4",
+        "poster": "preview/keynote-minimal.t1.stat.left.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.stat.duo",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "duo",
+      "file": "cards/tier1/t1-stat-duo.html",
+      "slots": [
+        {
+          "name": "kicker1",
+          "type": "text"
+        },
+        {
+          "name": "stat1",
+          "type": "text"
+        },
+        {
+          "name": "label1",
+          "type": "text"
+        },
+        {
+          "name": "kicker2",
+          "type": "text"
+        },
+        {
+          "name": "stat2",
+          "type": "text"
+        },
+        {
+          "name": "label2",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.stat.duo.mp4",
+        "poster": "preview/keynote-minimal.t1.stat.duo.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.stat.rise",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "rise",
+      "file": "cards/tier1/t1-stat-rise.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "foot",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.stat.rise.mp4",
+        "poster": "preview/keynote-minimal.t1.stat.rise.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.stat.compare",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "compare",
+      "file": "cards/tier1/t1-stat-compare.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "prev",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.stat.compare.mp4",
+        "poster": "preview/keynote-minimal.t1.stat.compare.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.thesis.mega",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "mega",
+      "file": "cards/tier1/t1-thesis-mega.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "headline",
+          "type": "richtext"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.thesis.mega.mp4",
+        "poster": "preview/keynote-minimal.t1.thesis.mega.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.thesis.contrast",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "contrast",
+      "file": "cards/tier1/t1-thesis-contrast.html",
+      "slots": [
+        {
+          "name": "line1",
+          "type": "text"
+        },
+        {
+          "name": "line2",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.thesis.contrast.mp4",
+        "poster": "preview/keynote-minimal.t1.thesis.contrast.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.section.word",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "word",
+      "file": "cards/tier1/t1-section-word.html",
+      "slots": [
+        {
+          "name": "index",
+          "type": "text"
+        },
+        {
+          "name": "word",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.section.word.mp4",
+        "poster": "preview/keynote-minimal.t1.section.word.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.section.number",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "number",
+      "file": "cards/tier1/t1-section-number.html",
+      "slots": [
+        {
+          "name": "num",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "sub",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.section.number.mp4",
+        "poster": "preview/keynote-minimal.t1.section.number.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t1.section.rule",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "rule",
+      "file": "cards/tier1/t1-section-rule.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "sub",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t1.section.rule.mp4",
+        "poster": "preview/keynote-minimal.t1.section.rule.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t2.lower-third.plate",
+      "tier": "tier2",
+      "purpose": "lower-third",
+      "treatment": "plate",
+      "file": "cards/tier2/t2-lowerthird-plate.html",
+      "slots": [
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "role",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t2.lower-third.plate.mp4",
+        "poster": "preview/keynote-minimal.t2.lower-third.plate.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t2.label.chip",
+      "tier": "tier2",
+      "purpose": "label",
+      "treatment": "chip",
+      "file": "cards/tier2/t2-label-chip.html",
+      "slots": [
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "value",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t2.label.chip.mp4",
+        "poster": "preview/keynote-minimal.t2.label.chip.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t2.list.hairline",
+      "tier": "tier2",
+      "purpose": "list",
+      "treatment": "hairline",
+      "file": "cards/tier2/t2-list-hairline.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "i1",
+          "type": "text"
+        },
+        {
+          "name": "i2",
+          "type": "text"
+        },
+        {
+          "name": "i3",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t2.list.hairline.mp4",
+        "poster": "preview/keynote-minimal.t2.list.hairline.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t2.definition.plate",
+      "tier": "tier2",
+      "purpose": "definition",
+      "treatment": "plate",
+      "file": "cards/tier2/t2-definition-plate.html",
+      "slots": [
+        {
+          "name": "term",
+          "type": "text"
+        },
+        {
+          "name": "def",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t2.definition.plate.mp4",
+        "poster": "preview/keynote-minimal.t2.definition.plate.png"
+      }
+    },
+    {
+      "id": "keynote-minimal.t2.lower-third.topic",
+      "tier": "tier2",
+      "purpose": "lower-third",
+      "treatment": "topic",
+      "file": "cards/tier2/t2-lowerthird-topic.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "topic",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/keynote-minimal.t2.lower-third.topic.mp4",
+        "poster": "preview/keynote-minimal.t2.lower-third.topic.png"
+      }
+    }
+  ]
+}

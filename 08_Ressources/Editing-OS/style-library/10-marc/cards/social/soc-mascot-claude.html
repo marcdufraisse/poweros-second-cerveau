@@ -1,0 +1,133 @@
+<!doctype html>
+<!--
+  HOUSE · social 9:16 · MASCOT CLAUDE
+  Le petit bonhomme pixel de Claude (à la nick_saraev : sa mascotte récurrente,
+  reconnaissable en 2 frames). Pixel art 100% CSS/JS déterministe (aucune
+  image) : terracotta Claude #D97757, antenne violet #8B5CF6 (raccord marque la marque).
+  Animations : chute d'entrée + squash cartoon, clignements, coucou de la
+  pince, rebond d'attente (jamais immobile — règle zéro flottement).
+  Position par défaut : bas-gauche de la zone haute. L'agent le déplace via
+  le wrapper .mascot-pos au montage.
+  Slots : aucun (personnage). data-scale optionnel via --px.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-mascot-claude {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        background: transparent; overflow: hidden;
+        --px: 13px; /* taille d'un pixel : ~160px de large au total */
+      }
+      #soc-mascot-claude .mascot-pos {
+        position: absolute; left: 120px; top: 820px;
+      }
+      #soc-mascot-claude .mascot { position: relative;
+        width: calc(var(--px) * 12); height: calc(var(--px) * 13); }
+      #soc-mascot-claude .mascot .p { position: absolute;
+        width: var(--px); height: var(--px); }
+      #soc-mascot-claude .blink { position: absolute; visibility: hidden;
+        background: #D97757; }
+      #soc-mascot-claude .blink.l { left: calc(var(--px) * 2); top: calc(var(--px) * 4);
+        width: calc(var(--px) * 3); height: calc(var(--px) * 2); }
+      #soc-mascot-claude .blink.r { left: calc(var(--px) * 7); top: calc(var(--px) * 4);
+        width: calc(var(--px) * 3); height: calc(var(--px) * 2); }
+      #soc-mascot-claude .arm { position: absolute;
+        left: calc(var(--px) * -1.6); top: calc(var(--px) * 8.4);
+        width: calc(var(--px) * 2); height: calc(var(--px) * 3);
+        transform-origin: 80% 15%; }
+      #soc-mascot-claude .arm .p { position: absolute; }
+      #soc-mascot-claude .shadow { position: absolute;
+        left: calc(var(--px) * 1); top: calc(var(--px) * 13.4);
+        width: calc(var(--px) * 10); height: calc(var(--px) * 1.4);
+        border-radius: 50%; background: rgba(0, 0, 0, 0.35); filter: blur(4px);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="soc-mascot-claude" data-composition-id="soc-mascot-claude" data-start="0" data-width="1080" data-height="1920">
+      <div class="mascot-pos" id="mpos">
+        <div class="shadow" id="mshadow"></div>
+        <div class="mascot" id="mascot">
+          <div class="blink l"></div>
+          <div class="blink r"></div>
+          <div class="arm" id="marm"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      /* pixel map : o=terracotta d=terracotta sombre w=blanc b=noir y=jaune */
+      const COLORS = { o: "#D97757", d: "#B65C3F", w: "#FFFFFF", b: "#0E0B1A", y: "#8B5CF6" };
+      const MAP = [
+        "     y      ",
+        "     o      ",
+        "  oooooooo  ",
+        " oooooooooo ",
+        " owwoooowwo ",
+        " owboooowbo ",
+        " oooooooooo ",
+        " oooddddooo ",
+        "  oooooooo  ",
+        "   oooooo   ",
+        "   oooooo   ",
+        "   od  do   ",
+        "  ddd  ddd  "
+      ];
+      const mascot = document.getElementById("mascot");
+      MAP.forEach((row, y) => {
+        [...row].forEach((ch, x) => {
+          if (ch === " ") return;
+          const p = document.createElement("div");
+          p.className = "p";
+          p.style.left = "calc(var(--px) * " + x + ")";
+          p.style.top = "calc(var(--px) * " + y + ")";
+          p.style.background = COLORS[ch];
+          mascot.insertBefore(p, mascot.firstChild);
+        });
+      });
+      /* la pince (bras gauche détaché, pour le coucou) */
+      const arm = document.getElementById("marm");
+      [[0,0],[1,0],[0,1],[0,2],[1,2]].forEach(([x,y]) => {
+        const p = document.createElement("div");
+        p.className = "p";
+        p.style.left = "calc(var(--px) * " + x + ")";
+        p.style.top = "calc(var(--px) * " + y + ")";
+        p.style.background = "#D97757";
+        arm.appendChild(p);
+      });
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* chute + squash cartoon */
+      tl.set("#mshadow", { scaleX: 0.3, opacity: 0 }, 0);
+      tl.from("#mascot", { y: -900, duration: 0.55, ease: "power2.in" }, 0.1);
+      tl.to("#mshadow", { scaleX: 1, opacity: 1, duration: 0.2 }, 0.5);
+      tl.to("#mascot", { scaleY: 0.72, scaleX: 1.25, transformOrigin: "50% 100%", duration: 0.09, ease: "power2.out" }, 0.65);
+      tl.to("#mascot", { scaleY: 1.08, scaleX: 0.94, duration: 0.14, ease: "power2.inOut" }, 0.74);
+      tl.to("#mascot", { scaleY: 1, scaleX: 1, duration: 0.16, ease: "back.out(2)" }, 0.88);
+
+      /* coucou de la pince */
+      tl.fromTo("#marm", { rotation: 0 }, { rotation: -55, duration: 0.22, ease: "power2.inOut", yoyo: true, repeat: 3 }, 1.3);
+
+      /* clignements */
+      [1.9, 2.05, 3.6, 5.1].forEach((t) => {
+        tl.set(".blink", { visibility: "visible" }, t);
+        tl.set(".blink", { visibility: "hidden" }, t + 0.09);
+      });
+
+      /* rebond d'attente — jamais immobile */
+      tl.to("#mascot", { y: -14, scaleY: 1.03, transformOrigin: "50% 100%", duration: 0.42, ease: "sine.inOut", yoyo: true, repeat: 9 }, 2.4);
+      tl.to("#mshadow", { scaleX: 0.88, duration: 0.42, ease: "sine.inOut", yoyo: true, repeat: 9 }, 2.4);
+
+      tl.to({}, { duration: 6.5 }, 0);
+      window.__timelines["soc-mascot-claude"] = tl;
+    </script>
+  </body>
+</html>

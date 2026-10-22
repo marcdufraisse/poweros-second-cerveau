@@ -1,0 +1,164 @@
+<!doctype html>
+<!--
+  FIRESHIP TERMINAL · tier1 · stat · TERMINAL
+  Full-screen takeover. A ~1200px terminal window panel centered on the
+  canvas: title bar with three traffic dots + mono filename. A command line
+  types on character by character ("$ ais stats --this-year"), cursor blinks
+  finite times, then clears to reveal an enormous accent-colored JetBrains
+  Mono number that counts up on its own output line, followed by a dim mono
+  comment line. Cursor blinks finite times at the very end.
+  Slots: cmd, stat, note.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-stat-terminal {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-mono); overflow: hidden;
+      }
+      #t1-stat-terminal .vig { position: absolute; inset: 0; background: var(--vignette); z-index: 5; pointer-events: none; }
+
+      #t1-stat-terminal .stage {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; align-items: center; justify-content: center;
+      }
+
+      #t1-stat-terminal .panel {
+        width: 1200px;
+        background: var(--panel);
+        border: 1px solid var(--panel-edge);
+        border-radius: var(--radius);
+        box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
+        overflow: hidden;
+      }
+
+      /* window chrome */
+      #t1-stat-terminal .chrome {
+        height: var(--chrome-h);
+        display: flex; align-items: center; gap: 10px;
+        padding: 0 22px;
+        background: rgba(255, 255, 255, 0.02);
+        border-bottom: 1px solid var(--panel-edge);
+      }
+      #t1-stat-terminal .dot { width: var(--dot); height: var(--dot); border-radius: 50%; }
+      #t1-stat-terminal .dot.red { background: var(--dot-red); }
+      #t1-stat-terminal .dot.yellow { background: var(--dot-yellow); }
+      #t1-stat-terminal .dot.green { background: var(--dot-green); }
+      #t1-stat-terminal .filename {
+        margin-left: 16px; font-size: var(--size-label); color: var(--text-dim);
+        letter-spacing: 0.02em;
+      }
+
+      #t1-stat-terminal .body {
+        padding: 64px 70px 74px;
+      }
+
+      /* command line */
+      #t1-stat-terminal .cmdline {
+        font-size: var(--size-code); color: var(--text);
+        white-space: pre; display: flex; align-items: baseline;
+      }
+      #t1-stat-terminal .cmdline .prompt { color: var(--syn-green); margin-right: 16px; }
+      #t1-stat-terminal .cmdline .chars span { display: inline-block; }
+      #t1-stat-terminal .cursor {
+        display: inline-block; width: 15px; height: 34px;
+        background: var(--accent); margin-left: 8px; transform: translateY(4px);
+      }
+
+      /* giant output number */
+      #t1-stat-terminal .out-num {
+        font-size: 200px; font-weight: var(--wt-bold); line-height: 1;
+        color: var(--accent);
+        margin-top: 34px;
+        letter-spacing: -0.01em;
+      }
+
+      /* dim comment line */
+      #t1-stat-terminal .out-note {
+        font-size: var(--size-body); color: var(--text-dim);
+        margin-top: 28px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-stat-terminal" data-composition-id="t1-stat-terminal" data-start="0" data-width="1920" data-height="1080">
+      <div class="stage">
+        <div class="panel">
+          <div class="chrome">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="filename">stats.sh</span>
+          </div>
+          <div class="body">
+            <div class="cmdline">
+              <span class="prompt">$</span>
+              <span class="chars" data-slot="cmd">ais stats --this-year</span>
+              <span class="cursor"></span>
+            </div>
+            <div class="out-num"><span class="count" data-slot="stat" data-value="4128">0</span></div>
+            <div class="out-note" data-slot="note"># certifications issued, zero refunds</div>
+          </div>
+        </div>
+      </div>
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-stat-terminal";
+
+      /* pre-split the command text into char spans for the typewriter */
+      const cmdEl = document.querySelector(root + " .chars");
+      const cmdText = cmdEl.textContent;
+      cmdEl.textContent = "";
+      cmdText.split("").forEach((ch) => {
+        const s = document.createElement("span");
+        s.textContent = ch === " " ? " " : ch;
+        cmdEl.appendChild(s);
+      });
+      const chars = cmdEl.querySelectorAll("span");
+
+      /* count-up target parsed from data-value, formatted with commas */
+      const countEl = document.querySelector(root + " .count");
+      const target = parseFloat(countEl.getAttribute("data-value")) || 0;
+      const counter = { v: 0 };
+      function fmt(n) { return Math.round(n).toLocaleString("en-US"); }
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.set(chars, { autoAlpha: 0 }, 0)
+
+        /* panel snaps in */
+        .from(root + " .panel", { autoAlpha: 0, y: 26, duration: 0.3, ease: "expo.out" }, 0.15)
+
+        /* typewriter — pre-split char spans, stagger 0.02, linear */
+        .to(chars, { autoAlpha: 1, duration: 0.01, ease: "none", stagger: 0.02 }, 0.55)
+
+        /* cursor blinks finite times while "thinking" */
+        .to(root + " .cursor", { autoAlpha: 0, duration: 0.18, repeat: 5, yoyo: true, ease: "none" }, ">0.05")
+
+        /* the output line's entrance, then counts up — never left invisible */
+        .from(root + " .out-num", { autoAlpha: 0, duration: 0.2, ease: "power2.out" }, ">-0.05")
+        .to(counter, {
+          v: target, duration: 0.9, ease: "power1.out",
+          onUpdate: () => { countEl.textContent = fmt(counter.v); }
+        }, "<")
+
+        /* dim comment snaps in */
+        .from(root + " .out-note", { autoAlpha: 0, y: 8, duration: 0.22, ease: "power2.out" }, ">-0.1")
+
+        /* final finite cursor blink */
+        .to(root + " .cursor", { autoAlpha: 0, duration: 0.22, repeat: 3, yoyo: true, ease: "none" }, ">0.15")
+
+        /* dead stillness */
+        .set({}, {}, 7);
+
+      window.__timelines["t1-stat-terminal"] = tl;
+    </script>
+  </body>
+</html>

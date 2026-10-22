@@ -1,0 +1,143 @@
+<!doctype html>
+<!--
+  KEYNOTE MINIMAL · tier1 · overview · STEPS
+  Full-screen takeover. True-black stage; a soft stage glow breathes low in
+  frame; a small kicker sits at top, then three numbered steps stack
+  vertically — dim oversized numeral left, step title + one-line
+  description right — separated by thin rules, cascading in silk.
+  Slots: title, s1, d1, s2, d2, s3, d3.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-overview-steps {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      #t1-overview-steps .stage-glow {
+        position: absolute; inset: 0; background: var(--glow-stage); z-index: 1;
+      }
+      #t1-overview-steps .edge { position: absolute; inset: 0; background: var(--edge-falloff); z-index: 5; pointer-events: none; }
+
+      #t1-overview-steps .wrap {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; flex-direction: column; justify-content: center;
+        padding: 0 var(--pad);
+      }
+
+      #t1-overview-steps .kicker {
+        font-family: var(--font-mono); font-weight: var(--wt-med);
+        font-size: var(--size-label); letter-spacing: var(--track-wide);
+        text-transform: uppercase; color: var(--text-dim);
+        margin-bottom: 64px;
+      }
+
+      #t1-overview-steps .steps { display: flex; flex-direction: column; }
+
+      #t1-overview-steps .step {
+        display: flex; align-items: flex-start; gap: 56px; padding: 32px 0;
+      }
+
+      #t1-overview-steps .num {
+        font-weight: var(--wt-black); font-size: var(--size-display);
+        letter-spacing: var(--track-display); line-height: 1;
+        color: var(--text-faint); width: 220px; flex: none;
+      }
+
+      #t1-overview-steps .stext { padding-top: 18px; }
+
+      #t1-overview-steps .stitle {
+        font-weight: var(--wt-semi); font-size: var(--size-headline);
+        letter-spacing: var(--track-snug); color: var(--text);
+      }
+
+      #t1-overview-steps .sdesc {
+        font-family: var(--font-body); font-weight: var(--wt-reg);
+        font-size: var(--size-body); color: var(--text-dim);
+        margin-top: 10px; max-width: 1000px; line-height: 1.4;
+      }
+
+      #t1-overview-steps .divider {
+        height: 1px; background: var(--hairline); width: 100%;
+        transform: scaleX(0); transform-origin: 0% 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-overview-steps" data-composition-id="t1-overview-steps" data-start="0" data-width="1920" data-height="1080">
+      <div class="stage-glow"></div>
+
+      <div class="wrap">
+        <div class="kicker" data-slot="title">How certification works</div>
+
+        <div class="steps">
+          <div class="step" data-step="1">
+            <div class="num">01</div>
+            <div class="stext">
+              <div class="stitle" data-slot="s1">Enroll and assess</div>
+              <div class="sdesc" data-slot="d1">Pick a track and take the baseline skills check to place into the right cohort.</div>
+            </div>
+          </div>
+          <div class="divider" data-divider="1"></div>
+
+          <div class="step" data-step="2">
+            <div class="num">02</div>
+            <div class="stext">
+              <div class="stitle" data-slot="s2">Build in live labs</div>
+              <div class="sdesc" data-slot="d2">Ship a real automation each week with an instructor reviewing your work.</div>
+            </div>
+          </div>
+          <div class="divider" data-divider="2"></div>
+
+          <div class="step" data-step="3">
+            <div class="num">03</div>
+            <div class="stext">
+              <div class="stitle" data-slot="s3">Certify and launch</div>
+              <div class="sdesc" data-slot="d3">Pass the capstone review and join the member network as an Acme Certified builder.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edge"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t1-overview-steps";
+
+      tl.from(root + " .stage-glow", { autoAlpha: 0, duration: 1.6, ease: "expo.out" }, 0)
+
+        .from(root + " .kicker", { autoAlpha: 0, y: 20, filter: "blur(8px)", duration: 1.0, ease: "expo.out" }, 0.2);
+
+      const steps = [1, 2, 3];
+      const stepStart = 0.9;
+      const stepStagger = 0.75;
+
+      steps.forEach((n, i) => {
+        const t = stepStart + i * stepStagger;
+        tl.from(root + ' .step[data-step="' + n + '"] .num', { autoAlpha: 0, y: 22, filter: "blur(10px)", duration: 1.0, ease: "expo.out" }, t)
+          .from(root + ' .step[data-step="' + n + '"] .stitle', { autoAlpha: 0, y: 20, filter: "blur(8px)", duration: 0.9, ease: "expo.out" }, t + 0.12)
+          .from(root + ' .step[data-step="' + n + '"] .sdesc', { autoAlpha: 0, y: 16, filter: "blur(6px)", duration: 0.9, ease: "expo.out" }, t + 0.24);
+
+        if (n < 3) {
+          tl.to(root + ' .divider[data-divider="' + n + '"]', { scaleX: 1, duration: 0.9, ease: "expo.out" }, t + 0.55);
+        }
+      });
+
+      tl.to(root + " .stage-glow", { scale: 1.05, transformOrigin: "50% 78%", duration: 1.8, ease: "sine.inOut", repeat: 1, yoyo: true }, 4.0)
+
+        .set({}, {}, 8);
+
+      window.__timelines["t1-overview-steps"] = tl;
+    </script>
+  </body>
+</html>

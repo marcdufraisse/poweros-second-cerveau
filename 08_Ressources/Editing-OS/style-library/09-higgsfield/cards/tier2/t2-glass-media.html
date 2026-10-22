@@ -1,0 +1,84 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · tier2 · media · GLASS MEDIA
+  Frosted panel holding one or two media slots (product shots, stills, clip
+  thumbs) floating tilted beside the speaker. Second slot gets the lime
+  "active" outline a beat after landing. Optional mono label underneath.
+  Slots: img1 (media), img2 (media, optional), label.
+  Agent 3 swaps the <img> src values at assembly time.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-glass-media {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; overflow: hidden; font-family: var(--font-display);
+      }
+      #t2-glass-media .panel {
+        position: absolute; top: 200px; right: 110px; z-index: 3;
+      }
+      #t2-glass-media .tilt {
+        padding: 26px;
+        display: flex; flex-direction: column; gap: 18px;
+        background: var(--glass-bg-lit);
+        border: var(--glass-edge); border-radius: var(--radius);
+        backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+        box-shadow: var(--glass-shadow);
+        transform: var(--glass-tilt); /* static 3D tilt; GSAP moves .panel */
+      }
+      #t2-glass-media .media-row { display: flex; gap: 18px; }
+      #t2-glass-media .shot {
+        width: 250px; height: 250px; border-radius: 12px; overflow: hidden;
+        outline: 3px solid transparent; outline-offset: 3px;
+        background: rgba(255, 255, 255, 0.4);
+      }
+      #t2-glass-media .shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      #t2-glass-media .label {
+        font-family: var(--font-mono); font-weight: var(--wt-med);
+        font-size: var(--size-tiny); letter-spacing: var(--track-pill);
+        text-transform: uppercase; color: rgba(23, 25, 28, 0.7); text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-glass-media" data-composition-id="t2-glass-media" data-start="0" data-width="1920" data-height="1080">
+      <div class="panel"><div class="tilt">
+        <div class="media-row">
+          <div class="shot s1"><img data-slot="img1" alt=""
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Crect width='250' height='250' fill='%23cfd6cf'/%3E%3Ctext x='125' y='132' text-anchor='middle' font-family='monospace' font-size='20' fill='%23616b61'%3EIMG 1%3C/text%3E%3C/svg%3E" /></div>
+          <div class="shot s2"><img data-slot="img2" alt=""
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Crect width='250' height='250' fill='%23c6cfc0'/%3E%3Ctext x='125' y='132' text-anchor='middle' font-family='monospace' font-size='20' fill='%23616b61'%3EIMG 2%3C/text%3E%3C/svg%3E" /></div>
+        </div>
+        <div class="label" data-slot="label">THE PRODUCT</div>
+      </div></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t2-glass-media";
+      const css = getComputedStyle(document.documentElement);
+      const LIME = css.getPropertyValue("--lime").trim();
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .panel", { autoAlpha: 0, x: 100, duration: 0.55, ease: "expo.out" }, 0.1)
+        .from(root + " .shot", { autoAlpha: 0, scale: 0.9, duration: 0.4, ease: "back.out(1.6)", stagger: 0.16 }, 0.4)
+        .from(root + " .label", { autoAlpha: 0, y: 10, duration: 0.3, ease: "expo.out" }, 0.85)
+
+        /* the lime active outline lands on shot 2 a beat later */
+        .to(root + " .shot.s2", { outlineColor: LIME, duration: 0.2, ease: "power2.out" }, 1.4)
+
+        /* drift while alive */
+        .to(root + " .panel", { y: -10, rotation: 0.5, duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0.7)
+
+        .set({}, {}, 7);
+
+      window.__timelines["t2-glass-media"] = tl;
+    </script>
+  </body>
+</html>

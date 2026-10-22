@@ -1,0 +1,84 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · tier1 · overview · STEPS
+  Navy canvas full-screen version of the numbered-steps reveal: each row
+  enters grey-pre with its number, then flips to lime as the next row lands
+  (the last row flips on its own beat). Rows sit slightly tilted like the
+  in-room floats.
+  Slots: kicker, s1, s2, s3.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t1-overview-steps {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 46%);
+        overflow: hidden; font-family: var(--font-display);
+      }
+      #t1-overview-steps .streaks { position: absolute; inset: 0; background: var(--streaks); }
+      #t1-overview-steps .warm    { position: absolute; inset: 0; background: var(--warm-creep); opacity: 0; }
+      #t1-overview-steps .vig     { position: absolute; inset: 0; background: var(--vignette); }
+
+      #t1-overview-steps .wrap {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 40px; z-index: 2;
+        transform: perspective(1600px) rotateY(-3deg);
+      }
+      #t1-overview-steps .kicker {
+        font-weight: var(--wt-semi); font-size: var(--size-label);
+        letter-spacing: var(--track-eyebrow); text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.85); margin-bottom: 14px;
+      }
+      #t1-overview-steps .row {
+        display: flex; align-items: baseline; gap: 28px;
+        font-weight: var(--wt-heavy); font-size: var(--size-title); line-height: 1;
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+        color: var(--grey-pre); text-shadow: var(--kinetic-shadow);
+      }
+      #t1-overview-steps .row .num { font-weight: var(--wt-bold); font-size: 0.62em; }
+    </style>
+  </head>
+  <body>
+    <div id="t1-overview-steps" data-composition-id="t1-overview-steps" data-start="0" data-width="1920" data-height="1080">
+      <div class="streaks"></div>
+      <div class="warm"></div>
+      <div class="vig"></div>
+      <div class="wrap">
+        <div class="kicker" data-slot="kicker">THE WORKFLOW</div>
+        <div class="row"><span class="num">1.</span><span data-slot="s1">SETUP</span></div>
+        <div class="row"><span class="num">2.</span><span data-slot="s2">IDEA</span></div>
+        <div class="row"><span class="num">3.</span><span data-slot="s3">GENERATION</span></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-overview-steps";
+      const css = getComputedStyle(document.documentElement);
+      const LIME = css.getPropertyValue("--lime").trim();
+
+      const rows = gsap.utils.toArray(root + " .row");
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .kicker", { autoAlpha: 0, y: 16, duration: 0.4, ease: "expo.out" }, 0.1);
+
+      /* each row enters grey; flips to lime when the NEXT row arrives */
+      const beat = 0.85;
+      rows.forEach((row, i) => {
+        const t = 0.4 + i * beat;
+        tl.from(row, { autoAlpha: 0, x: -46, duration: 0.45, ease: "expo.out" }, t);
+        tl.to(row, { color: LIME, duration: 0.24, ease: "power2.inOut" }, t + beat);
+      });
+
+      tl.to(root + " .warm", { opacity: 1, duration: 1.6, ease: "sine.inOut" }, 1.4)
+        .set({}, {}, 5.5);
+
+      window.__timelines["t1-overview-steps"] = tl;
+    </script>
+  </body>
+</html>

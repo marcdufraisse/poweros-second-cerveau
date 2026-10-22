@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "editing-os",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "os"
+      ],
+      "port": 4200,
+      "autoPort": true
+    }
+  ]
+}

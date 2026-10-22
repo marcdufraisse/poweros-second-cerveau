@@ -1,0 +1,16 @@
+# Cles API et fichiers locaux : ne jamais committer
+.env
+.env.*
+
+# Fichiers systeme
+.DS_Store
+__MACOSX/
+
+# Donnees personnelles d'un utilisateur qui publie son fork : a versionner dans un depot PRIVE seulement
+# (decommentez si vous publiez votre fork)
+# 01_About-Me/
+# 02_Contexte/
+# 03_Branding/
+# 06_Clients/
+# 07_Meeting/
+# 09_Journal/

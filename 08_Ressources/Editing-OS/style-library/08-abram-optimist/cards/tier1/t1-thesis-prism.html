@@ -1,0 +1,124 @@
+<!doctype html>
+<!--
+  ABRAM OPTIMIST · tier1 · thesis · PRISM
+  Full-screen takeover. Warm off-white stage with the faintest prism wash in
+  one corner; a mono tape-deck pill tag pops in; a big friendly Manrope
+  claim rises, with THE prism moment: one word gradient-clipped, its
+  gradient panning once like light through a prism; a light-leak flare
+  sweeps the frame at the peak; small mono footnote below.
+  Slots: tag, headline (one word in <em> = the prism word), foot.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-thesis-prism {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--ink);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      /* faint prism wash, top-right corner only */
+      #t1-thesis-prism .wash {
+        position: absolute; top: -220px; right: -260px;
+        width: 1100px; height: 900px; border-radius: 50%;
+        background: var(--prism-wash);
+        filter: blur(70px);
+      }
+
+      #t1-thesis-prism .center {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-align: center;
+      }
+
+      /* tape-deck pill tag */
+      #t1-thesis-prism .tag {
+        font-family: var(--font-mono); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-mono);
+        text-transform: uppercase;
+        background: var(--ink); color: var(--white);
+        border-radius: var(--radius-pill);
+        padding: 12px 30px 14px; margin-bottom: 48px;
+      }
+
+      /* the claim */
+      #t1-thesis-prism .headline {
+        font-weight: var(--wt-black); font-size: var(--size-display);
+        letter-spacing: var(--track-tight); line-height: 1.08;
+        color: var(--ink); max-width: 1500px;
+      }
+      /* THE prism word — clipped gradient, panning background. No will-change. */
+      #t1-thesis-prism .headline em {
+        font-style: normal;
+        padding: 0 10px;
+        background-image: var(--prism);
+        background-size: 220% 100%; background-position: 0% 50%;
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent; color: transparent;
+      }
+
+      #t1-thesis-prism .foot {
+        font-family: var(--font-mono); font-size: var(--size-tiny);
+        letter-spacing: var(--track-mono); color: var(--ink-faint);
+        margin-top: 54px;
+      }
+
+      /* light-leak flare band */
+      #t1-thesis-prism .flare {
+        position: absolute; top: -10%; bottom: -10%; left: 0; width: 60%;
+        background: var(--flare);
+        transform: skewX(-14deg) translateX(-140%);
+        z-index: 6; pointer-events: none;
+        mix-blend-mode: screen;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-thesis-prism" data-composition-id="t1-thesis-prism" data-start="0" data-width="1920" data-height="1080">
+      <div class="wash"></div>
+
+      <div class="center">
+        <div class="tag" data-slot="tag">HUGE IF TRUE</div>
+        <div class="headline" data-slot="headline">Anyone can build an <em>AI agent</em> this year</div>
+        <div class="foot" data-slot="foot">[ 00:04:12 · ACME CERTIFICATION, MODULE 1 ]</div>
+      </div>
+
+      <div class="flare"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t1-thesis-prism";
+
+      tl.from(root + " .wash", { autoAlpha: 0, scale: 0.85, transformOrigin: "80% 20%", duration: 1.2, ease: "power2.out" }, 0)
+
+        /* tape tag POPS */
+        .from(root + " .tag", { autoAlpha: 0, scale: 0.6, duration: 0.45, ease: "back.out(1.7)" }, 0.25)
+
+        /* claim rises and settles */
+        .from(root + " .headline", { autoAlpha: 0, y: 34, duration: 0.7, ease: "expo.out" }, 0.55)
+
+        /* THE prism pan — light moves through the word once */
+        .to(root + " .headline em", { backgroundPosition: "100% 50%", duration: 1.3, ease: "power2.inOut" }, 1.1)
+
+        /* flare sweeps at the peak */
+        .to(root + " .flare", { xPercent: 420, duration: 0.75, ease: "power2.inOut" }, 1.25)
+
+        /* footnote snaps in */
+        .from(root + " .foot", { autoAlpha: 0, y: 14, duration: 0.5, ease: "expo.out" }, 1.9)
+
+        /* one gentle bob on the tag, finite */
+        .to(root + " .tag", { y: -6, duration: 1.1, ease: "sine.inOut", repeat: 3, yoyo: true }, 2.4)
+
+        .set({}, {}, 7);
+
+      window.__timelines["t1-thesis-prism"] = tl;
+    </script>
+  </body>
+</html>

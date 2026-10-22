@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Review · Editing OS</title>
+<style>
+  :root { --jaune: #8E16FA; }   /* violet de marque la marque */
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0a0c12; color: #e8ecf4;
+    font-family: "Garet", "Inter Tight", Inter, system-ui, sans-serif;
+    display: flex; height: 100vh; overflow: hidden; }
+  /* La colonne du lecteur tient TOUJOURS dans la hauteur disponible : la vidéo
+     est le seul élément élastique, tout le reste garde sa taille. Avant, elle
+     était calée sur calc(100vh - 160px) sans compter le sélecteur, la barre de
+     progression ni les commandes — sur un vertical, les boutons finissaient
+     sous le pli, et body{overflow:hidden} empêchait même de scroller jusqu'à
+     eux. Il fallait dézoomer le navigateur pour piloter la review. */
+  .left { flex: none; width: 480px; display: flex; flex-direction: column;
+    align-items: stretch; padding: 14px; gap: 8px; background: #06070b;
+    height: 100%; min-height: 0; overflow: hidden; }
+  /* height:0 + flex-basis:0 : sans ça la vidéo recalcule sa hauteur depuis sa
+     largeur (ratio 9:16 = 733 px pour 412 px de large) à chaque passe de
+     layout, et regagne ce que le flex vient de lui retirer. Là, sa hauteur
+     vient uniquement de la place restante, et object-fit fait le reste. */
+  .left video { flex: 1 1 0; height: 0; min-height: 0; width: 100%;
+    object-fit: contain; border-radius: 14px; background: #000; }
+  .left .picker, .left .scrub, .left .controls, .left .hint { flex: none; }
+  .controls { display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; }
+  .controls button { background: #1a1e28; color: #fff; border: 1px solid #2a3040;
+    border-radius: 8px; padding: 8px 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .controls button:hover { border-color: var(--jaune); }
+  .controls .play { background: var(--jaune); color: #111; }
+  .tc { font-family: ui-monospace, monospace; font-size: 15px; color: var(--jaune);
+    letter-spacing: 0.06em; min-width: 120px; text-align: center; }
+  .scrub { width: 100%; position: relative; padding-top: 10px; }
+  .scrub input { width: 100%; }
+  .marks { position: absolute; top: 0; left: 0; right: 0; height: 8px; }
+  .marks span { position: absolute; width: 4px; height: 8px; background: var(--jaune);
+    border-radius: 2px; cursor: pointer; }
+  .right { flex: 1; display: flex; flex-direction: column; padding: 20px 24px; gap: 14px; overflow: hidden; }
+  h1 { font-size: 19px; margin: 0; letter-spacing: -0.02em; }
+  h1 b { color: var(--jaune); }
+  .hint { font-size: 12.5px; color: #6f8090; line-height: 1.5; }
+  .left .hint { font-size: 11.5px; line-height: 1.35; text-align: center; }
+  .addbox { display: flex; gap: 10px; }
+  .addbox textarea { flex: 1; background: #12151d; border: 1px solid #2a3040; color: #fff;
+    border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 14px; resize: none; height: 64px; }
+  .addbox button { background: var(--jaune); color: #111; border: 0; border-radius: 10px;
+    padding: 0 18px; font-weight: 800; font-size: 14px; cursor: pointer; }
+  .list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+  .item { display: flex; gap: 12px; align-items: flex-start; background: #10131b;
+    border: 1px solid #222838; border-radius: 10px; padding: 10px 14px; cursor: pointer; }
+  .item:hover { border-color: var(--jaune); }
+  .item .t { font-family: ui-monospace, monospace; color: var(--jaune); font-size: 13px;
+    font-weight: 700; white-space: nowrap; padding-top: 2px; }
+  .item .txt { flex: 1; font-size: 14px; line-height: 1.45; }
+  .item .del { background: none; border: 0; color: #6f8090; cursor: pointer; font-size: 15px; }
+  .item .del:hover { color: #ff5f57; }
+  .export { display: flex; gap: 10px; }
+  .export button { background: #1a1e28; color: #fff; border: 1px solid #2a3040;
+    border-radius: 10px; padding: 10px 16px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
+  .export button:hover { border-color: var(--jaune); }
+  /* L'action principale de cet écran : les retours partent au montage et une
+     nouvelle version revient. Le reste (copier, télécharger) n'est là que pour
+     les cas où on veut piloter à la main. */
+  .export .send { background: var(--jaune); color: #111; border-color: transparent; font-weight: 800; }
+  .export .send:disabled { opacity: .5; cursor: default; }
+  .sendstate { font-size: 12px; color: #8aa0b4; margin-top: 8px; line-height: 1.5; }
+  .sendstate b { color: var(--jaune); }
+  .toast { position: fixed; bottom: 18px; right: 18px; background: var(--jaune); color: #111;
+    font-weight: 800; padding: 10px 18px; border-radius: 10px; opacity: 0; transition: opacity .25s; }
+
+  /* la barre de sélection : le même écran sert tous les projets */
+  .picker { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 0; }
+  .picker select, .picker input {
+    background: #12161f; color: #e8eef5; border: 1px solid #2a3040;
+    border-radius: 9px; padding: 8px 11px; font-size: 13px; font-family: inherit; }
+  .picker select { flex: 1 1 170px; min-width: 0; max-width: 320px; }
+  .picker input { width: 52px; text-align: center; padding: 8px 6px; }
+  .picker label { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: #8aa0b4; }
+  /* Monté dans le hub, deux liens flottent au-dessus du coin haut droit du
+     cadre : on leur réserve la place, sinon ils recouvrent le titre. En plein
+     écran, cette réserve n'a pas lieu d'être. */
+  body.embedded .right h1 { padding-right: 190px; }
+  .fbstate { align-self: center; font-size: 11.5px; color: var(--dim, #7d93a8); margin-left: 4px; }
+</style>
+</head>
+<body>
+  <div class="left">
+    <video id="v" preload="auto"></video>
+    <div class="scrub">
+      <div class="marks" id="marks"></div>
+      <input type="range" id="scrub" min="0" max="1000" value="0">
+    </div>
+    <div class="controls">
+      <button id="m1s">−1s</button>
+      <button id="m1f">−1 img</button>
+      <button class="play" id="play">▶</button>
+      <button id="p1f">+1 img</button>
+      <button id="p1s">+1s</button>
+      <div class="tc" id="tc">00:00 · f000</div>
+    </div>
+    <div class="hint"><span id="vstate">chargement…</span></div>
+  </div>
+  <div class="right">
+    <h1>Retours frame par frame · <b id="projname">…</b></h1>
+    <!-- Le sélecteur vit ici, et pas au-dessus du lecteur : chaque ligne posée
+         dans la colonne de gauche est prise sur la hauteur de la vidéo, alors
+         que cette colonne-ci a de la place à revendre. -->
+    <div class="picker">
+      <label for="proj">Projet</label>
+      <select id="proj"></select>
+      <label for="rend">Rendu</label>
+      <select id="rend"></select>
+      <label for="fps">FPS</label>
+      <input id="fps" type="number" min="1" max="120" step="1" value="30">
+    </div>
+    <div class="hint">Mets la vidéo sur la frame exacte, écris ton retour, Entrée ou « Ajouter ».
+      Clique un retour pour re-sauter à sa frame. Tout est enregistré dans le projet (review/).
+      Quand t'as fini : « Copier pour Claude » et colle-le-moi dans la conversation.<br>
+      <b>Espace</b> = lecture · <b>← →</b> = image par image · <b>↑</b> = ajouter un retour</div>
+    <div class="addbox">
+      <textarea id="txt" placeholder="Ton retour sur cette frame… (Entrée pour ajouter)"></textarea>
+      <button id="add">Ajouter</button>
+    </div>
+    <div class="list" id="list"></div>
+    <div class="export">
+      <button id="copy">📋 Copier pour Claude</button>
+      <button id="dl">⬇ Télécharger .json</button>
+      <button id="send" class="send">Envoyer au monteur →</button>
+      <button id="clear">Tout effacer</button>
+      <span id="fbstate" class="fbstate"></span>
+    </div>
+    <div class="sendstate" id="sendstate"></div>
+  </div>
+  <div class="toast" id="toast">Copié !</div>
+
+<script>
+  /* Review générique : un seul écran pour tous les projets.
+     Paramètres d'URL : ?project=<slug>&render=<fichier>&fps=<n>
+     La vidéo est servie par /workspace/ (avec Range), donc on peut scrubber.
+
+     Les retours sont stockés en localStorage, une clé par projet ET par rendu :
+     des notes sur la v17 n'ont pas de sens sur la v18, les timecodes ont bougé. */
+  if (window.self !== window.top) document.body.classList.add("embedded");
+  const qs = new URLSearchParams(location.search);
+  let FPS = Number(qs.get("fps")) || 30;   /* 30 par défaut : c'est le fps des rendus */
+  let project = qs.get("project") || "";
+  let renderFile = qs.get("render") || "";
+  let KEY = "review::" + project + "::" + renderFile;
+
+  const v = document.getElementById("v"), tc = document.getElementById("tc");
+  const scrub = document.getElementById("scrub"), list = document.getElementById("list");
+  const txt = document.getElementById("txt"), marks = document.getElementById("marks");
+  const selProj = document.getElementById("proj"), selRend = document.getElementById("rend");
+  const inpFps = document.getElementById("fps");
+  let items = [];
+  let DATA = { projects: [] };
+
+  const wsUrl = (p) => "/workspace/" + p.split("/").map(encodeURIComponent).join("/");
+
+  function loadNotes() {
+    KEY = "review::" + project + "::" + renderFile;
+    items = JSON.parse(localStorage.getItem(KEY) || "[]");
+    /* Le projet fait foi : les retours vivent dans
+       video-projects/<slug>/review/<rendu>.json, pas dans ce navigateur. Le
+       localStorage n'est plus qu'un filet — si le serveur a une version, elle
+       gagne, et les retours survivent au changement de machine. */
+    fetch("/api/feedback/" + encodeURIComponent(project))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!data) return;
+        const f = (data.files || []).find((x) => x.render === renderFile);
+        if (f && f.notes.length) {
+          items = f.notes.map((n) => ({ t: n.t, txt: n.txt }));
+          localStorage.setItem(KEY, JSON.stringify(items));
+          render();
+        }
+      })
+      .catch(() => {});
+  }
+
+  /* Écriture dans le projet, groupée : on tape une note, elle part une fois la
+     frappe finie. Le statut le dit, pour qu'on n'ait jamais à se demander si
+     c'est enregistré. */
+  let pushTimer = null;
+  function pushToProject() {
+    clearTimeout(pushTimer);
+    setStatus("…");
+    pushTimer = setTimeout(() => {
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ slug: project, render: renderFile, notes: items }),
+      }).then((r) => setStatus(r.ok ? "enregistré dans le projet" : "non enregistré"))
+        .catch(() => setStatus("non enregistré (serveur injoignable)"));
+    }, 500);
+  }
+  function setStatus(t) {
+    const el = document.getElementById("fbstate");
+    if (el) el.textContent = t;
+  }
+
+  /* Recharge la vidéo et les notes qui vont avec, et garde l'URL à jour pour
+     que la page reste partageable et bookmarkable telle quelle. */
+  function loadRender(slug, file, push) {
+    project = slug; renderFile = file;
+    loadNotes();
+    const proj = DATA.projects.find((p) => p.slug === slug);
+    const r = proj && proj.renders.find((x) => x.name === file);
+    /* Poster : beaucoup de reels ouvrent sur un fondu au noir, et un lecteur
+       arrêté sur une frame noire se lit comme une panne. La vignette du hub est
+       prise à 22 % de la durée, donc elle montre toujours quelque chose. Elle
+       disparaît dès qu'on lance ou qu'on navigue — la review reste à la frame 0. */
+    v.poster = r
+      ? "/api/thumb/" + encodeURIComponent(slug) + "?file=" +
+        encodeURIComponent("renders/" + file) + "&v=" + (r.mtime || 0)
+      : "";
+    v.src = r ? wsUrl(r.path) : "";
+    document.title = "Review · " + slug + (file ? " · " + file : "");
+    const pn = document.getElementById("projname");
+    if (pn) pn.textContent = slug;
+    if (push !== false) {
+      const u = new URL(location.href);
+      u.searchParams.set("project", slug);
+      u.searchParams.set("render", file);
+      u.searchParams.set("fps", String(FPS));
+      history.replaceState(null, "", u);
+    }
+    render();
+  }
+
+  function fillRenders(slug) {
+    const proj = DATA.projects.find((p) => p.slug === slug);
+    const rs = proj ? proj.renders : [];
+    /* Onze rendus à plat, on ne s'y retrouve pas. Groupés par livrable, on voit
+       d'un coup les versions de LA vidéo qu'on relit. */
+    const groups = [];
+    for (const r of rs) {
+      let g = groups.find((x) => x.id === r.deliverable);
+      if (!g) { g = { id: r.deliverable, items: [] }; groups.push(g); }
+      g.items.push(r);
+    }
+    const opt = (r) => '<option value="' + r.name + '">' + r.name +
+      (r.master ? "  ·  master" : "") + "</option>";
+    selRend.innerHTML = groups.length > 1
+      ? groups.map((g) => '<optgroup label="' + g.id + '">' + g.items.map(opt).join("") + "</optgroup>").join("")
+      : rs.map(opt).join("");
+    if (!rs.length) return "";
+    const wanted = rs.some((r) => r.name === renderFile) ? renderFile
+      : (rs.find((r) => r.master) || rs[0]).name;
+    selRend.value = wanted;
+    return wanted;
+  }
+
+  fetch("/api/reviews").then((r) => r.json()).then((data) => {
+    DATA = data;
+    const ps = DATA.projects.filter((p) => p.renders.length);
+    selProj.innerHTML = ps.map((p) =>
+      '<option value="' + p.slug + '">' + p.slug +
+      (p.deliverableCount > 1 ? "  ·  " + p.deliverableCount + " livrables" : "") +
+      "</option>").join("");
+    if (!ps.length) return;
+    if (!ps.some((p) => p.slug === project)) project = ps[0].slug;
+    selProj.value = project;
+    const file = fillRenders(project);
+    loadRender(project, file);
+  });
+
+  selProj.addEventListener("change", () => {
+    const file = fillRenders(selProj.value);
+    loadRender(selProj.value, file);
+  });
+  selRend.addEventListener("change", () => loadRender(selProj.value, selRend.value));
+  inpFps.value = String(FPS);
+  inpFps.addEventListener("change", () => {
+    FPS = Number(inpFps.value) || 30;
+    const u = new URL(location.href); u.searchParams.set("fps", String(FPS));
+    history.replaceState(null, "", u);
+    render();
+  });
+
+  const fmt = (t) => {
+    const s = Math.floor(t), f = Math.round((t - s) * FPS);
+    return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0") +
+      " · f" + String(Math.round(t * FPS)).padStart(3, "0");
+  };
+  const save = () => {
+    localStorage.setItem(KEY, JSON.stringify(items));
+    pushToProject();
+  };
+
+  function render() {
+    items.sort((a, b) => a.t - b.t);
+    list.innerHTML = "";
+    marks.innerHTML = "";
+    items.forEach((it, i) => {
+      const d = document.createElement("div");
+      d.className = "item";
+      d.innerHTML = '<span class="t">' + fmt(it.t) + '</span><span class="txt"></span><button class="del">✕</button>';
+      d.querySelector(".txt").textContent = it.txt;
+      d.addEventListener("click", (e) => { if (e.target.className !== "del") { v.currentTime = it.t; v.pause(); } });
+      d.querySelector(".del").addEventListener("click", () => { items.splice(i, 1); save(); render(); });
+      list.appendChild(d);
+      if (v.duration) {
+        const m = document.createElement("span");
+        m.style.left = (it.t / v.duration * 100) + "%";
+        m.title = it.txt;
+        m.addEventListener("click", () => { v.currentTime = it.t; });
+        marks.appendChild(m);
+      }
+    });
+  }
+
+  function add() {
+    const t = txt.value.trim();
+    if (!t) return;
+    items.push({ t: v.currentTime, txt: t });
+    txt.value = "";
+    save(); render();
+  }
+
+  document.getElementById("add").addEventListener("click", add);
+  txt.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); add(); } });
+
+  const step = (n) => { v.pause(); v.currentTime = Math.max(0, Math.min(v.duration || 1e9, v.currentTime + n / FPS)); };
+  document.getElementById("m1f").addEventListener("click", () => step(-1));
+  document.getElementById("p1f").addEventListener("click", () => step(1));
+  document.getElementById("m1s").addEventListener("click", () => step(-FPS));
+  document.getElementById("p1s").addEventListener("click", () => step(FPS));
+  const playBtn = document.getElementById("play");
+  playBtn.addEventListener("click", () => { v.paused ? v.play() : v.pause(); });
+  v.addEventListener("play", () => playBtn.textContent = "⏸");
+  v.addEventListener("pause", () => playBtn.textContent = "▶");
+
+  document.addEventListener("keydown", (e) => {
+    if (e.target === txt) return;
+    if (e.code === "Space") { e.preventDefault(); v.paused ? v.play() : v.pause(); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); step(e.shiftKey ? -5 : -1); }
+    if (e.key === "ArrowRight") { e.preventDefault(); step(e.shiftKey ? 5 : 1); }
+    if (e.key === "ArrowUp") { e.preventDefault(); txt.focus(); }
+  });
+
+  v.addEventListener("timeupdate", () => {
+    tc.textContent = fmt(v.currentTime);
+    if (v.duration) scrub.value = v.currentTime / v.duration * 1000;
+  });
+  scrub.addEventListener("input", () => { if (v.duration) v.currentTime = scrub.value / 1000 * v.duration; });
+  /* L'état du lecteur, écrit noir sur blanc : une frame noire ne doit jamais
+     pouvoir passer pour un échec de chargement. */
+  v.addEventListener("loadedmetadata", () => {
+    const el = document.getElementById("vstate");
+    if (el && v.duration) {
+      const s = Math.floor(v.duration);
+      el.textContent = "prêt · " + String(Math.floor(s / 60)).padStart(2, "0") + ":" +
+        String(s % 60).padStart(2, "0") + " · " + Math.round(v.duration * FPS) + " frames · " +
+        v.videoWidth + "×" + v.videoHeight;
+    }
+    render();
+  });
+  v.addEventListener("error", () => {
+    const el = document.getElementById("vstate");
+    if (el) el.textContent = "vidéo illisible — voir la console";
+  });
+
+  /* L'en-tête du message copié identifie le fichier commenté, pas seulement le
+     projet. Sur un projet qui porte onze livrables — les publicités du webinaire
+     en sont là — « voici mes retours » ne dit pas sur quelle vidéo, ni sur
+     quelle version. Sans ça, le montage se fait sur le mauvais fichier. */
+  function currentRender() {
+    const proj = DATA.projects.find((p) => p.slug === project);
+    return (proj && proj.renders.find((r) => r.name === renderFile)) || null;
+  }
+
+  const blob = () => {
+    const r = currentRender();
+    const proj = DATA.projects.find((p) => p.slug === project);
+    const many = proj && proj.deliverableCount > 1;
+    const dur = v.duration && isFinite(v.duration) ? v.duration : 0;
+    const head = [
+      "RETOURS REVIEW",
+      "Projet    : " + project,
+      many && r ? "Livrable  : " + r.deliverable +
+        "  (ce projet en porte " + proj.deliverableCount + ")" : null,
+      "Fichier   : renders/" + renderFile,
+      r ? "Chemin    : " + r.path : null,
+      "Format    : " + (v.videoWidth ? v.videoWidth + "×" + v.videoHeight + " · " : "") +
+        FPS + " fps" + (dur ? " · " + fmt(dur) + " (" + Math.round(dur * FPS) + " frames)" : ""),
+      "Retours   : " + items.length,
+    ].filter(Boolean).join("\n");
+    return head + "\n\n" +
+      items.map((it) => fmt(it.t) + " · f" + String(Math.round(it.t * FPS)).padStart(3, "0") +
+        " (" + it.t.toFixed(2) + "s) — " + it.txt).join("\n");
+  };
+  document.getElementById("copy").addEventListener("click", async () => {
+    await navigator.clipboard.writeText(blob());
+    const t = document.getElementById("toast");
+    t.style.opacity = 1; setTimeout(() => t.style.opacity = 0, 1200);
+  });
+  document.getElementById("dl").addEventListener("click", () => {
+    const r = currentRender();
+    const payload = {
+      project,
+      deliverable: r ? r.deliverable : null,
+      render: renderFile,
+      path: r ? r.path : null,
+      fps: FPS,
+      width: v.videoWidth || null,
+      height: v.videoHeight || null,
+      durationSec: v.duration && isFinite(v.duration) ? Number(v.duration.toFixed(3)) : null,
+      notes: items,
+    };
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
+    a.download = "retours-" + project + "-" + renderFile.replace(/\.(mp4|webm|mov)$/i, "") + ".json";
+    a.click();
+  });
+  /* Envoyer au monteur : le hub sauvegarde la composition, confie les retours à
+     un agent qui l'édite, puis relance lint + rendu + vérification. On suit
+     l'avancement ici même — le log complet reste sur la page du projet. */
+  const sendBtn = document.getElementById("send");
+  const sendState = document.getElementById("sendstate");
+  let pollTimer = null;
+  let lastBrief = null;
+
+  function showSend(html) { if (sendState) sendState.innerHTML = html; }
+
+  function pollEditor(id) {
+    clearTimeout(pollTimer);
+    fetch("/api/job/" + encodeURIComponent(id) + "?since=0")
+      .then((r) => r.json())
+      .then((j) => {
+        const last = (j.lines || []).filter((l) => l.trim()).slice(-1)[0] || "";
+        if (j.status === "running") {
+          showSend("<b>" + j.stepLabel + "</b> — étape " + (j.step + 1) + "/" + j.stepCount +
+            "<br><span style='font-family:ui-monospace,monospace;font-size:11px'>" +
+            last.replace(/[<>&]/g, "") + "</span>");
+          pollTimer = setTimeout(() => pollEditor(id), 1500);
+          return;
+        }
+        sendBtn.disabled = false;
+        if (j.status === "done") {
+          showSend("<b>Nouvelle version prête.</b> Recharge la liste des rendus pour la relire.");
+          fetch("/api/reviews").then((r) => r.json()).then((data) => {
+            DATA = data;
+            const f = fillRenders(project);
+            loadRender(project, f);
+          });
+        } else {
+          /* Le brief est écrit sur le disque avant même que l'agent démarre :
+             si le montage automatique échoue, il reste toujours le chemin d'un
+             fichier prêt à coller dans une conversation. */
+          showSend("Le monteur s'est arrêté (" + j.status + "). Le détail est sur la page du projet." +
+            (lastBrief ? "<br>Le brief est prêt : <b>" + lastBrief + "</b>" : ""));
+        }
+      })
+      .catch(() => { sendBtn.disabled = false; showSend("Suivi interrompu — voir la page du projet."); });
+  }
+
+  if (sendBtn) sendBtn.addEventListener("click", () => {
+    if (!items.length) { showSend("Aucun retour à envoyer."); return; }
+    if (!confirm("Envoyer " + items.length + " retour(s) au monteur ?\n\n" +
+      "Il va modifier la composition, puis le hub rendra la version suivante. " +
+      "La composition est sauvegardée dans .backup/ avant toute modification.")) return;
+    sendBtn.disabled = true;
+    showSend("Envoi…");
+    fetch("/api/run", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ slug: project, action: "send-to-editor", file: "renders/" + renderFile }),
+    })
+      .then((r) => r.json().then((b) => ({ ok: r.ok, b })))
+      .then(({ ok, b }) => {
+        if (!ok) { sendBtn.disabled = false; showSend(b.error || "Envoi refusé."); return; }
+        lastBrief = b.brief || null;
+        pollEditor(b.job.id);
+      })
+      .catch((e) => { sendBtn.disabled = false; showSend("Envoi impossible : " + e.message); });
+  });
+
+  document.getElementById("clear").addEventListener("click", () => {
+    if (confirm("Effacer tous les retours ?")) { items = []; save(); render(); }
+  });
+
+  render();
+</script>
+</body>
+</html>

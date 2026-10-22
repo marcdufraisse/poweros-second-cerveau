@@ -1,0 +1,106 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · tier1 · thesis · NAVY
+  Multi-line thesis on the navy canvas. Kicker eyebrow, then the headline
+  reveals word by word entering grey-pre; the whole line flips to white with
+  the lime emphasis span flipping last. Streaks + warm creep + vignette.
+  Slots: kicker, headline (use <em> around the lime emphasis word).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t1-thesis-navy {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 46%);
+        overflow: hidden; font-family: var(--font-display);
+      }
+      #t1-thesis-navy .streaks { position: absolute; inset: 0; background: var(--streaks); }
+      #t1-thesis-navy .warm    { position: absolute; inset: 0; background: var(--warm-creep); opacity: 0; }
+      #t1-thesis-navy .vig     { position: absolute; inset: 0; background: var(--vignette); }
+
+      #t1-thesis-navy .wrap {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 34px; z-index: 2;
+        padding: 0 var(--pad); text-align: center;
+      }
+      #t1-thesis-navy .kicker {
+        font-weight: var(--wt-semi); font-size: var(--size-label);
+        letter-spacing: var(--track-eyebrow); text-transform: uppercase;
+        color: var(--grey-pre);
+      }
+      #t1-thesis-navy .headline {
+        font-weight: var(--wt-heavy); font-size: var(--size-title); line-height: 1.12;
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+        color: var(--grey-pre); max-width: 1560px;
+      }
+      #t1-thesis-navy .headline em { font-style: normal; }
+      #t1-thesis-navy .headline .w { display: inline-block; white-space: pre; }
+    </style>
+  </head>
+  <body>
+    <div id="t1-thesis-navy" data-composition-id="t1-thesis-navy" data-start="0" data-width="1920" data-height="1080">
+      <div class="streaks"></div>
+      <div class="warm"></div>
+      <div class="vig"></div>
+      <div class="wrap">
+        <div class="kicker" data-slot="kicker">THE POINT</div>
+        <div class="headline" data-slot="headline">ONE PERSON CAN NOW RUN AN <em>ENTIRE</em> PRODUCTION STUDIO</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-thesis-navy";
+
+      /* split headline into word spans, preserving the <em> emphasis marker */
+      const hl = document.querySelector(root + " .headline");
+      (function splitWords(el) {
+        const parts = [];
+        el.childNodes.forEach((n) => {
+          if (n.nodeType === 3) {
+            n.textContent.split(/\s+/).filter(Boolean).forEach((w) => parts.push({ w, em: false }));
+          } else if (n.nodeType === 1) {
+            n.textContent.split(/\s+/).filter(Boolean).forEach((w) => parts.push({ w, em: true }));
+          }
+        });
+        el.textContent = "";
+        parts.forEach(({ w, em }, i) => {
+          const s = document.createElement("span");
+          s.className = "w" + (em ? " em" : "");
+          s.textContent = w + (i < parts.length - 1 ? " " : "");
+          el.appendChild(s);
+        });
+      })(hl);
+
+      /* JS-side colors come from tokens.css too */
+      const css = getComputedStyle(document.documentElement);
+      const LIME = css.getPropertyValue("--lime").trim();
+      const WHITE = css.getPropertyValue("--white").trim();
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .kicker", { autoAlpha: 0, y: 16, duration: 0.4, ease: "expo.out" }, 0.1)
+        /* words enter grey-pre with a quick stagger */
+        .from(root + " .headline .w", {
+          autoAlpha: 0, y: 30, duration: 0.4, ease: "expo.out", stagger: 0.055
+        }, 0.3)
+        /* the flip: whole line to white ... */
+        .to(root + " .headline .w:not(.em)", { color: WHITE, duration: 0.24, ease: "power2.inOut" }, 1.15)
+        .to(root + " .kicker", { color: "rgba(255,255,255,0.85)", duration: 0.24, ease: "power2.inOut" }, 1.15)
+        /* ... emphasis flips to lime LAST, with a tiny pop */
+        .to(root + " .headline .em", { color: LIME, duration: 0.22, ease: "power2.inOut" }, 1.45)
+        .fromTo(root + " .headline .em", { scale: 1 }, { scale: 1.06, yoyo: true, repeat: 1, duration: 0.14, ease: "power2.inOut" }, 1.45)
+
+        .to(root + " .warm", { opacity: 1, duration: 1.6, ease: "sine.inOut" }, 1.2)
+
+        .set({}, {}, 5.5);
+
+      window.__timelines["t1-thesis-navy"] = tl;
+    </script>
+  </body>
+</html>

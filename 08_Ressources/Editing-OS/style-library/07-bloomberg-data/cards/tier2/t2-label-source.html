@@ -1,0 +1,71 @@
+<!doctype html>
+<!--
+  BLOOMBERG DATA · tier2 · label · SOURCE
+  Bottom-left minimal source tag over transparent stage. A small --panel
+  chip with a 1px rule border and a 3px accent left edge wipes in along the
+  grid (scaleX draw, transform-origin left): "SOURCE:" in Narrow caps
+  --text-faint, then the source name in Narrow caps white. Square corners,
+  dead-still hold.
+  Slots: source.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-label-source {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; color: var(--text);
+        font-family: var(--font-label); overflow: hidden;
+      }
+
+      #t2-label-source .chip {
+        position: absolute; left: 96px; bottom: 96px;
+        display: flex; align-items: center; gap: 10px;
+        background: var(--panel);
+        border: 1px solid var(--rule);
+        border-left: 3px solid var(--accent);
+        padding: 12px 20px 12px 17px;
+        transform-origin: 0% 50%;
+        white-space: nowrap;
+      }
+      #t2-label-source .tag {
+        font-family: var(--font-label); font-weight: var(--wt-semi);
+        font-size: var(--size-tiny); letter-spacing: var(--track-caps);
+        text-transform: uppercase; color: var(--text-faint);
+      }
+      #t2-label-source .name {
+        font-family: var(--font-label); font-weight: var(--wt-bold);
+        font-size: var(--size-tiny); letter-spacing: var(--track-caps);
+        text-transform: uppercase; color: var(--white);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-label-source" data-composition-id="t2-label-source" data-start="0" data-width="1920" data-height="1080">
+      <div class="chip">
+        <span class="tag">SOURCE:</span>
+        <span class="name" data-slot="source">ACME MEMBER SURVEY 2026</span>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t2-label-source";
+
+      tl
+        /* chip wipes in along the grid */
+        .fromTo(root + " .chip", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.inOut" }, 0.15)
+        .from(root + " .tag", { autoAlpha: 0, duration: 0.3, ease: "power2.out" }, 0.5)
+        .from(root + " .name", { autoAlpha: 0, duration: 0.3, ease: "power2.out" }, 0.6)
+
+        .set({}, {}, 6);
+
+      window.__timelines["t2-label-source"] = tl;
+    </script>
+  </body>
+</html>

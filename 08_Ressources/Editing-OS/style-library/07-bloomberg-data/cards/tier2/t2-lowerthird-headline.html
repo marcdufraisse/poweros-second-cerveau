@@ -1,0 +1,88 @@
+<!doctype html>
+<!--
+  BLOOMBERG DATA · tier2 · lower-third · HEADLINE
+  News-strip lower third, bottom-center-left (max 1150px), transparent
+  stage. A white label box kicker docks on the bar's top edge and
+  clip-reveals first; the headline in Archivo 600 white snaps in inside
+  the taller --panel bar; a thin accent bar underlines the whole strip,
+  drawing left-to-right. Square corners, dead-still hold.
+  Slots: kicker, headline.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-lowerthird-headline {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; color: var(--text);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      #t2-lowerthird-headline .bar {
+        position: absolute; left: 150px; bottom: 140px;
+        width: 1150px; height: 140px;
+        background: var(--panel);
+      }
+
+      /* kicker — white label box docked on the bar's top edge */
+      #t2-lowerthird-headline .kickerbox {
+        position: absolute; left: 40px; top: -36px;
+        overflow: hidden; /* clip-reveal container */
+      }
+      #t2-lowerthird-headline .kickerbox .boxinner {
+        background: var(--white); color: var(--black);
+        font-family: var(--font-label); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-caps);
+        text-transform: uppercase; padding: var(--label-pad);
+        white-space: nowrap;
+      }
+
+      #t2-lowerthird-headline .headline {
+        position: absolute; left: 40px; right: 40px; top: 44px;
+        font-weight: var(--wt-semi); font-size: 42px;
+        letter-spacing: var(--track-tight); line-height: 1.2;
+        color: var(--white);
+      }
+
+      /* accent underline draws left-to-right beneath the whole strip */
+      #t2-lowerthird-headline .underbar {
+        position: absolute; left: 150px; bottom: 137px;
+        width: 1150px; height: 3px; background: var(--accent);
+        transform-origin: 0% 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-lowerthird-headline" data-composition-id="t2-lowerthird-headline" data-start="0" data-width="1920" data-height="1080">
+      <div class="bar">
+        <div class="kickerbox"><div class="boxinner" data-slot="kicker">MARKET NOTE</div></div>
+        <div class="headline" data-slot="headline">AI certification demand outpaces every prior member benefit</div>
+      </div>
+      <div class="underbar"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t2-lowerthird-headline";
+
+      tl
+        /* kicker clip-reveals first, on the bar's top edge */
+        .from(root + " .kickerbox .boxinner", { xPercent: -101, duration: 0.5, ease: "power3.inOut" }, 0.1)
+
+        /* headline snaps in inside the bar */
+        .from(root + " .headline", { autoAlpha: 0, x: 24, duration: 0.5, ease: "expo.out" }, 0.55)
+
+        /* accent bar underlines the whole strip, drawing left-to-right */
+        .fromTo(root + " .underbar", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 0.95)
+
+        .set({}, {}, 6);
+
+      window.__timelines["t2-lowerthird-headline"] = tl;
+    </script>
+  </body>
+</html>

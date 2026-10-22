@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Higgsfield · variant pool browser</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; background: #02060F; color: #F0EEE9;
+        font-family: "Inter", system-ui, sans-serif; }
+      header { padding: 32px 44px 0; position: sticky; top: 0; background: rgba(2,6,15,0.94);
+        backdrop-filter: blur(8px); z-index: 10; border-bottom: 1px solid #101a28; }
+      header h1 { margin: 0; font-weight: 800; font-size: 26px; letter-spacing: -0.02em; }
+      header h1 .lime { color: #D6FD03; }
+      header p { margin: 6px 0 0; color: #7d8fa3; font-size: 14px; }
+      .tabs { display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 0 14px; }
+      .tabs button { background: #0b1420; color: #9fb2c6; border: 1px solid #1a2636;
+        font-weight: 700; font-size: 13px; padding: 8px 14px; border-radius: 100px;
+        cursor: pointer; letter-spacing: 0.02em; }
+      .tabs button.active { background: #D6FD03; color: #02060F; border-color: #D6FD03; }
+      .tabs button .n { opacity: 0.55; font-weight: 500; margin-left: 5px; }
+      .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 22px 44px 60px; }
+      .cell { background: #0A0E14; border: 1px solid #16202c; border-radius: 8px; overflow: hidden; }
+      .meta { display: flex; justify-content: space-between; gap: 8px; align-items: baseline;
+        padding: 9px 13px; background: #0d141d; border-bottom: 1px solid #16202c; }
+      .meta .id { font-weight: 700; font-size: 12px; color: #F0EEE9; white-space: nowrap; }
+      .meta .treat { font-size: 10px; color: #D6FD03; text-transform: uppercase; letter-spacing: 0.08em;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .frame { position: relative; width: 100%; aspect-ratio: 16 / 9;
+        background: linear-gradient(135deg,#5d5852 0%,#3a3631 55%,#262320 100%); }
+      .frame.tier1 { background: #0A0E14; }
+      .frame iframe { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px;
+        border: 0; transform-origin: top left; }
+      .frame .ph { position: absolute; inset: 0; display: flex; align-items: center;
+        justify-content: center; color: #4a5a6c; font-size: 13px; }
+      .count-note { padding: 0 44px; color: #5b6b78; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>09 · Higgsfield · <span class="lime">variant pool</span></h1>
+      <p>1120 cards: 20 curated + 100 generated per section. Cards animate when scrolled into view (max ~24 live at once); switch sections with the tabs. Everything is read from registry.json.</p>
+      <div class="tabs" id="tabs"></div>
+    </header>
+    <div class="count-note" id="note"></div>
+    <div class="grid" id="grid"></div>
+
+    <script>
+      const STYLE_ID = "higgsfield";
+      const PURPOSES = ["section","thesis","stat","overview","quote","label","list","media","lower-third","pip","highlight"];
+      let cards = [], active = "section";
+      const live = new Set(); // iframes currently loaded
+      const MAX_LIVE = 24;
+
+      function fit(cell) {
+        const frame = cell.querySelector(".frame"), iframe = frame.querySelector("iframe");
+        if (iframe) iframe.style.transform = "scale(" + (frame.clientWidth / 1920) + ")";
+      }
+      function drive(iframe) {
+        const w = iframe.contentWindow; let tries = 0;
+        (function go() {
+          const t = w.__timelines, keys = t ? Object.keys(t) : [];
+          if (!keys.length) { if (tries++ < 100) setTimeout(go, 90); return; }
+          keys.forEach(k => {
+            const tl = t[k];
+            tl.eventCallback("onComplete", () => setTimeout(() => tl.restart(), 1200));
+            tl.play(0);
+          });
+        })();
+      }
+      function loadCell(cell) {
+        if (cell.dataset.loaded) return;
+        // evict oldest if over budget
+        while (live.size >= MAX_LIVE) {
+          const oldest = live.values().next().value;
+          unloadCell(oldest);
+        }
+        const frame = cell.querySelector(".frame");
+        frame.querySelector(".ph")?.remove();
+        const iframe = document.createElement("iframe");
+        iframe.src = "../../" + cell.dataset.file;
+        iframe.scrolling = "no";
+        iframe.addEventListener("load", () => { fit(cell); drive(iframe); });
+        frame.appendChild(iframe);
+        cell.dataset.loaded = "1";
+        live.add(cell);
+      }
+      function unloadCell(cell) {
+        const iframe = cell.querySelector("iframe");
+        if (iframe) iframe.remove();
+        const ph = document.createElement("div");
+        ph.className = "ph"; ph.textContent = "scroll to load";
+        cell.querySelector(".frame").appendChild(ph);
+        delete cell.dataset.loaded;
+        live.delete(cell);
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) loadCell(e.target);
+          else if (e.target.dataset.loaded) unloadCell(e.target);
+        });
+      }, { rootMargin: "200px 0px" });
+
+      function render() {
+        live.clear();
+        const grid = document.getElementById("grid");
+        grid.innerHTML = "";
+        const subset = cards.filter(c => c.purpose === active);
+        document.getElementById("note").textContent =
+          subset.length + " " + active + " cards - curated first, then generated variants";
+        subset.forEach(c => {
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          cell.dataset.file = c.file; // registry paths are style-library-root-relative
+          const short = c.id.replace("higgsfield.", "");
+          cell.innerHTML =
+            '<div class="meta"><span class="id">' + short + '</span>' +
+            '<span class="treat">' + (c.treatment || "") + '</span></div>' +
+            '<div class="frame ' + c.tier + '"><div class="ph">scroll to load</div></div>';
+          grid.appendChild(cell);
+          io.observe(cell);
+        });
+      }
+      function renderTabs() {
+        const tabs = document.getElementById("tabs");
+        tabs.innerHTML = "";
+        PURPOSES.forEach(p => {
+          const n = cards.filter(c => c.purpose === p).length;
+          if (!n) return;
+          const b = document.createElement("button");
+          b.innerHTML = p + '<span class="n">' + n + '</span>';
+          b.className = p === active ? "active" : "";
+          b.onclick = () => { active = p; renderTabs(); render(); window.scrollTo(0, 0); };
+          tabs.appendChild(b);
+        });
+      }
+      fetch("../../registry.json").then(r => r.json()).then(reg => {
+        const style = (reg.styles || []).find(s => s.id === STYLE_ID);
+        cards = style.cards.map(c => ({ ...c, file: c.file }));
+        // curated (no .vNNN suffix) first within each purpose
+        cards.sort((a, b) => (/\.v\d{3}$/.test(a.id) ? 1 : 0) - (/\.v\d{3}$/.test(b.id) ? 1 : 0));
+        renderTabs(); render();
+      });
+      window.addEventListener("resize", () => document.querySelectorAll(".cell[data-loaded]").forEach(fit));
+    </script>
+  </body>
+</html>

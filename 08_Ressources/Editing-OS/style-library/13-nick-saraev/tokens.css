@@ -1,0 +1,100 @@
+/* ============================================================================
+   NICK SARAEV — style tokens
+   Single source of palette / type / motion for every card in this style.
+   Cards reference these vars and never hardcode colors, fonts or easings.
+   Tweak here, all cards update. See DESIGN.md.
+
+   Aesthetic: instagram.com/nick_saraev — le reel « galerie blanche ».
+   Fond blanc dur ou mur clair, une VOIX SERIF ITALIQUE EN CAPITALES pour les
+   mots-choc, une géométrique grasse pour les sous-titres courants, la mascotte
+   pixel corail (robot Claude), et LE geste : une vraie capture d'écran floutée
+   avec UNE zone nette encadrée d'un trait néon épais (orange, lime, cyan).
+   Presque deux fois plus rapide que Nathan Hodgson : 25-35 coupes/minute.
+   Couleurs échantillonnées au pixel sur 10 reels (30/07 → 17/08 2026).
+   ============================================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600;1,700;1,800&family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+:root {
+  /* --- les deux scènes ----------------------------------------------------
+     La GALERIE : blanc dur, presque pur, où flottent props et mascotte.
+     Parfois une ombre de feuille de palmier dans un coin, très douce.
+     Le NOIR : plein cadre pour les captures sombres et les mots serif seuls. */
+  --white:        #FCFCFC;   /* la galerie. Quasi pur, jamais crème. */
+  --white-shade:  #EFEFEA;   /* l'ombre de feuillage / le coin ombré */
+  --black:        #0A0A0C;   /* la scène noire */
+  --black-panel:  #131316;   /* une capture sombre posée sur le noir */
+
+  --ink:          #131313;   /* le texte sur blanc */
+  --ink-mute:     rgba(19, 19, 19, 0.45);
+  --paper-fg:     #FFFFFF;   /* le texte sur noir */
+  --paper-mute:   rgba(255, 255, 255, 0.55);
+
+  /* --- la mascotte + son corail ------------------------------------------- */
+  --coral:        #E27D55;   /* le robot pixel, le script serif, les GIVES */
+  --coral-deep:   #C96540;
+  --cream-prop:   #E5DFD3;   /* le fond des cartes-props beige (installer) */
+
+  /* --- LES NÉONS — un par annotation, jamais deux à l'écran ---------------
+     Le geste signature : capture réelle FLOUTÉE, une zone NETTE encadrée
+     d'un trait néon ~8px très arrondi. La couleur tourne d'un reel à
+     l'autre ; l'orange est la plus fréquente. */
+  --neon-orange:  #FE850D;
+  --neon-lime:    #D0FC10;
+  --neon-cyan:    #00C8CC;
+  --neon-red:     #FC4C34;   /* aussi la couleur du markup éditorial */
+  --neon-w:       8px;    /* petite zone. Calibration 18/08 : monter à 12-20px
+                             (1080) quand la zone est une grande carte — le trait
+                             de Nick grossit avec la zone, jusqu'à ~45px. */
+  --neon-r:       28px;
+
+  /* --- le markup éditorial (reel Humanizer) ------------------------------- */
+  --mark-red:     #D03C3C;   /* pilules label + biffures */
+  --mark-wash:    rgba(208, 60, 60, 0.16);   /* le lavis derrière le texte fautif */
+
+  /* semantic aliases the blueprint contract expects */
+  --bg:     var(--white);
+  --fg:     var(--ink);
+  --accent: var(--coral);
+  --muted:  var(--ink-mute);
+
+  /* --- typographie ---------------------------------------------------------
+     TROIS voix, et le contraste entre les deux premières EST le style :
+     1. SERIF ITALIQUE CAPITALES (Playfair Display) — les mots-choc :
+        « A FREE », « UNCENSORED », « EVERY SESSION », « ALL 33 ». Blanche sur
+        noir, noire sur blanc. Jamais une phrase entière.
+     2. Géométrique grasse (Poppins) — les sous-titres courants, 2-4 mots
+        minuscules : « a scan », « fixes to », « try this ».
+     3. Le SCRIPT CORAIL (Playfair italique corail, ou une vraie script) —
+        les liaisons : « which gives », « comment "Claude" ». Toujours corail
+        ou blanc, toujours italique, superposé À CHEVAL sur l'autre voix. */
+  --font-serif:   "Playfair Display", "Instrument Serif", Georgia, serif;
+  --font-body:    "Poppins", "Inter", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+  --fs-serif:     108px;  /* le mot-choc serif caps */
+  --fs-caption:   58px;   /* le sous-titre courant */
+  --fs-script:    64px;   /* la liaison script */
+
+  --tracking-serif: 0.01em;
+
+  /* --- géométrie ---------------------------------------------------------- */
+  --r-panel:      22px;   /* une capture posée en carte */
+  --r-prop:       36px;   /* une carte-prop (installer, app icon) */
+  --plate-r:      64px;   /* la plaque arrondie derrière le visage détouré */
+  --shadow-prop:  0 30px 70px rgba(10, 10, 12, 0.18), 0 6px 18px rgba(10, 10, 12, 0.08);
+  --shadow-panel: 0 24px 60px rgba(0, 0, 0, 0.45);
+
+  /* --- moteur -------------------------------------------------------------
+     Une seule vitesse : VITE. Tout entre en 0.22-0.30s, poppy, et le plan
+     coupe avant que ça retombe. WHIP-SCALE pour les captures (1.12 → 1.0
+     avec un soupçon de blur), STAMP pour les mots serif (0.94 → 1.0 sec),
+     BOB pour la mascotte (rotation ±4°, sautille en boucle). Le zoom
+     continue TOUJOURS au moment de la coupe. */
+  --dur-in:       0.26s;
+  --dur-stamp:    0.22s;
+  --dur-drift:    7s;
+  --ease-in:      power4.out;
+  --ease-stamp:   power3.out;
+  --ease-bob:     sine.inOut;
+}

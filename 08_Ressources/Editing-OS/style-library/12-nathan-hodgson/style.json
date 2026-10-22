@@ -1,0 +1,295 @@
+{
+  "$schema": "../registry.schema.json",
+  "id": "nathan-hodgson",
+  "name": "Nathan Hodgson",
+  "number": "12",
+  "status": "draft",
+  "inspiration": "instagram.com/nathanhodgson.ai — the 'replayed tutorial' reel. Refs pulled from his last 10 reels (Aug 3-17 2026: DcJ0T19xsFx, DcHRrxNReQv, DcEfmJeutHp, DcCSsqsxGW8, Db_uV82x_2_, Db80jdBxmNc, Db6G_VhO8lh, Db3dRm9s1yg, Db1Ba0iu5fy, Dbydve0OqNc). Warm cream stage that is never flat, ONE orange accent, and interfaces that are REDRAWN (not screen-captured) and execute themselves while he talks: prompts type themselves, counters run, badges flip to done. Permanent top/bottom sandwich with a hard seam at ~52%, one-word pill captions, and the same violet Comment end-card on 10 reels out of 10. Reference frames in references/.",
+  "summary": "The short-form 'proof reel' style. Use for 35-55s vertical tool demos where a redrawn UI plays its own sequence above the talking head — the closest published analog to the user's reels, and the short-form complement to Dan Kieft (11). PLAYBOOK.md is the full A-to-Z edit recipe (speech-to-shot table, in-shot cadence rules) with a real reel decomposed shot by shot. Pick this style for WORKFLOWS (step sequences to replay); pick Nick Saraev (13) for tool NEWS.",
+  "format": "vertical reels 9:16 (1080x1920). Not built for long-form.",
+  "palette": {
+    "bg": "#F1E7DC",
+    "fg": "#1F140E",
+    "accent": "#E88050",
+    "accentDeep": "#C86038",
+    "accentLit": "#F8A078",
+    "creamDeep": "#E0CABB",
+    "panel": "#25201F",
+    "green": "#489860",
+    "blue": "#0068B8",
+    "select": "#2D5ECB",
+    "violet": "#280850",
+    "violetDeep": "#100038",
+    "violetLit": "#4D1289",
+    "notes": "ONE accent only (orange). Green and blue are UI statuses, not accents. The violet gradient exists only on the end-card. Ink is warm brown-black, never #000. Sampled per-pixel from the refs. Mirrored in tokens.css."
+  },
+  "fonts": {
+    "display": "Inter Tight",
+    "body": "Poppins",
+    "mono": "JetBrains Mono",
+    "notes": "Display = heavy grotesque CAPS, tightly tracked (-0.035em), titles only; numbers inside titles are orange and count up. Poppins (geometric) carries everything else including the one-word captions — it is what makes the style read 'product'. JetBrains Mono for values, counters, paths, statuses only, never a sentence. No serif anywhere."
+  },
+  "motion": "Three speeds. POP (everything that arrives) back.out(1.8) ~0.32s. RUN (whatever executes: typing 45ms/char, counters, progress bars) strictly linear — it is a machine, not an animation. FLOAT (the cream stage's blurred blocks) ~9s drift, never resolved. The defining rule: redrawn UIs PLAY A SEQUENCE in causal order (prompt types → status appears → result rows drop in → badges flip → counter runs). Nothing is 'presented'; everything happens.",
+  "transitions": "Hard cuts. The frame sandwich has a hard seam at 44-60% height (graphic above, talking head below) — never a gradient. Full-frame graphic moments last 2-3s max before the face returns. Every reel ends on the violet Comment card at -1 to -3s.",
+  "pacing": {
+    "cutsPerMinute": 16.9,
+    "medianShotSeconds": 3.0,
+    "durationSeconds": "34-54",
+    "notes": "Measured across the 10 reels (scene>0.25 detection). Half the speed of Nick Saraev — each shot must hold long enough for a UI sequence to play. Do not speed this style up."
+  },
+  "cards": [
+    {
+      "id": "nathan-hodgson.t1.section.titlerule",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "title-gradient-rule",
+      "file": "cards/tier1/t1-title-rule.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text",
+          "maxChars": 16
+        },
+        {
+          "name": "number",
+          "type": "text",
+          "maxChars": 4
+        }
+      ],
+      "duration": {
+        "min": 2,
+        "max": 4
+      },
+      "notes": "The style's stamp: small orange asterisk, tight CAPS title, 43%-wide 7px gradient rule drawing left-to-right in 0.32s. If the title contains a number, it is orange and counts up.",
+      "preview": {
+        "mp4": "preview/nathan-hodgson.t1.section.titlerule.mp4",
+        "poster": "preview/nathan-hodgson.t1.section.titlerule.png"
+      }
+    },
+    {
+      "id": "nathan-hodgson.t1.overview.uirun",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "replayed-ui",
+      "file": "cards/tier1/t1-ui-run.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text",
+          "maxChars": 16
+        },
+        {
+          "name": "prompt",
+          "type": "text",
+          "maxChars": 40
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "maxChars": 24
+        },
+        {
+          "name": "row1",
+          "type": "text",
+          "maxChars": 28
+        },
+        {
+          "name": "row1badge",
+          "type": "text",
+          "maxChars": 12
+        },
+        {
+          "name": "row2",
+          "type": "text",
+          "maxChars": 28
+        },
+        {
+          "name": "row2badge",
+          "type": "text",
+          "maxChars": 12
+        },
+        {
+          "name": "counterLabel",
+          "type": "text",
+          "maxChars": 10
+        },
+        {
+          "name": "counterEnd",
+          "type": "text",
+          "maxChars": 5
+        },
+        {
+          "name": "counterTotal",
+          "type": "text",
+          "maxChars": 5
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 12
+      },
+      "notes": "THE signature. A redrawn dark app card on the cream stage plays its causal sequence: prompt types itself (45ms/char) → status line pops → result rows drop (stagger 0.18s) → badges flip to green ✓ → counter runs linearly with the progress bar. Composer bar stays inert at the bottom as context proof.",
+      "preview": {
+        "mp4": "preview/nathan-hodgson.t1.overview.uirun.mp4",
+        "poster": "preview/nathan-hodgson.t1.overview.uirun.png"
+      }
+    },
+    {
+      "id": "nathan-hodgson.t2.list.specrows",
+      "tier": "tier2",
+      "purpose": "list",
+      "treatment": "spec-rows",
+      "file": "cards/tier2/t2-spec-rows.html",
+      "slots": [
+        {
+          "name": "row1label",
+          "type": "text",
+          "maxChars": 22
+        },
+        {
+          "name": "row1sub",
+          "type": "text",
+          "maxChars": 34
+        },
+        {
+          "name": "row1value",
+          "type": "text",
+          "maxChars": 10
+        },
+        {
+          "name": "row2label",
+          "type": "text",
+          "maxChars": 22
+        },
+        {
+          "name": "row2sub",
+          "type": "text",
+          "maxChars": 34
+        },
+        {
+          "name": "row2value",
+          "type": "text",
+          "maxChars": 10
+        },
+        {
+          "name": "row3label",
+          "type": "text",
+          "maxChars": 22
+        },
+        {
+          "name": "row3sub",
+          "type": "text",
+          "maxChars": 34
+        },
+        {
+          "name": "row3value",
+          "type": "text",
+          "maxChars": 10
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 8
+      },
+      "notes": "Three white rows max, icon chip left, bold label + grey sub, MONO value right-aligned. Rows arrive from below one by one, 0.18s apart. Never a sentence in the value slot.",
+      "preview": {
+        "mp4": "preview/nathan-hodgson.t2.list.specrows.mp4",
+        "poster": "preview/nathan-hodgson.t2.list.specrows.png"
+      }
+    },
+    {
+      "id": "nathan-hodgson.soc.cta.violet",
+      "tier": "social",
+      "purpose": "cta",
+      "treatment": "violet-comment-card",
+      "file": "cards/social/soc-cta-violet.html",
+      "slots": [
+        {
+          "name": "keyword",
+          "type": "text",
+          "maxChars": 12
+        }
+      ],
+      "duration": {
+        "min": 2,
+        "max": 4
+      },
+      "notes": "The mandatory ending, present in 10/10 source reels. Violet gradient panel over the top ~25% of frame, 'Comment' in white geometric, full-width white pill mimicking a real IG comment field (keyword in REGULAR weight — the only non-bold type in the style), share glyph right.",
+      "preview": {
+        "mp4": "preview/nathan-hodgson.soc.cta.violet.mp4",
+        "poster": "preview/nathan-hodgson.soc.cta.violet.png"
+      }
+    },
+    {
+      "id": "nathan-hodgson.soc.captions.pill",
+      "tier": "social",
+      "purpose": "captions",
+      "treatment": "one-word-pill",
+      "file": "cards/social/soc-captions-pill.html",
+      "slots": [
+        {
+          "name": "words",
+          "type": "json"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 60
+      },
+      "notes": "One word at a time in a translucent grey pill (rgba(37,27,21,.56), radius 14), white bold geometric, centered just below the sandwich seam (~56% height) — never on the mouth. Word swaps at spoken onset with a 0.16s micro-pop.",
+      "preview": {
+        "mp4": "preview/nathan-hodgson.soc.captions.pill.mp4",
+        "poster": "preview/nathan-hodgson.soc.captions.pill.png"
+      }
+    },
+    {
+      "id": "nathan-hodgson.soc.doc.select",
+      "tier": "social",
+      "purpose": "screen",
+      "treatment": "browser-selection",
+      "file": "cards/social/soc-doc-select.html",
+      "slots": [
+        {
+          "name": "line1",
+          "type": "text",
+          "maxChars": 60
+        },
+        {
+          "name": "line2",
+          "type": "text",
+          "maxChars": 60
+        },
+        {
+          "name": "line3",
+          "type": "text",
+          "maxChars": 60
+        },
+        {
+          "name": "selectStart",
+          "type": "text",
+          "maxChars": 4
+        },
+        {
+          "name": "selectEnd",
+          "type": "text",
+          "maxChars": 4
+        }
+      ],
+      "duration": {
+        "min": 3,
+        "max": 6
+      },
+      "notes": "His annotation gesture: zoom a real document to 200-300% and sweep the native browser text selection (#2D5ECB) across the phrase as he says it. No drawn frames, no arrows — the selection IS the highlight. The exact inverse of Nick Saraev's neon frame; never mix the two.",
+      "preview": {
+        "mp4": "preview/nathan-hodgson.soc.doc.select.mp4",
+        "poster": "preview/nathan-hodgson.soc.doc.select.png"
+      }
+    }
+  ],
+  "backlog": [
+    "t1-number-count — full-frame title where the orange number counts (0 INTERVIEWS → 10 INTERVIEWS)",
+    "t2-mock-calendar — the pastel Google-Calendar mock filling itself with interview blocks",
+    "t2-chat-bubble — Claude chat exchange with orange-highlighted answer phrase",
+    "cx-cream-props — 3D-ish floating props (laptop, cards) on the drifting cream stage"
+  ]
+}

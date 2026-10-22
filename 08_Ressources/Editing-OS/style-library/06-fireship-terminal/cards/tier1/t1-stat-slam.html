@@ -1,0 +1,123 @@
+<!doctype html>
+<!--
+  FIRESHIP TERMINAL · tier1 · stat · SLAM
+  Full-screen takeover. Small mono kicker chip fades up top; a GIANT cream
+  Luckiest-Guy number STAMPS dead-center with an impact shake (scale 1.6→1,
+  back.out, ~0.28s); a flame-gradient underline bar wipes beneath it; a cream
+  Luckiest-Guy label line stamps in below the bar after. Dead stillness after.
+  Slots: kicker, stat, label.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-stat-slam {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--cream);
+        font-family: var(--font-display); overflow: hidden;
+      }
+      #t1-stat-slam .vig { position: absolute; inset: 0; background: var(--vignette); z-index: 5; pointer-events: none; }
+
+      #t1-stat-slam .center {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-align: center;
+      }
+
+      /* mono kicker chip */
+      #t1-stat-slam .kicker {
+        font-family: var(--font-mono); font-size: var(--size-label);
+        color: var(--text-dim); letter-spacing: 0.08em;
+        border: 1px solid var(--panel-edge); border-radius: var(--radius-sm);
+        background: var(--panel);
+        padding: 10px 22px; margin-bottom: 40px;
+      }
+      #t1-stat-slam .kicker .prompt { color: var(--syn-green); }
+
+      /* the giant number stamp */
+      #t1-stat-slam .stat {
+        font-size: var(--size-mega); line-height: 1;
+        letter-spacing: var(--track-caps);
+        color: var(--cream);
+        -webkit-text-stroke: var(--stroke-w) var(--outline);
+        paint-order: stroke fill;
+        text-shadow: var(--caption-shadow);
+        display: inline-block;
+      }
+
+      /* flame underline bar */
+      #t1-stat-slam .bar {
+        width: 460px; height: 16px; border-radius: 8px;
+        background: var(--flame-grad);
+        margin-top: 30px;
+        transform-origin: 0% 50%;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.8);
+      }
+
+      /* label line, stamps in after */
+      #t1-stat-slam .label {
+        font-size: var(--size-title); line-height: 1.1;
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+        color: var(--cream);
+        -webkit-text-stroke: calc(var(--stroke-w) * 0.6) var(--outline);
+        paint-order: stroke fill;
+        text-shadow: var(--caption-shadow);
+        margin-top: 40px;
+        max-width: 1400px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-stat-slam" data-composition-id="t1-stat-slam" data-start="0" data-width="1920" data-height="1080">
+      <div class="center">
+        <div class="kicker"><span class="prompt">$</span> <span data-slot="kicker">the numbers don't lie</span></div>
+        <div class="stat" data-slot="stat">1,847</div>
+        <div class="bar"></div>
+        <div class="label" data-slot="label">AGENTS CERTIFIED THIS YEAR</div>
+      </div>
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-stat-slam";
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .kicker", { autoAlpha: 0, y: -14, duration: 0.3, ease: "expo.out" }, 0.1)
+
+        /* THE STAMP — giant number, impact shake on landing */
+        .from(root + " .stat", {
+          autoAlpha: 0, scale: 1.6, transformOrigin: "50% 55%",
+          duration: 0.28, ease: "back.out(2.2)"
+        }, 0.55)
+        .to(root + " .stat", {
+          keyframes: [
+            { x: -10, duration: 0.045 },
+            { x: 9, duration: 0.045 },
+            { x: -6, duration: 0.045 },
+            { x: 4, duration: 0.045 },
+            { x: 0, duration: 0.045 }
+          ], ease: "none"
+        }, ">-0.02")
+
+        /* flame bar wipes in right after the shake */
+        .fromTo(root + " .bar", { scaleX: 0 }, { scaleX: 1, duration: 0.34, ease: "expo.out" }, ">0.02")
+
+        /* label stamps in below, after the bar */
+        .from(root + " .label", {
+          autoAlpha: 0, scale: 1.6, transformOrigin: "50% 50%",
+          duration: 0.28, ease: "back.out(2.2)"
+        }, ">0.08")
+
+        /* dead stillness — the hold is the timing */
+        .set({}, {}, 7);
+
+      window.__timelines["t1-stat-slam"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<!--
+  NATHAN HODGSON · social · captions · LA PASTILLE MOT À MOT
+  Un mot à la fois dans une pastille grise translucide, texte blanc gras en
+  géométrique, centrée juste SOUS l'arête du sandwich (~56%), jamais sur la
+  bouche. Le mot change à l'onset exact, micro-pop 0.16s.
+  Overlay transparent pour toute la durée du reel.
+  Slot convention: Agent 3 remplace le JSON #ncp-words par les timings réels
+  du transcript → [{ "t": 0.00, "w": "ce" }, ...]. Pas de mots-clés colorés
+  dans ce style : la pastille est toujours blanche sur gris.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-captions-pill {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        background: transparent; overflow: hidden;
+        font-family: var(--font-body);
+      }
+      #soc-captions-pill .word {
+        position: absolute; left: 0; right: 0; top: 1075px; /* ~56% */
+        display: flex; justify-content: center; pointer-events: none;
+      }
+      #soc-captions-pill .word span {
+        display: inline-block;
+        background: var(--pill-bg); color: var(--pill-fg);
+        border-radius: var(--pill-radius);
+        padding: 14px 28px;
+        font-size: var(--fs-caption); font-weight: 700; line-height: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="soc-captions-pill" data-composition-id="soc-captions-pill" data-start="0" data-width="1080" data-height="1920">
+      <div class="word"><span id="ncp-word"></span></div>
+
+      <script type="application/json" id="ncp-words" data-slot="words">
+        [
+          { "t": 0.10, "w": "ce" },
+          { "t": 0.38, "w": "montage" },
+          { "t": 0.80, "w": "est" },
+          { "t": 1.02, "w": "fait" },
+          { "t": 1.30, "w": "par" },
+          { "t": 1.52, "w": "une" },
+          { "t": 1.74, "w": "IA" }
+        ]
+      </script>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const WORD_HOLD = 0.8;
+
+      const words = JSON.parse(document.getElementById("ncp-words").textContent);
+      const el = document.getElementById("ncp-word");
+
+      const tl = gsap.timeline({ paused: true });
+
+      words.forEach(({ t, w }) => {
+        tl.set(el, { textContent: w }, t);
+        tl.fromTo(el, { scale: 0.86, autoAlpha: 0.4 },
+          { scale: 1, autoAlpha: 1, duration: 0.16, ease: "back.out(2.2)" }, t);
+      });
+
+      const end = words[words.length - 1].t + WORD_HOLD;
+      tl.to(el, { autoAlpha: 0, duration: 0.2, ease: "power2.in" }, end);
+      tl.set({}, {}, end + 0.3);
+
+      window.__timelines["soc-captions-pill"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,663 @@
+{
+  "$schema": "../registry.schema.json",
+  "id": "fireship-terminal",
+  "name": "Fireship Terminal",
+  "number": "06",
+  "status": "draft",
+  "inspiration": "Fireship dev-explainer. Near-black stage, cream Luckiest-Guy captions with fat black outlines stamping in word by word, JetBrains Mono code panels with pastel syntax colors and traffic-dot window chrome, neon wireframe title frames, flame-orange energy, meme-speed percussive pacing. Reference frames in references/.",
+  "summary": "The fast, funny, technical style. Use for AI/tool tutorials, news-style updates, and any content where dev credibility plus punchy humor carries the edit.",
+  "palette": {
+    "bg": "#0B0B0F",
+    "fg": "#E8E6DF",
+    "accent": "#37BDF8",
+    "cream": "#F4EFE2",
+    "flame": "#FF6A2B",
+    "synPink": "#F471B5",
+    "synGreen": "#A3E635",
+    "synPurple": "#A78BFA",
+    "notes": "Captions are always cream with black stroke. brand blue is hero syntax + neon. Flame orange is the energy hit. Syntax pastels live only inside code panels and chips. Mirrored in tokens.css."
+  },
+  "fonts": {
+    "display": "Luckiest Guy",
+    "body": "Inter",
+    "mono": "JetBrains Mono",
+    "notes": "Luckiest Guy ALL CAPS with -webkit-text-stroke black rim (paint-order: stroke fill) is the caption voice. JetBrains Mono is all code/labels. Inter is rare supporting copy."
+  },
+  "motion": "Percussive. Captions STAMP in (scale 1.6-to-1, back.out(2.2), ~0.28s) word by word or row by row; code types on linearly with a blinking cursor (finite); neon frames flicker on; panels snap with expo.out. Dead stillness between hits - no drifts, no breathing.",
+  "transitions": "Hard snap cuts and stamp-overlaps; a flame-gradient bar can wipe across. Never soft dissolves, never floaty whips.",
+  "cards": [
+    {
+      "id": "fireship-terminal.t1.thesis.slam",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "slam",
+      "file": "cards/tier1/t1-thesis-slam.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "headline",
+          "type": "richtext"
+        },
+        {
+          "name": "tag",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.thesis.slam.mp4",
+        "poster": "preview/fireship-terminal.t1.thesis.slam.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t1.overview.stack",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "stack",
+      "file": "cards/tier1/t1-overview-stack.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "r1",
+          "type": "text"
+        },
+        {
+          "name": "r2",
+          "type": "text"
+        },
+        {
+          "name": "r3",
+          "type": "text"
+        },
+        {
+          "name": "r4",
+          "type": "text"
+        },
+        {
+          "name": "r5",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.overview.stack.mp4",
+        "poster": "preview/fireship-terminal.t1.overview.stack.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t1.overview.editor",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "editor",
+      "file": "cards/tier1/t1-overview-editor.html",
+      "slots": [
+        {
+          "name": "f1",
+          "type": "text"
+        },
+        {
+          "name": "f2",
+          "type": "text"
+        },
+        {
+          "name": "f3",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.overview.editor.mp4",
+        "poster": "preview/fireship-terminal.t1.overview.editor.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.custom.demo.terminal",
+      "tier": "custom",
+      "purpose": "demo",
+      "treatment": "terminal",
+      "file": "cards/custom/c-terminal.html",
+      "slots": [
+        {
+          "name": "cmd1",
+          "type": "text"
+        },
+        {
+          "name": "out1",
+          "type": "text"
+        },
+        {
+          "name": "cmd2",
+          "type": "text"
+        },
+        {
+          "name": "o1",
+          "type": "text"
+        },
+        {
+          "name": "o2",
+          "type": "text"
+        },
+        {
+          "name": "o3",
+          "type": "text"
+        },
+        {
+          "name": "done",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.custom.demo.terminal.mp4",
+        "poster": "preview/fireship-terminal.custom.demo.terminal.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.custom.gag.error",
+      "tier": "custom",
+      "purpose": "gag",
+      "treatment": "error",
+      "file": "cards/custom/c-error.html",
+      "slots": [
+        {
+          "name": "e1",
+          "type": "text"
+        },
+        {
+          "name": "e2",
+          "type": "text"
+        },
+        {
+          "name": "e3",
+          "type": "text"
+        },
+        {
+          "name": "err",
+          "type": "text"
+        },
+        {
+          "name": "react",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.custom.gag.error.mp4",
+        "poster": "preview/fireship-terminal.custom.gag.error.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.custom.compare.diff",
+      "tier": "custom",
+      "purpose": "compare",
+      "treatment": "diff",
+      "file": "cards/custom/c-diff.html",
+      "slots": [
+        {
+          "name": "d1",
+          "type": "text"
+        },
+        {
+          "name": "d2",
+          "type": "text"
+        },
+        {
+          "name": "d3",
+          "type": "text"
+        },
+        {
+          "name": "a1",
+          "type": "text"
+        },
+        {
+          "name": "a2",
+          "type": "text"
+        },
+        {
+          "name": "a3",
+          "type": "text"
+        },
+        {
+          "name": "sum",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.custom.compare.diff.mp4",
+        "poster": "preview/fireship-terminal.custom.compare.diff.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t1.stat.slam",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "slam",
+      "file": "cards/tier1/t1-stat-slam.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.stat.slam.mp4",
+        "poster": "preview/fireship-terminal.t1.stat.slam.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t1.stat.terminal",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "terminal",
+      "file": "cards/tier1/t1-stat-terminal.html",
+      "slots": [
+        {
+          "name": "cmd",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "number"
+        },
+        {
+          "name": "note",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.stat.terminal.mp4",
+        "poster": "preview/fireship-terminal.t1.stat.terminal.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t1.stat.benchmark",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "benchmark",
+      "file": "cards/tier1/t1-stat-benchmark.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "l1",
+          "type": "text"
+        },
+        {
+          "name": "v1",
+          "type": "number"
+        },
+        {
+          "name": "l2",
+          "type": "text"
+        },
+        {
+          "name": "v2",
+          "type": "number"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.stat.benchmark.mp4",
+        "poster": "preview/fireship-terminal.t1.stat.benchmark.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t1.quote.echo",
+      "tier": "tier1",
+      "purpose": "quote",
+      "treatment": "echo",
+      "file": "cards/tier1/t1-quote-echo.html",
+      "slots": [
+        {
+          "name": "quote",
+          "type": "text"
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "role",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.quote.echo.mp4",
+        "poster": "preview/fireship-terminal.t1.quote.echo.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t1.quote.commit",
+      "tier": "tier1",
+      "purpose": "quote",
+      "treatment": "commit",
+      "file": "cards/tier1/t1-quote-commit.html",
+      "slots": [
+        {
+          "name": "quote",
+          "type": "text"
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "role",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.quote.commit.mp4",
+        "poster": "preview/fireship-terminal.t1.quote.commit.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t1.thesis.oneword",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "oneword",
+      "file": "cards/tier1/t1-thesis-oneword.html",
+      "slots": [
+        {
+          "name": "word",
+          "type": "text"
+        },
+        {
+          "name": "sub",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.thesis.oneword.mp4",
+        "poster": "preview/fireship-terminal.t1.thesis.oneword.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t1.thesis.stack",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "stack",
+      "file": "cards/tier1/t1-thesis-stack.html",
+      "slots": [
+        {
+          "name": "setup",
+          "type": "text"
+        },
+        {
+          "name": "punch",
+          "type": "richtext"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.thesis.stack.mp4",
+        "poster": "preview/fireship-terminal.t1.thesis.stack.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t1.section.neon",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "neon",
+      "file": "cards/tier1/t1-section-neon.html",
+      "slots": [
+        {
+          "name": "index",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.section.neon.mp4",
+        "poster": "preview/fireship-terminal.t1.section.neon.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t1.section.versus",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "versus",
+      "file": "cards/tier1/t1-section-versus.html",
+      "slots": [
+        {
+          "name": "left",
+          "type": "text"
+        },
+        {
+          "name": "right",
+          "type": "text"
+        },
+        {
+          "name": "foot",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.section.versus.mp4",
+        "poster": "preview/fireship-terminal.t1.section.versus.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t1.section.flame",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "flame",
+      "file": "cards/tier1/t1-section-flame.html",
+      "slots": [
+        {
+          "name": "index",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t1.section.flame.mp4",
+        "poster": "preview/fireship-terminal.t1.section.flame.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t2.caption.slam",
+      "tier": "tier2",
+      "purpose": "caption",
+      "treatment": "slam",
+      "file": "cards/tier2/t2-caption-slam.html",
+      "slots": [
+        {
+          "name": "caption",
+          "type": "richtext"
+        }
+      ],
+      "duration": {
+        "min": 3,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t2.caption.slam.mp4",
+        "poster": "preview/fireship-terminal.t2.caption.slam.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t2.lower-third.prompt",
+      "tier": "tier2",
+      "purpose": "lower-third",
+      "treatment": "prompt",
+      "file": "cards/tier2/t2-lowerthird-prompt.html",
+      "slots": [
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "role",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 3,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t2.lower-third.prompt.mp4",
+        "poster": "preview/fireship-terminal.t2.lower-third.prompt.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t2.label.chip",
+      "tier": "tier2",
+      "purpose": "label",
+      "treatment": "chip",
+      "file": "cards/tier2/t2-label-chip.html",
+      "slots": [
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "value",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 3,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t2.label.chip.mp4",
+        "poster": "preview/fireship-terminal.t2.label.chip.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t2.list.checklist",
+      "tier": "tier2",
+      "purpose": "list",
+      "treatment": "checklist",
+      "file": "cards/tier2/t2-list-checklist.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "i1",
+          "type": "text"
+        },
+        {
+          "name": "i2",
+          "type": "text"
+        },
+        {
+          "name": "i3",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 3,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t2.list.checklist.mp4",
+        "poster": "preview/fireship-terminal.t2.list.checklist.png"
+      }
+    },
+    {
+      "id": "fireship-terminal.t2.label.badge",
+      "tier": "tier2",
+      "purpose": "label",
+      "treatment": "badge",
+      "file": "cards/tier2/t2-label-badge.html",
+      "slots": [
+        {
+          "name": "badge",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 3,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/fireship-terminal.t2.label.badge.mp4",
+        "poster": "preview/fireship-terminal.t2.label.badge.png"
+      }
+    }
+  ]
+}

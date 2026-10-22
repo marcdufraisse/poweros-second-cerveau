@@ -1,0 +1,167 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tous les styles · Editing OS</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#06090f;color:#e8eef5;font:15px/1.5 -apple-system,Inter,system-ui,sans-serif;padding:28px}
+header{max-width:1200px;margin:0 auto 22px}h1{font-size:30px;margin:0 0 4px;letter-spacing:-.02em}
+header p{color:#8aa0b4;margin:0}
+.grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,380px);justify-content:center;gap:22px}
+.card{width:380px;background:#0c121b;border:1px solid #1b2634;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.thumb{position:relative;width:380px;height:213.75px;background:#000;border-bottom:1px solid #1b2634;overflow:hidden}
+.thumb iframe{position:absolute;top:0;left:0;width:1920px;height:1080px;border:0;transform:scale(.197917);transform-origin:top left;pointer-events:none}
+.badge{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.7);color:#cfe3f5;text-decoration:none;font-size:11px;padding:3px 8px;border-radius:999px;border:1px solid #2a3a4d;backdrop-filter:blur(4px)}
+.meta{padding:14px 16px 16px}h2{margin:0 0 8px;font-size:18px}
+.pal{display:flex;gap:5px;margin-bottom:9px}.sw{width:22px;height:22px;border-radius:5px;border:1px solid rgba(255,255,255,.14)}
+.fnt{color:#9db2c6;font-size:12px;margin:0 0 8px}.fnt b{color:#dce8f2;font-weight:600}
+.insp{color:#7d93a8;font-size:12.5px;margin:0 0 12px;min-height:34px}
+.links{display:flex;gap:14px;flex-wrap:wrap}.links a{color:#4db4f0;text-decoration:none;font-size:12.5px;font-weight:600}
+.links a:hover{text-decoration:underline}
+</style></head><body>
+<header><h1>Les 8 styles de montage</h1><p>Vignette live = une vraie carte tier-1 rendue. Clique un lien pour ouvrir le contact-sheet animé complet.</p></header>
+<script>
+function driveCard(iframe){
+  var w=iframe.contentWindow,tries=0;
+  (function go(){
+    var t=w.__timelines,keys=t?Object.keys(t):[];
+    if(!keys.length){if(tries++<120)setTimeout(go,80);return;}
+    keys.forEach(function(k){var tl=t[k];
+      tl.eventCallback("onComplete",function(){setTimeout(function(){tl.restart();},1400);});
+      tl.play(0);});
+  })();
+}
+addEventListener("DOMContentLoaded",function(){
+  document.querySelectorAll(".thumb iframe").forEach(function(f){
+    f.addEventListener("load",function(){driveCard(f);});
+    // already-loaded iframes
+    try{if(f.contentWindow&&f.contentWindow.__timelines)driveCard(f);}catch(e){}
+  });
+});
+</script>
+<div class="grid">
+  <article class="card">
+    <div class="thumb"><iframe loading="lazy" src="../01-vox-explainer/cards/tier1/t1-section-circle.html" scrolling="no" title="Vox Explainer"></iframe>
+      <a class="badge" href="../01-vox-explainer/_preview/contact-sheet" target="_blank">106 cartes ↗</a>
+    </div>
+    <div class="meta">
+      <h2>Vox Explainer</h2>
+      <div class="pal"><span class="sw" style="background:#efe9dc"></span><span class="sw" style="background:#17130e"></span><span class="sw" style="background:#37BDF8"></span><span class="sw" style="background:#e23b2e"></span><span class="sw" style="background:#f26a1b"></span></div>
+      <p class="fnt"><b>display</b> Fraunces · <b>body</b> Archivo · <b>mono</b> Archivo</p>
+      <p class="insp">Vox-style animated documentary / explainer.</p>
+      <div class="links">
+        <a href="../01-vox-explainer/_preview/contact-sheet" target="_blank">Contact-sheet ↗</a>
+        <a href="../01-vox-explainer/_preview/transitions.html" target="_blank">Transitions ↗</a>
+        <a href="../01-vox-explainer/_preview/variants.html" target="_blank">Variants ↗</a>
+      </div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="thumb"><iframe loading="lazy" src="../02-kallaway/cards/tier1/t1-section-ascend.html" scrolling="no" title="Kallaway"></iframe>
+      <a class="badge" href="../02-kallaway/_preview/contact-sheet" target="_blank">300 cartes ↗</a>
+    </div>
+    <div class="meta">
+      <h2>Kallaway</h2>
+      <div class="pal"><span class="sw" style="background:#0A0E14"></span><span class="sw" style="background:#F0EEE9"></span><span class="sw" style="background:#37BDF8"></span><span class="sw" style="background:#F5D82A"></span><span class="sw" style="background:#FF3B30"></span><span class="sw" style="background:#FF8A5C"></span></div>
+      <p class="fnt"><b>display</b> Plus Jakarta Sans · <b>body</b> Inter · <b>mono</b> Space Mono</p>
+      <p class="insp">Kallaway-style premium dark creator explainer.</p>
+      <div class="links">
+        <a href="../02-kallaway/_preview/contact-sheet" target="_blank">Contact-sheet ↗</a>
+        <a href="../02-kallaway/_preview/transitions.html" target="_blank">Transitions ↗</a>
+        <a href="../02-kallaway/_preview/variants.html" target="_blank">Variants ↗</a>
+      </div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="thumb"><iframe loading="lazy" src="../04-keynote-minimal/cards/tier1/t1-thesis-mega.html" scrolling="no" title="Keynote Minimal"></iframe>
+      <a class="badge" href="../04-keynote-minimal/_preview/contact-sheet" target="_blank">25 cartes ↗</a>
+    </div>
+    <div class="meta">
+      <h2>Keynote Minimal</h2>
+      <div class="pal"><span class="sw" style="background:#000000"></span><span class="sw" style="background:#F5F5F7"></span><span class="sw" style="background:#37BDF8"></span><span class="sw" style="background:#E8804C"></span><span class="sw" style="background:#7D5CFF"></span></div>
+      <p class="fnt"><b>display</b> Inter Tight · <b>body</b> Inter · <b>mono</b> IBM Plex Mono</p>
+      <p class="insp">Apple product-film / keynote graphics.</p>
+      <div class="links">
+        <a href="../04-keynote-minimal/_preview/contact-sheet" target="_blank">Contact-sheet ↗</a>
+        <a href="../04-keynote-minimal/_preview/transitions.html" target="_blank">Transitions ↗</a>
+        <a href="../04-keynote-minimal/_preview/variants.html" target="_blank">Variants ↗</a>
+      </div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="thumb"><iframe loading="lazy" src="../05-harris-atlas/cards/tier1/t1-thesis-paper.html" scrolling="no" title="Harris Atlas"></iframe>
+      <a class="badge" href="../05-harris-atlas/_preview/contact-sheet" target="_blank">21 cartes ↗</a>
+    </div>
+    <div class="meta">
+      <h2>Harris Atlas</h2>
+      <div class="pal"><span class="sw" style="background:#E7DDC4"></span><span class="sw" style="background:#2A241C"></span><span class="sw" style="background:#37BDF8"></span><span class="sw" style="background:#BE3B2B"></span><span class="sw" style="background:#C2CDB4"></span><span class="sw" style="background:#57646A"></span></div>
+      <p class="fnt"><b>display</b> Oswald · <b>body</b> Source Serif 4 · <b>mono</b> Courier Prime</p>
+      <p class="insp">Johnny-Harris cinematic map journalism.</p>
+      <div class="links">
+        <a href="../05-harris-atlas/_preview/contact-sheet" target="_blank">Contact-sheet ↗</a>
+        <a href="../05-harris-atlas/_preview/transitions.html" target="_blank">Transitions ↗</a>
+        <a href="../05-harris-atlas/_preview/variants.html" target="_blank">Variants ↗</a>
+      </div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="thumb"><iframe loading="lazy" src="../06-fireship-terminal/cards/tier1/t1-thesis-slam.html" scrolling="no" title="Fireship Terminal"></iframe>
+      <a class="badge" href="../06-fireship-terminal/_preview/contact-sheet" target="_blank">21 cartes ↗</a>
+    </div>
+    <div class="meta">
+      <h2>Fireship Terminal</h2>
+      <div class="pal"><span class="sw" style="background:#0B0B0F"></span><span class="sw" style="background:#E8E6DF"></span><span class="sw" style="background:#37BDF8"></span><span class="sw" style="background:#FF6A2B"></span><span class="sw" style="background:#F4EFE2"></span><span class="sw" style="background:#F471B5"></span></div>
+      <p class="fnt"><b>display</b> Luckiest Guy · <b>body</b> Inter · <b>mono</b> JetBrains Mono</p>
+      <p class="insp">Fireship dev-explainer.</p>
+      <div class="links">
+        <a href="../06-fireship-terminal/_preview/contact-sheet" target="_blank">Contact-sheet ↗</a>
+        <a href="../06-fireship-terminal/_preview/transitions.html" target="_blank">Transitions ↗</a>
+        <a href="../06-fireship-terminal/_preview/variants.html" target="_blank">Variants ↗</a>
+      </div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="thumb"><iframe loading="lazy" src="../07-bloomberg-data/cards/tier1/t1-thesis-broadsheet.html" scrolling="no" title="Bloomberg Data"></iframe>
+      <a class="badge" href="../07-bloomberg-data/_preview/contact-sheet" target="_blank">21 cartes ↗</a>
+    </div>
+    <div class="meta">
+      <h2>Bloomberg Data</h2>
+      <div class="pal"><span class="sw" style="background:#0A0A0A"></span><span class="sw" style="background:#F2F2F0"></span><span class="sw" style="background:#37BDF8"></span><span class="sw" style="background:#FFB020"></span><span class="sw" style="background:#4AF6C3"></span><span class="sw" style="background:#FF433D"></span></div>
+      <p class="fnt"><b>display</b> Archivo · <b>body</b> Archivo · <b>mono</b> IBM Plex Mono</p>
+      <p class="insp">Bloomberg-Originals brutalist data journalism.</p>
+      <div class="links">
+        <a href="../07-bloomberg-data/_preview/contact-sheet" target="_blank">Contact-sheet ↗</a>
+        <a href="../07-bloomberg-data/_preview/transitions.html" target="_blank">Transitions ↗</a>
+        <a href="../07-bloomberg-data/_preview/variants.html" target="_blank">Variants ↗</a>
+      </div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="thumb"><iframe loading="lazy" src="../08-abram-optimist/cards/tier1/t1-thesis-prism.html" scrolling="no" title="Abram Optimist"></iframe>
+      <a class="badge" href="../08-abram-optimist/_preview/contact-sheet" target="_blank">21 cartes ↗</a>
+    </div>
+    <div class="meta">
+      <h2>Abram Optimist</h2>
+      <div class="pal"><span class="sw" style="background:#FAFAF7"></span><span class="sw" style="background:#16161A"></span><span class="sw" style="background:#37BDF8"></span><span class="sw" style="background:#FF4D9D"></span><span class="sw" style="background:#FF9A3D"></span><span class="sw" style="background:#8B5CF6"></span></div>
+      <p class="fnt"><b>display</b> Manrope · <b>body</b> Inter · <b>mono</b> Space Mono</p>
+      <p class="insp">Cleo-Abram bright tech optimism (Huge If True).</p>
+      <div class="links">
+        <a href="../08-abram-optimist/_preview/contact-sheet" target="_blank">Contact-sheet ↗</a>
+        <a href="../08-abram-optimist/_preview/transitions.html" target="_blank">Transitions ↗</a>
+        <a href="../08-abram-optimist/_preview/variants.html" target="_blank">Variants ↗</a>
+      </div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="thumb"><iframe loading="lazy" src="../09-higgsfield/cards/tier1/t1-step-mega.html" scrolling="no" title="Higgsfield"></iframe>
+      <a class="badge" href="../09-higgsfield/_preview/contact-sheet" target="_blank">1136 cartes ↗</a>
+    </div>
+    <div class="meta">
+      <h2>Higgsfield</h2>
+      <div class="pal"><span class="sw" style="background:#02060F"></span><span class="sw" style="background:#FFFFFF"></span><span class="sw" style="background:#D6FD03"></span><span class="sw" style="background:#D6FF60"></span><span class="sw" style="background:#F7F5C9"></span><span class="sw" style="background:#0A1400"></span></div>
+      <p class="fnt"><b>display</b> Inter Tight · <b>body</b> Inter · <b>mono</b> JetBrains Mono</p>
+      <p class="insp">Higgsfield creator-tutorial videos (Ultra-Realistic AI Ads / Faceless Channel / Viral AI Short Film).</p>
+      <div class="links">
+        <a href="../09-higgsfield/_preview/contact-sheet" target="_blank">Contact-sheet ↗</a>
+        <a href="../09-higgsfield/_preview/transitions.html" target="_blank">Transitions ↗</a>
+        <a href="../09-higgsfield/_preview/variants.html" target="_blank">Variants ↗</a>
+      </div>
+    </div>
+  </article></div>
+</body></html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<!--
+  ABRAM OPTIMIST · tier2 · lower-third · CALLOUT
+  Bottom-center overlay for talking-head footage (transparent canvas). An
+  ink mono pill tag docks on the top-left corner of a white rounded card
+  and pops first; the card follows with a sentence-case Manrope callout
+  line, its key word bold in accent blue. Face stays clear above y=720.
+  Slots: tag, callout (richtext — wrap the key word in <em>).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-lowerthird-callout {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; font-family: var(--font-display);
+        overflow: visible;
+      }
+
+      #t2-lowerthird-callout .wrap {
+        position: absolute; left: 50%; bottom: 100px;
+        width: 1000px; transform: translateX(-50%);
+      }
+
+      #t2-lowerthird-callout .card {
+        position: relative;
+        background: var(--white); border-radius: var(--radius);
+        box-shadow: var(--lift);
+        padding: 44px 56px 40px;
+      }
+
+      #t2-lowerthird-callout .tag {
+        position: absolute; top: -22px; left: 40px;
+        font-family: var(--font-mono); font-weight: var(--wt-bold);
+        font-size: var(--size-tiny); letter-spacing: var(--track-mono);
+        text-transform: uppercase;
+        color: var(--white); background: var(--ink);
+        border-radius: var(--radius-pill);
+        padding: 10px 26px 12px;
+        box-shadow: var(--lift);
+        white-space: nowrap;
+      }
+
+      #t2-lowerthird-callout .callout {
+        font-family: var(--font-display); font-weight: var(--wt-bold);
+        font-size: 40px; line-height: 1.28; letter-spacing: var(--track-tight);
+        color: var(--ink); text-align: center;
+      }
+      #t2-lowerthird-callout .callout em {
+        font-style: normal; font-weight: var(--wt-black);
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-lowerthird-callout" data-composition-id="t2-lowerthird-callout" data-start="0" data-width="1920" data-height="1080">
+      <div class="wrap">
+        <div class="card">
+          <div class="tag" data-slot="tag">Worth knowing</div>
+          <div class="callout" data-slot="callout">Every student here already shipped a real <em>agent</em>.</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t2-lowerthird-callout";
+
+      /* tag docks and pops first */
+      tl.from(root + " .tag", { autoAlpha: 0, scale: 0.6, transformOrigin: "0% 50%", duration: 0.4, ease: "back.out(1.7)" }, 0)
+
+        /* card rises and settles beneath it */
+        .from(root + " .card", { autoAlpha: 0, y: 28, duration: 0.55, ease: "expo.out" }, 0.2)
+
+        /* one gentle finite bob on the tag */
+        .to(root + " .tag", { y: -6, duration: 1.1, ease: "sine.inOut", repeat: 3, yoyo: true }, 1.2)
+
+        .set({}, {}, 6);
+
+      window.__timelines["t2-lowerthird-callout"] = tl;
+    </script>
+  </body>
+</html>

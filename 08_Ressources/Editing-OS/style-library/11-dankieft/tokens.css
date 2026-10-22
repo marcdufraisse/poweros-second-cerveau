@@ -1,0 +1,172 @@
+/* ============================================================================
+   DAN KIEFT — style tokens
+   Single source of palette / type / motion for every card in this style.
+   Cards reference these vars and never hardcode colors, fonts or easings.
+   Tweak here, all cards update. See DESIGN.md.
+
+   Aesthetic: the AI-filmmaking tutorial channel (youtube.com/@Dankieft).
+   Built for LONG-FORM YouTube. Two stages — a royal-blue one for graphics
+   and a charcoal one for screen work — a circular PIP of the speaker ringed
+   in glowing periwinkle, and ONE yellow accent that carries every emphasis.
+   The two signature moves: screens that live in 3D space and are pushed
+   into continuously, and a wall of text that gets highlighted live, marker
+   by marker, as he talks.
+   ============================================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,600;0,700;0,800;0,900;1,700;1,800;1,900&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+:root {
+  /* --- palette (mirror style.json + DESIGN.md) ----------------------------- */
+  --yellow:      #FFE930;   /* THE accent — sampled from refs. Numbers, emphasis, marker, b-roll titles */
+  --yellow-dim:  rgba(255, 233, 48, 0.30);
+  --yellow-ink:  #1A1600;   /* text sitting ON a yellow marker */
+
+  --royal:       #002085;   /* THE stage — the blue everything floats on */
+  --royal-lit:   #0B3AC4;   /* the lit centre of the stage gradient */
+  --royal-deep:  #00112F;   /* the vignette edge — near-black blue */
+  --ink:         #000000;   /* the content card. Pure black, on purpose. */
+  --ink-soft:    #0A0A0C;   /* screencast chrome / secondary surfaces */
+
+  --white:       #FFFFFF;
+  --white-soft:  rgba(255, 255, 255, 0.72);
+  --white-mute:  rgba(255, 255, 255, 0.42);
+
+  --electric:    #0200FF;   /* the SECOND marker — pure electric blue, white text on it */
+  --periwinkle:  #8889FF;   /* the PIP ring + pill borders. The only "glow" colour. */
+  --periwinkle-dim: rgba(136, 137, 255, 0.35);
+
+  /* the SECOND stage — where screen work happens. Warm-neutral charcoal, not
+     blue. Screens float in it in perspective; the room reads as depth, not
+     as a backdrop. Sampled from the 3D push-in refs. */
+  --charcoal:      #262626;
+  --charcoal-lit:  #343431;  /* the lit face of a screen sitting in that room */
+  --bone:          #CDCDCB;  /* serif chapter titles — off-white, never pure */
+  --ember:         #CF785A;  /* the chapter asterisk. Used ONCE per card, tiny. */
+
+  /* --- la scène des cartons (mesurée sur RlKg6oXLf7Y, 1:05-1:40) -----------
+     Un second bleu, plus doux et plus vert que --royal : c'est le fond des
+     cartons de section et du ruban de sommaire. Son centre est plus SOMBRE que
+     ses bords — une vignette inversée, qui pousse le regard au milieu. */
+  --royal-mist:  #113D61;
+  --mist-core:   #002B4C;   /* le centre, plus sombre */
+  --pill:        #20537A;   /* la barre-pilule qui porte les sous-titres */
+  --pill-lit:    #2E6C9C;
+
+  /* La teinte du produit montré. Le fond emprunte la couleur de l'outil à
+     l'écran pendant le plan, puis rend le bleu maison. Agent 3 la remplace par
+     la couleur de marque de l'app (ici le magenta d'OpenArt). */
+  --brand-tint:  #B84BD8;
+  --brand-haze:  rgba(184, 75, 216, 0.22);
+
+  --yellow-rgb:     255, 233, 48;
+  --royal-rgb:      0, 32, 133;
+  --periwinkle-rgb: 136, 137, 255;
+
+  /* semantic aliases the blueprint contract expects */
+  --bg:     var(--royal);
+  --fg:     var(--white);
+  --accent: var(--yellow);
+  --muted:  var(--white-mute);
+
+  /* --- typography ----------------------------------------------------------
+     Inter Tight is the display voice. Its ITALIC 800 caps is the signature —
+     every pill, path label and b-roll title leans forward. Inter carries the
+     document body (prompt walls are meant to be read, not admired).
+     JetBrains Mono is badges and counters only. */
+  --font-display: "Inter Tight", "Helvetica Neue", system-ui, sans-serif;
+  --font-body:    "Inter", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+  --font-label:   var(--font-display);
+  /* The second voice: a high-contrast serif for CHAPTER titles only. It is
+     the one place the style softens — everything else is grotesque caps.
+     Instrument Serif matches the reference's proportions and is already the
+     house serif. */
+  --font-serif:   "Instrument Serif", "Times New Roman", serif;
+
+  --wt-reg: 400; --wt-med: 500; --wt-semi: 600; --wt-bold: 700; --wt-heavy: 800; --wt-black: 900;
+
+  /* sizes for 1920x1080 */
+  --size-mega:     168px;  /* section payoff word */
+  --size-headline:  92px;  /* path pills, b-roll titles */
+  --size-title:     56px;
+  --size-label:     38px;
+  --size-badge:     30px;
+  --size-doc:       24px;  /* prompt-wall body — small on purpose, it's a document */
+  --size-doc-head:  26px;
+  --size-sub:       27px;  /* cinematic dialogue subtitle — deliberately tiny */
+  --size-chapter:   84px;  /* serif chapter title */
+
+  --track-caps:    -0.01em;
+  --track-eyebrow:  0.22em;
+  --lh-doc:         1.55;
+
+  /* the ghost numeral behind a path pill */
+  --ghost-size:    340px;
+  --ghost-color:   rgba(255, 255, 255, 0.10);
+
+  /* --- geometry ------------------------------------------------------------ */
+  --card-radius:    18px;   /* the black content card */
+  --pill-radius:    14px;
+  --thumb-radius:   12px;
+  --card-inset-x:   96px;   /* black card margin inside the 1920 frame */
+  --card-inset-y:   34px;
+
+  --hairline:       2px;    /* pill borders, annotation frames */
+  --frame-stroke:   3px;    /* the yellow annotation rectangle */
+
+  /* --- texture -------------------------------------------------------------
+     The royal stage is never flat: a lit centre, a deep vignette, and a faint
+     technical grid. All three are cheap CSS, no images. */
+  --stage-gradient:
+    radial-gradient(120% 90% at 50% 42%, var(--royal-lit) 0%, var(--royal) 46%, var(--royal-deep) 100%);
+  --stage-grid-size: 64px;
+  --stage-grid:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+
+  --card-shadow:  0 42px 90px rgba(0, 0, 0, 0.62);
+  --screen-shadow: 0 60px 140px rgba(0, 0, 0, 0.75);
+  --ring-glow:    0 0 42px rgba(var(--periwinkle-rgb), 0.55),
+                  0 0 92px rgba(var(--periwinkle-rgb), 0.22);
+  --yellow-glow:  0 0 30px rgba(var(--yellow-rgb), 0.42);
+
+  /* --- 3D space ------------------------------------------------------------
+     THE signature. Screens are not rectangles pasted on a background — they
+     are panels standing in a room, and the camera walks toward them. Set
+     --perspective on the stage, then animate the panel's translateZ from
+     --z-far to --z-near while easing its yaw from --yaw-far toward 0. The
+     panel "straightens up" as it approaches: that de-skew is what sells the
+     move. Never animate width/height — only transform. */
+  --perspective:      2200px;
+  --perspective-origin: 50% 44%;
+  --z-far:            -1050px;  /* where a screen starts: small, deep, skewed */
+  --z-near:            100px;   /* where it ends: large, nearly flat, overflowing.
+                                   Tuned so a serif chapter line anchored to the
+                                   panel is still on frame at the end. Push to
+                                   ~240px when the card carries no chapter. */
+  --yaw-far:          -13deg;   /* rotateY at the far end */
+  --pitch-far:          5deg;   /* rotateX at the far end */
+  --yaw-near:          -2.5deg; /* residual yaw at the near end — never fully 0 */
+  --pitch-near:         1deg;
+
+  /* --- motion --------------------------------------------------------------
+     Three speeds. SNAP = anything carrying meaning (markers, pills, numbers):
+     expo.out, ~0.36s. SETTLE = the surfaces holding them: ~0.62s, a hair of
+     overshoot. DRIFT = the continuous camera push on screens and b-roll:
+     8-14s, linear-ish, never eases out — it is still moving when the cut
+     happens. That unresolved drift is why the style never feels static.
+     Rule: a screen is NEVER on frame without drifting. */
+  --dur-snap:    0.36s;
+  --dur-settle:  0.62s;
+  --dur-out:     0.28s;
+  --dur-marker:  0.30s;   /* one marker sweep */
+  --dur-drift:   11s;     /* a full screen push-in */
+  --dur-punch:   0.9s;    /* a zoom onto a region within a screen */
+  --stagger:     0.12s;   /* between consecutive markers / thumbs */
+
+  --ease-snap:   cubic-bezier(0.16, 1, 0.3, 1);      /* expo.out */
+  --ease-settle: cubic-bezier(0.22, 1.12, 0.36, 1);  /* soft overshoot */
+  --ease-drift:  cubic-bezier(0.32, 0.06, 0.62, 0.9); /* slow in, still moving at the end */
+  --ease-punch:  cubic-bezier(0.34, 1.12, 0.28, 1);  /* the snap onto a region */
+  --ease-out:    cubic-bezier(0.4, 0, 1, 1);
+}

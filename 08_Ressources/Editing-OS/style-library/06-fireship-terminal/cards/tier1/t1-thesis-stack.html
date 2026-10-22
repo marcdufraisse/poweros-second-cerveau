@@ -1,0 +1,125 @@
+<!doctype html>
+<!--
+  FIRESHIP TERMINAL · tier1 · thesis · STACK
+  Full-screen takeover. A small dim mono setup line types itself on
+  character by character (pre-split spans, stagger 0.02, linear) with a
+  blinking cursor (finite blinks); then it holds a beat while the giant
+  cream Luckiest-Guy punchline STAMPS in word by word below, one word
+  carrying the accent color via <em>. Dead stillness after the last stamp.
+  Slots: setup (text), punch (richtext, one <em> word allowed).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-thesis-stack {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--cream);
+        font-family: var(--font-display); overflow: hidden;
+      }
+      #t1-thesis-stack .vig { position: absolute; inset: 0; background: var(--vignette); z-index: 5; pointer-events: none; }
+
+      #t1-thesis-stack .center {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-align: center;
+      }
+
+      /* setup line — dim mono, types on */
+      #t1-thesis-stack .setup {
+        font-family: var(--font-mono); font-size: var(--size-headline);
+        color: var(--text-dim); letter-spacing: var(--track-mono);
+        margin-bottom: 40px; white-space: nowrap;
+      }
+      #t1-thesis-stack .setup .ch { display: inline-block; }
+      #t1-thesis-stack .setup .cursor {
+        display: inline-block; width: 0.5em; height: 0.9em;
+        background: var(--accent); margin-left: 4px; vertical-align: -0.12em;
+      }
+
+      /* punchline — huge cream Luckiest Guy, stamps word by word */
+      #t1-thesis-stack .punch {
+        font-size: var(--size-display); line-height: 1.1;
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+        color: var(--cream);
+        -webkit-text-stroke: var(--stroke-w) var(--outline);
+        paint-order: stroke fill;
+        text-shadow: var(--caption-shadow);
+        max-width: 1560px;
+      }
+      #t1-thesis-stack .punch .w { display: inline-block; padding: 0 12px; }
+      #t1-thesis-stack .punch em, #t1-thesis-stack .punch em .w { font-style: normal; color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <div id="t1-thesis-stack" data-composition-id="t1-thesis-stack" data-start="0" data-width="1920" data-height="1080">
+      <div class="center">
+        <div class="setup" data-slot="setup">your 40-hour workweek:</div>
+        <div class="punch" data-slot="punch">NOW <em>AUTOMATED</em></div>
+      </div>
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-thesis-stack";
+
+      /* pre-split the setup line into char spans + a blinking cursor */
+      const setup = document.querySelector(root + " .setup");
+      const setupText = setup.textContent;
+      setup.textContent = "";
+      [...setupText].forEach((c) => {
+        const s = document.createElement("span");
+        s.className = "ch"; s.textContent = c === " " ? " " : c;
+        setup.appendChild(s);
+      });
+      const cursor = document.createElement("span");
+      cursor.className = "cursor";
+      setup.appendChild(cursor);
+      const chars = setup.querySelectorAll(".ch");
+
+      /* split the punchline into stampable word spans (keeps <em> coloring) */
+      const punch = document.querySelector(root + " .punch");
+      function splitWords(node) {
+        [...node.childNodes].forEach((child) => {
+          if (child.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            child.textContent.split(/\s+/).filter(Boolean).forEach((word, i, arr) => {
+              const s = document.createElement("span");
+              s.className = "w"; s.textContent = word;
+              frag.appendChild(s);
+              if (i < arr.length - 1) frag.appendChild(document.createTextNode(" "));
+            });
+            node.replaceChild(frag, child);
+          } else if (child.nodeType === 1) splitWords(child);
+        });
+      }
+      splitWords(punch);
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* typewriter — chars appear one by one, linear */
+      tl.set(chars, { autoAlpha: 0 })
+        .to(chars, { autoAlpha: 1, duration: 0.01, ease: "none", stagger: 0.02 }, 0.15)
+
+        /* cursor blinks a finite number of times, then holds */
+        .to(root + " .cursor", { autoAlpha: 0, duration: 0.12, repeat: 5, yoyo: true, ease: "none" }, ">0.1")
+        .to(root + " .cursor", { autoAlpha: 0, duration: 0.2, ease: "none" }, ">0.05")
+
+        /* THE STAMPS — punchline, one word per beat */
+        .from(root + " .punch .w", {
+          autoAlpha: 0, scale: 1.6, transformOrigin: "50% 60%",
+          duration: 0.28, ease: "back.out(2.2)", stagger: 0.3
+        }, ">0.15")
+
+        /* dead stillness — the hold is the timing */
+        .set({}, {}, 7);
+
+      window.__timelines["t1-thesis-stack"] = tl;
+    </script>
+  </body>
+</html>

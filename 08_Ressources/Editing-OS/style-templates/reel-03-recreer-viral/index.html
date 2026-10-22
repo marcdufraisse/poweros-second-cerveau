@@ -1,0 +1,261 @@
+<!doctype html>
+<!--
+  SCAFFOLD · FORMAT 03 — RECRÉER CE CONTENU VIRAL
+  Spec : ../../formats/03-recreer-viral.md   ·   Mesures : ../../formats/MESURES.md
+
+  Trois actes, trois layouts :
+    ACTE 1 (0 -> ~9 s)   hook MUET : contenu viral en carte + le présentateur détouré qui
+                         le regarde + étiquette manuscrite « Comment refaire ceci : »
+    ACTE 2 (~9 s -> fin - 12 s)  la recette : captures d'écran annotées en rouge,
+                         sous-titres en groupes, CTA à ~23 % de la durée totale
+    ACTE 3 (12 dernières s)  payoff MUET : le résultat plein cadre
+
+  Ce qu'il faut remplacer :
+    - assets/viral.mp4    le contenu viral (doit tenir 8 s en silence)
+    - assets/cutout.webm  le présentateur détouré plein pied, en train de regarder
+    - assets/result.mp4   le résultat généré (payoff)
+    - assets/voix.m4a     la voix (commence à ~9 s !)
+    - les captures d'écran + annotations de l'acte 2
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="tokens.css" />
+    <style>
+      /* Charte de marque (2026-10-01) : Outfit pour tout. Fichiers locaux
+         dans assets/fonts/, jamais de CDN. */
+      @font-face { font-family: "Outfit"; font-weight: 400; src: url("assets/fonts/Outfit-400.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 500; src: url("assets/fonts/Outfit-500.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 600; src: url("assets/fonts/Outfit-600.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 700; src: url("assets/fonts/Outfit-700.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 800; src: url("assets/fonts/Outfit-800.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 900; src: url("assets/fonts/Outfit-900.woff2") format("woff2"); }
+      /* l'étiquette manuscrite : Caveat est sur Google Fonts ; en local on
+         retombe sur un cursive système, le renderer fournit la sienne */
+      @font-face { font-family: "Handnote"; src: local("Bradley Hand"), local("Comic Sans MS"); }
+
+      html, body { margin: 0; background: #000; }
+
+      #reel {
+        position: absolute; inset: 0;
+        width: var(--reel-w); height: var(--reel-h);
+        overflow: hidden; background: var(--bg);
+        font-family: "Outfit", system-ui, sans-serif;
+        letter-spacing: -0.03em;
+      }
+
+      /* ================== ACTE 1 — le hook muet ================== */
+      #act1 { position: absolute; inset: 0; z-index: 4; }
+      /* la carte du contenu viral, à droite, portrait */
+      #act1 .viralcard {
+        position: absolute; right: 40px; top: 300px;
+        width: var(--f03-hook-card-w); height: 1250px;
+        border-radius: var(--f03-hook-card-radius); overflow: hidden;
+        background: #101010; box-shadow: 0 30px 80px rgba(0,0,0,0.65);
+      }
+      #act1 .viralcard video {
+        position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      }
+      /* le présentateur détouré plein pied à gauche, il REGARDE la carte */
+      #act1 .looker { position: absolute; left: -40px; top: 260px; width: 640px; height: 1660px; }
+      #act1 .looker video { width: 100%; height: 100%; object-fit: contain; object-position: 0% 100%; }
+      /* l'étiquette manuscrite — invariant du format */
+      #act1 .scribble {
+        position: absolute; right: 260px; top: 240px; z-index: 6;
+        background: #111; color: #fff; border-radius: 26px;
+        padding: 26px 44px; transform: rotate(-2deg);
+        font-family: "Handnote", cursive; font-size: 58px; line-height: 1.15;
+        text-align: center; box-shadow: 0 16px 44px rgba(0,0,0,0.5);
+      }
+
+      /* ================== ACTE 2 — la recette ================== */
+      #act2 { position: absolute; inset: 0; z-index: 3; visibility: hidden; }
+      #act2 .step {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        visibility: hidden;
+      }
+      /* une capture d'écran = une carte arrondie sur le fond texturé */
+      #act2 .screen {
+        width: 900px; max-height: 1500px; border-radius: var(--f03-screen-radius);
+        overflow: hidden; background: #17191f;
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow: 0 30px 70px rgba(0,0,0,0.55);
+        position: relative;
+      }
+      #act2 .screen img { display: block; width: 100%; }
+      #act2 .ph {
+        width: 900px; height: 1200px; border-radius: var(--f03-screen-radius);
+        border: 3px dashed rgba(255,255,255,0.22);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 24px; color: rgba(255,255,255,0.5);
+        font-family: ui-monospace, monospace; letter-spacing: 0.14em; font-size: 30px;
+      }
+      #act2 .ph b { color: var(--jaune); font-size: 76px; letter-spacing: -0.04em; }
+      /* l'annotation rouge dessinée : un SVG par clic à montrer */
+      #act2 .annot { position: absolute; z-index: 5; pointer-events: none; }
+      #act2 .annot circle, #act2 .annot path {
+        fill: none; stroke: var(--rouge-annot); stroke-width: 10; stroke-linecap: round;
+      }
+
+      /* sous-titres de l'acte 2 : groupes, bas de l'écran mais au-dessus du safe */
+      #reel .cap {
+        position: absolute; left: 60px; right: 60px; bottom: 240px; z-index: 8;
+        text-align: center; font-weight: 900; font-size: 58px; line-height: 1.1;
+        color: #fff; text-shadow: 0 3px 8px rgba(0,0,0,0.8);
+      }
+      #reel .cap em {
+        font-style: normal; color: #111;
+        background: var(--jaune); padding: 2px 14px; border-radius: 10px;
+      }
+
+      /* ================== ACTE 3 — le payoff muet ================== */
+      #act3 { position: absolute; inset: 0; z-index: 10; visibility: hidden; background: #000; }
+      #act3 video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    </style>
+  </head>
+
+  <body>
+    <div id="reel" data-composition-id="reel" data-start="0" data-width="1080" data-height="1920" data-fps="30">
+      <div class="reel-bg"></div>
+
+      <!-- ============ ACTE 1 : hook muet ============ -->
+      <div id="act1">
+        <div class="viralcard">
+          <video id="vviral" src="assets/viral.mp4"
+                 data-start="0" data-duration="9" data-media-start="0"
+                 data-track-index="0" muted playsinline></video>
+        </div>
+        <div class="looker">
+          <video id="vlook" src="assets/cutout.webm"
+                 data-start="0" data-duration="9" data-media-start="0"
+                 data-track-index="1" muted playsinline></video>
+        </div>
+        <div class="scribble">Comment<br />refaire ceci :</div>
+      </div>
+
+      <!-- ============ ACTE 2 : la recette ============ -->
+      <div id="act2">
+        <div class="step" id="s1">
+          <div class="ph"><span>ÉTAPE 1 · CTA</span><b>COMMENTE MOTCLE</b></div>
+        </div>
+        <div class="step" id="s2">
+          <div class="ph"><span>ÉTAPE 2</span><b>CAPTURE + CERCLE ROUGE</b></div>
+          <svg class="annot" width="300" height="180" viewBox="0 0 300 180" style="right:180px; bottom:420px">
+            <circle cx="150" cy="90" r="70" pathLength="100" />
+          </svg>
+        </div>
+        <div class="step" id="s3">
+          <div class="ph"><span>ÉTAPE 3</span><b>CAPTURE + FLÈCHE</b></div>
+        </div>
+      </div>
+
+      <!-- sous-titres (acte 2 uniquement) -->
+      <div class="cap" id="cap"></div>
+
+      <!-- ============ ACTE 3 : payoff muet ============ -->
+      <div id="act3">
+        <video id="vresult" src="assets/result.mp4"
+               data-start="21" data-duration="12" data-media-start="0"
+               data-track-index="2" muted playsinline></video>
+      </div>
+
+      <!-- la voix COMMENCE au début de l'acte 2 -->
+      <audio id="voix" src="assets/voix.m4a" data-start="9" data-duration="12" data-track-index="3"></audio>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      /* ==========================================================
+         Charpente temporelle (placeholder : 33 s ; en prod 45-65 s).
+         HOOK_END  : fin du hook muet (6-10 s)
+         CTA_AT    : le CTA tombe à 20-30 % de DUR — c'est l'ÉTAPE 1
+         PAYOFF_AT : début du payoff muet (8-12 s avant la fin)
+         ========================================================== */
+      const DUR = 33;
+      const HOOK_END = 9;
+      const CTA_AT = Math.round(DUR * 0.23 * 10) / 10;   /* ~7.6 s ici, à recaler sur le mot */
+      const PAYOFF_AT = DUR - 12;
+
+      /* L'EDL de l'acte 2 (identique au format 01) */
+      const SEG = [[0, 12]];
+      const CUTS = [];
+      const STARTS = []; let acc = 0;
+      SEG.forEach(([a, b]) => { STARTS.push(acc); acc += b - a; });
+      function shiftCut(t) {
+        let d = 0;
+        for (const [a, b] of CUTS) { if (t >= b) d += b - a; else if (t > a) d += t - a; }
+        return t - d;
+      }
+      /* ed() renvoie le temps REEL : monté + décalé du hook */
+      function ed(src) {
+        for (let i = 0; i < SEG.length; i++)
+          if (src >= SEG[i][0] - 0.01 && src <= SEG[i][1] + 0.01)
+            return HOOK_END + shiftCut(STARTS[i] + (src - SEG[i][0]));
+        return null;
+      }
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* ---- ACTE 1 : entrée de la carte + zoom lent d'entretien ---- */
+      tl.from("#act1 .viralcard", { autoAlpha: 0, y: 60, duration: 0.5, ease: "expo.out" }, 0.05);
+      tl.from("#act1 .scribble", { autoAlpha: 0, scale: 0.7, rotate: 6, duration: 0.4, ease: "back.out(2)" }, 0.5);
+      tl.from("#act1 .looker", { autoAlpha: 0, x: -80, duration: 0.5, ease: "expo.out" }, 0.3);
+      /* rien ne reste immobile : zoom lent continu sur la carte */
+      tl.fromTo("#act1 .viralcard", { scale: 1 }, { scale: 1.06, duration: HOOK_END - 0.5, ease: "none" }, 0.5);
+      /* sortie du hook */
+      tl.to("#act1", { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, HOOK_END - 0.3);
+      tl.set("#act1", { visibility: "hidden" }, HOOK_END);
+
+      /* ---- ACTE 2 : les étapes ---- */
+      tl.set("#act2", { visibility: "visible" }, HOOK_END - 0.1);
+      const STEPS = [
+        ["#s1", 0.0, 4.0],   /* étape 1 = le CTA : "commente X et je t'envoie" */
+        ["#s2", 4.0, 8.0],
+        ["#s3", 8.0, 12.0],
+      ];
+      STEPS.forEach(([sel, aSrc, bSrc]) => {
+        const a = ed(aSrc), b = ed(bSrc);
+        tl.set(sel, { visibility: "visible" }, a);
+        tl.fromTo(sel, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: "expo.out" }, a);
+        /* entretien : léger drift */
+        tl.to(sel + " .ph", { y: -12, duration: (b - a) / 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, a + 0.35);
+        tl.to(sel, { autoAlpha: 0, duration: 0.2, ease: "power2.in" }, b - 0.2);
+        tl.set(sel, { visibility: "hidden" }, b);
+      });
+      /* l'annotation rouge se DESSINE (dashoffset), elle n'apparaît pas d'un bloc */
+      tl.fromTo("#s2 .annot circle",
+        { strokeDasharray: 100, strokeDashoffset: 100 },
+        { strokeDashoffset: 0, duration: 0.5, ease: "power2.inOut" }, ed(4.6));
+
+      /* ---- sous-titres (groupes, timecodes SOURCE acte 2) ---- */
+      const CAPS = [
+        [0.2, "tu as juste à"],
+        [1.0, "commenter *MOTCLE"],
+        [2.2, "et je te l'envoie"],
+        [4.2, "tu ouvres le lien"],
+        [5.4, "que tu vas recevoir"],
+        [8.2, "puis tu colles le prompt"],
+      ];
+      const cap = document.getElementById("cap");
+      CAPS.forEach(([src, raw]) => {
+        const t = ed(src);
+        if (t === null) return;
+        tl.set(cap, { innerHTML: raw.replace(/\*(\S+)/g, "<em>$1</em>") }, t);
+        tl.fromTo(cap, { scale: 0.94, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.12, ease: "power3.out" }, t);
+      });
+      tl.to(cap, { autoAlpha: 0, duration: 0.2 }, PAYOFF_AT - 0.2);
+
+      /* ---- ACTE 3 : payoff muet plein cadre ---- */
+      tl.set("#act2", { visibility: "hidden" }, PAYOFF_AT);
+      tl.set("#act3", { visibility: "visible" }, PAYOFF_AT - 0.05);
+      tl.from("#act3", { autoAlpha: 0, duration: 0.35, ease: "power2.out" }, PAYOFF_AT - 0.05);
+
+      tl.set({}, {}, DUR);
+
+      window.__timelines["reel"] = tl;
+    </script>
+  </body>
+</html>

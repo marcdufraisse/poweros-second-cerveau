@@ -1,0 +1,106 @@
+/* ============================================================================
+   KEYNOTE MINIMAL — style tokens
+   Single source of palette / type / motion / texture for every card in this
+   style. Cards reference these vars and never hardcode colors, fonts, easings,
+   or textures. Tweak here, all cards update. See DESIGN.md for the why.
+   Aesthetic: Apple product-film restraint — true-black stage, huge tight
+   grotesk type (white or metallic-gradient), one hero object of light per
+   beat, hairline dividers, silky expo glides, enormous negative space.
+   The most premium, least decorated style in the library.
+   ============================================================================ */
+
+/* The HyperFrames compiler embeds supported fonts by name at render time;
+   this @import makes standalone / browser preview show the right faces. */
+@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root {
+  /* --- palette (mirror style.json + DESIGN.md) ----------------------------- */
+  --canvas:      #000000;   /* true black — the stage */
+  --canvas-lift: #0A0A0C;   /* lifted black for panels / spec rows */
+  --hairline:    #2C2C2E;   /* 1px dividers, the only "border" allowed */
+
+  --text:        #F5F5F7;   /* Apple white — primary */
+  --text-dim:    rgba(245, 245, 247, 0.60);
+  --text-faint:  rgba(245, 245, 247, 0.34);
+
+  --accent:      #37BDF8;   /* brand blue — the single functional accent */
+  --copper:      #E8804C;   /* warm metal — from the iPhone unibody films */
+  --violet:      #7D5CFF;   /* gradient-blob partner color, never solo */
+
+  --accent-rgb:  55, 189, 248;
+  --copper-rgb:  232, 128, 76;
+  --violet-rgb:  125, 92, 255;
+
+  /* semantic aliases the blueprint contract expects */
+  --bg:    var(--canvas);
+  --fg:    var(--text);
+  --muted: var(--text-dim);
+
+  /* --- typography ----------------------------------------------------------
+     Inter Tight (600-800, tracking tightened) is the SF-Pro-Display stand-in:
+     every headline, number, and claim. Inter is quiet supporting copy.
+     IBM Plex Mono is spec metadata only (chip names, units, footnotes). */
+  --font-display: "Inter Tight", "SF Pro Display", system-ui, sans-serif;
+  --font-body:    "Inter", "SF Pro Text", system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+  --font-label:   var(--font-body);
+  --font-hand:    var(--font-body);
+
+  --wt-reg: 400; --wt-med: 500; --wt-semi: 600; --wt-bold: 700; --wt-black: 800;
+
+  /* sizes tuned for 1920x1080, readable in 2s */
+  --size-mega:     340px;   /* the one-word / one-number takeover */
+  --size-display:  150px;   /* takeover headline */
+  --size-title:    88px;    /* section / claim */
+  --size-headline: 52px;    /* card headline */
+  --size-body:     30px;    /* supporting copy */
+  --size-label:    22px;    /* kicker / metadata */
+  --size-tiny:     18px;    /* footnotes, disclaimers */
+
+  --track-display: -0.035em; /* Apple-tight display tracking */
+  --track-snug:    -0.015em;
+  --track-wide:     0.16em;  /* uppercase kicker tracking */
+
+  /* --- metallic + gradient text (background-clip: text) --------------------
+     NEVER pair these with will-change (render clips descenders — workspace
+     gotcha). Give clipped text horizontal padding so italic/descender edges
+     don't shave. */
+  --metal-text: linear-gradient(180deg, #FFFFFF 0%, #D8D8DC 38%, #8E8E93 62%, #E8E8ED 100%);
+  --blue-metal-text: linear-gradient(180deg, #EAF8FF 0%, #9FDFFC 40%, rgba(var(--accent-rgb), 1) 72%, #DFF4FF 100%);
+  --copper-text: linear-gradient(180deg, #FFE3D1 0%, #F0A075 45%, #C05F2E 75%, #FFD9C2 100%);
+
+  /* --- light — the only decoration ----------------------------------------
+     One soft source of light per card. Compose under content, animate
+     opacity/scale slowly. No grids, no grain walls, no vignette stacks. */
+  --glow-stage:  radial-gradient(60% 42% at 50% 78%,
+                   rgba(255, 255, 255, 0.10) 0%, transparent 70%);
+  --glow-accent: radial-gradient(55% 40% at 50% 55%,
+                   rgba(var(--accent-rgb), 0.22) 0%, transparent 68%);
+  --glow-duo:    radial-gradient(48% 42% at 38% 60%,
+                   rgba(var(--accent-rgb), 0.20) 0%, transparent 65%),
+                 radial-gradient(48% 42% at 64% 45%,
+                   rgba(var(--violet-rgb), 0.16) 0%, transparent 65%);
+  --glow-copper: radial-gradient(55% 40% at 50% 60%,
+                   rgba(var(--copper-rgb), 0.20) 0%, transparent 68%);
+
+  /* the faintest breathing room at frame edge — NOT a heavy vignette */
+  --edge-falloff: radial-gradient(130% 130% at 50% 50%, transparent 62%, rgba(0,0,0,0.42) 100%);
+
+  /* --- shape ---------------------------------------------------------------
+     Shape is nearly absent: hairlines and generous padding, tiny radii. */
+  --radius:     20px;
+  --radius-sm:  12px;
+  --pad:        120px;     /* huge safe-area — emptiness is the look */
+  --rule:       1px solid var(--hairline);
+
+  /* --- motion — silk. Slow in, no bounce, no overshoot. -------------------- */
+  --ease-silk:   cubic-bezier(0.19, 1, 0.22, 1);  /* expo-out — the default */
+  --ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);  /* symmetric drifts */
+  --ease-settle: cubic-bezier(0.33, 1, 0.68, 1);
+  /* GSAP string eases for card timelines */
+  --gsap-silk:   expo.out;
+  --gsap-glide:  power3.out;
+  --gsap-drift:  sine.inOut;
+  --dur-in:  1.1s;    /* entrances are unhurried */
+  --dur-out: 0.6s;
+}

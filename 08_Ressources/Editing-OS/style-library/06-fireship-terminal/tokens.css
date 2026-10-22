@@ -1,0 +1,106 @@
+/* ============================================================================
+   FIRESHIP TERMINAL — style tokens
+   Single source of palette / type / motion / texture for every card in this
+   style. Cards reference these vars and never hardcode colors, fonts,
+   easings, or textures. Tweak here, all cards update. See DESIGN.md.
+   Aesthetic: Fireship dev-explainer — near-black canvas, cream heavy-outline
+   caption type that STAMPS in, code-editor panels with pastel syntax colors,
+   neon wireframe title frames, flame-orange energy, meme-speed pacing.
+   The fastest, punchiest style in the library.
+   ============================================================================ */
+
+/* The HyperFrames compiler embeds supported fonts by name at render time;
+   this @import makes standalone / browser preview show the right faces. */
+@import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+  /* --- palette (mirror style.json + DESIGN.md) ----------------------------- */
+  --canvas:      #0B0B0F;   /* near-black stage */
+  --panel:       #16161E;   /* code-editor / terminal panel */
+  --panel-edge:  #262633;   /* panel borders, window chrome lines */
+
+  --cream:       #F4EFE2;   /* THE caption color — heavy outlined type */
+  --text:        #E8E6DF;   /* plain body text on dark */
+  --text-dim:    rgba(232, 230, 223, 0.58);
+  --outline:     #000000;   /* caption stroke — pure black */
+
+  --accent:      #37BDF8;   /* brand blue — hero syntax / neon frames */
+  --flame:       #FF6A2B;   /* Fireship flame orange — energy hits */
+  --flame-2:     #FFC24B;   /* flame yellow — gradient partner */
+  --syn-pink:    #F471B5;   /* syntax: keywords */
+  --syn-green:   #A3E635;   /* syntax: strings / success */
+  --syn-purple:  #A78BFA;   /* syntax: functions */
+
+  --accent-rgb:  55, 189, 248;
+  --flame-rgb:   255, 106, 43;
+  --pink-rgb:    244, 113, 181;
+  --green-rgb:   163, 230, 53;
+
+  /* semantic aliases the blueprint contract expects */
+  --bg:    var(--canvas);
+  --fg:    var(--text);
+  --muted: var(--text-dim);
+
+  /* --- typography ----------------------------------------------------------
+     Luckiest Guy = the caption voice: cream, ALL CAPS, black outline, stamps
+     in word by word. JetBrains Mono = all code, terminal output, labels.
+     Inter = quiet supporting copy only. */
+  --font-display: "Luckiest Guy", "Arial Black", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+  --font-body:    "Inter", system-ui, sans-serif;
+  --font-label:   var(--font-mono);
+  --font-hand:    var(--font-display);
+
+  --wt-reg: 400; --wt-med: 500; --wt-bold: 700;
+
+  /* sizes for 1920x1080 */
+  --size-mega:     210px;   /* one-word caption slam (Luckiest Guy runs big) */
+  --size-display:  120px;   /* takeover caption line */
+  --size-title:    76px;    /* section titles, stacked list rows */
+  --size-headline: 46px;    /* panel headers */
+  --size-body:     30px;    /* body / code */
+  --size-code:     26px;    /* code lines in panels */
+  --size-label:    22px;    /* window chrome, kickers */
+  --size-tiny:     18px;
+
+  --track-caps:  0.02em;    /* Luckiest Guy needs little tracking */
+  --track-mono:  0.00em;
+
+  /* --- the caption stroke — signature. Apply BOTH for a fat rim: ----------
+     -webkit-text-stroke: var(--stroke-w) var(--outline);
+     text-shadow: var(--caption-shadow);   (fills stroke gaps + drops depth) */
+  --stroke-w: 10px;         /* use with paint-order: stroke fill */
+  --caption-shadow: 0 6px 0 rgba(0, 0, 0, 0.85), 0 14px 28px rgba(0, 0, 0, 0.55);
+
+  /* --- neon wireframe (title frames) --------------------------------------- */
+  --neon-edge:   2.5px solid rgba(255, 255, 255, 0.92);
+  --neon-glow:   0 0 12px rgba(255, 255, 255, 0.65), 0 0 34px rgba(var(--accent-rgb), 0.45);
+  --neon-glow-flame: 0 0 12px rgba(255, 255, 255, 0.6), 0 0 34px rgba(var(--flame-rgb), 0.5);
+
+  /* --- terminal window chrome ---------------------------------------------- */
+  --chrome-h:    52px;                       /* title-bar height */
+  --dot:         14px;                       /* traffic-light dot size */
+  --dot-red:     #FF5F57; --dot-yellow: #FEBC2E; --dot-green: #28C840;
+
+  /* flame gradient — energy accents, underlines, bars */
+  --flame-grad:  linear-gradient(90deg, var(--flame) 0%, var(--flame-2) 100%);
+
+  /* subtle vignette to keep the black from feeling flat */
+  --vignette: radial-gradient(125% 125% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.5) 100%);
+
+  /* --- shape ---------------------------------------------------------------- */
+  --radius:     14px;       /* panels */
+  --radius-sm:  8px;        /* chips, code tags */
+  --pad:        80px;
+
+  /* --- motion — meme-speed. Snappy stamps, quick cuts, zero float. ---------- */
+  --ease-slam:   cubic-bezier(0.22, 1.2, 0.36, 1);   /* caption stamp (tiny overshoot OK here) */
+  --ease-snap:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  /* GSAP string eases */
+  --gsap-slam:   back.out(2.2);   /* THE stamp — hard and fast */
+  --gsap-snap:   expo.out;
+  --gsap-type:   none;            /* typewriter is linear */
+  --dur-in:  0.28s;   /* everything lands FAST */
+  --dur-out: 0.2s;
+}

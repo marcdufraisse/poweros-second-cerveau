@@ -1,0 +1,74 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · transition · PUNCH CUT
+  The talking-head punch-in (ref: v1/v2 jump cuts). Scale STEPS, never eases:
+  1.00 -> 1.07 -> 1.14, then a hard swap back to 1.00 on the next scene.
+  This is the "no soft crossfades" rule as a cut — energy without motion blur.
+  Slots: none.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+      #tr-punch-cut {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--navy); overflow: hidden; font-family: var(--font-display);
+      }
+      .plane { position: absolute; inset: 0; transform-origin: 50% 42%; }
+      .sceneA { background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 46%); }
+      .sceneA::after { content: ""; position: absolute; inset: 0; background: var(--streaks); }
+      .sceneB { background: var(--olive); visibility: hidden; }
+      .sceneB::after { content: ""; position: absolute; inset: 0; background-image: var(--dot-grid); background-size: var(--dot-grid-size); }
+
+      /* stand-in face zone so the punch reads in the demo */
+      .subject {
+        position: absolute; left: 50%; top: 50%; width: 420px; height: 560px;
+        margin: -280px 0 0 -210px; border-radius: 210px 210px 26px 26px;
+        background: rgba(255, 255, 255, 0.10); border: 1px solid rgba(255, 255, 255, 0.22);
+      }
+      .tag {
+        position: absolute; left: 64px; bottom: 56px; z-index: 2;
+        font-family: var(--font-mono); font-weight: var(--wt-med); font-size: var(--size-tiny);
+        letter-spacing: var(--track-pill); text-transform: uppercase; color: var(--grey-pre);
+      }
+      .step {
+        position: absolute; right: 64px; bottom: 56px; z-index: 2;
+        font-family: var(--font-mono); font-weight: var(--wt-bold); font-size: var(--size-tiny);
+        letter-spacing: var(--track-pill); color: var(--lime);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tr-punch-cut" data-composition-id="tr-punch-cut" data-start="0" data-width="1920" data-height="1080">
+      <div class="plane sceneA"><div class="subject"></div></div>
+      <div class="plane sceneB"><div class="subject"></div></div>
+      <div class="tag">PUNCH CUT · SCALE STEPS, NO EASING</div>
+      <div class="step s1">1.00</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#tr-punch-cut";
+      const tl = gsap.timeline({ paused: true });
+
+      /* three instant steps in, one hard swap out */
+      tl.set(root + " .sceneA", { scale: 1.07 }, 1.0)
+        .set(root + " .s1", { innerText: "1.07" }, 1.0)
+
+        .set(root + " .sceneA", { scale: 1.14 }, 2.0)
+        .set(root + " .s1", { innerText: "1.14" }, 2.0)
+
+        /* the cut: next scene lands at rest scale */
+        .set(root + " .sceneA", { visibility: "hidden" }, 3.0)
+        .set(root + " .sceneB", { visibility: "visible" }, 3.0)
+        .set(root + " .s1", { innerText: "1.00 · CUT" }, 3.0)
+
+        .set({}, {}, 4.5);
+
+      window.__timelines["tr-punch-cut"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,702 @@
+{
+  "$schema": "../registry.schema.json",
+  "id": "harris-atlas",
+  "name": "Harris Atlas",
+  "number": "05",
+  "status": "draft",
+  "inspiration": "Johnny-Harris cinematic map journalism. Aged parchment maps, sage oceans, slate country fills with white boxed Oswald labels, one blue-highlighted region per beat, typewriter metadata, film grain + warm burn transitions, slow documentary push-ins. Reference frames in references/.",
+  "summary": "The investigative atlas style. Use for story-driven explainers, history/geopolitics framing, and journeys — anything that benefits from dossier weight and cartographic storytelling.",
+  "palette": {
+    "bg": "#E7DDC4",
+    "fg": "#2A241C",
+    "accent": "#37BDF8",
+    "sage": "#C2CDB4",
+    "slate": "#57646A",
+    "film": "#14110C",
+    "red": "#BE3B2B",
+    "notes": "Two grounds: parchment/sage paper with warm ink, and projector-black film with cream text. brand blue highlights the one hero region/word; red is conflict punctuation only. Mirrored in tokens.css."
+  },
+  "fonts": {
+    "display": "Oswald",
+    "body": "Source Serif 4",
+    "mono": "Courier Prime",
+    "notes": "Oswald condensed caps is the cartographic voice (boxed labels, dates, headlines); Source Serif 4 is the narrative voice; Courier Prime is archival metadata."
+  },
+  "motion": "Documentary weight. Slow background push-ins (camera rides the ground layer only), labels stamp in with expo.out, route lines draw, Courier text types on, film-ground cards flicker faintly (finite). Never springy, never choppy.",
+  "transitions": "Warm film-burn washes sweeping the frame; paper cards can slide as plates. Never hard cuts, never whips.",
+  "cards": [
+    {
+      "id": "harris-atlas.t1.stat.date",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "date",
+      "file": "cards/tier1/t1-stat-date.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "claim",
+          "type": "text"
+        },
+        {
+          "name": "coord",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.stat.date.mp4",
+        "poster": "preview/harris-atlas.t1.stat.date.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t1.overview.legend",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "legend",
+      "file": "cards/tier1/t1-overview-legend.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "i1",
+          "type": "text"
+        },
+        {
+          "name": "n1",
+          "type": "text"
+        },
+        {
+          "name": "i2",
+          "type": "text"
+        },
+        {
+          "name": "n2",
+          "type": "text"
+        },
+        {
+          "name": "i3",
+          "type": "text"
+        },
+        {
+          "name": "n3",
+          "type": "text"
+        },
+        {
+          "name": "i4",
+          "type": "text"
+        },
+        {
+          "name": "n4",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 9
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.overview.legend.mp4",
+        "poster": "preview/harris-atlas.t1.overview.legend.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t1.overview.itinerary",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "itinerary",
+      "file": "cards/tier1/t1-overview-itinerary.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "s1",
+          "type": "text"
+        },
+        {
+          "name": "m1",
+          "type": "text"
+        },
+        {
+          "name": "s2",
+          "type": "text"
+        },
+        {
+          "name": "m2",
+          "type": "text"
+        },
+        {
+          "name": "s3",
+          "type": "text"
+        },
+        {
+          "name": "m3",
+          "type": "text"
+        },
+        {
+          "name": "s4",
+          "type": "text"
+        },
+        {
+          "name": "m4",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 9
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.overview.itinerary.mp4",
+        "poster": "preview/harris-atlas.t1.overview.itinerary.png"
+      }
+    },
+    {
+      "id": "harris-atlas.custom.map.region",
+      "tier": "custom",
+      "purpose": "map",
+      "treatment": "region",
+      "file": "cards/custom/c-region.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "headline",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 7,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.custom.map.region.mp4",
+        "poster": "preview/harris-atlas.custom.map.region.png"
+      }
+    },
+    {
+      "id": "harris-atlas.custom.map.journey",
+      "tier": "custom",
+      "purpose": "map",
+      "treatment": "journey",
+      "file": "cards/custom/c-journey.html",
+      "slots": [
+        {
+          "name": "from",
+          "type": "text"
+        },
+        {
+          "name": "to",
+          "type": "text"
+        },
+        {
+          "name": "note",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 7,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.custom.map.journey.mp4",
+        "poster": "preview/harris-atlas.custom.map.journey.png"
+      }
+    },
+    {
+      "id": "harris-atlas.custom.archive.dossier",
+      "tier": "custom",
+      "purpose": "archive",
+      "treatment": "dossier",
+      "file": "cards/custom/c-dossier.html",
+      "slots": [
+        {
+          "name": "doc_title",
+          "type": "text"
+        },
+        {
+          "name": "line1",
+          "type": "text"
+        },
+        {
+          "name": "line2",
+          "type": "text"
+        },
+        {
+          "name": "stamp",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 7,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.custom.archive.dossier.mp4",
+        "poster": "preview/harris-atlas.custom.archive.dossier.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t1.stat.count",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "count",
+      "file": "cards/tier1/t1-stat-count.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "claim",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.stat.count.mp4",
+        "poster": "preview/harris-atlas.t1.stat.count.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t1.stat.film",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "film",
+      "file": "cards/tier1/t1-stat-film.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.stat.film.mp4",
+        "poster": "preview/harris-atlas.t1.stat.film.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t1.stat.ledger",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "ledger",
+      "file": "cards/tier1/t1-stat-ledger.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "r1l",
+          "type": "text"
+        },
+        {
+          "name": "r1v",
+          "type": "text"
+        },
+        {
+          "name": "r2l",
+          "type": "text"
+        },
+        {
+          "name": "r2v",
+          "type": "text"
+        },
+        {
+          "name": "r3l",
+          "type": "text"
+        },
+        {
+          "name": "r3v",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.stat.ledger.mp4",
+        "poster": "preview/harris-atlas.t1.stat.ledger.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t1.quote.definition",
+      "tier": "tier1",
+      "purpose": "quote",
+      "treatment": "definition",
+      "file": "cards/tier1/t1-quote-definition.html",
+      "slots": [
+        {
+          "name": "term",
+          "type": "text"
+        },
+        {
+          "name": "note",
+          "type": "text"
+        },
+        {
+          "name": "def",
+          "type": "text"
+        },
+        {
+          "name": "src",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.quote.definition.mp4",
+        "poster": "preview/harris-atlas.t1.quote.definition.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t1.quote.testimony",
+      "tier": "tier1",
+      "purpose": "quote",
+      "treatment": "testimony",
+      "file": "cards/tier1/t1-quote-testimony.html",
+      "slots": [
+        {
+          "name": "quote",
+          "type": "text"
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "role",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.quote.testimony.mp4",
+        "poster": "preview/harris-atlas.t1.quote.testimony.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t1.thesis.paper",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "paper",
+      "file": "cards/tier1/t1-thesis-paper.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "headline",
+          "type": "richtext"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.thesis.paper.mp4",
+        "poster": "preview/harris-atlas.t1.thesis.paper.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t1.thesis.dossier",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "dossier",
+      "file": "cards/tier1/t1-thesis-dossier.html",
+      "slots": [
+        {
+          "name": "file",
+          "type": "text"
+        },
+        {
+          "name": "headline",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.thesis.dossier.mp4",
+        "poster": "preview/harris-atlas.t1.thesis.dossier.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t1.section.plate",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "plate",
+      "file": "cards/tier1/t1-section-plate.html",
+      "slots": [
+        {
+          "name": "index",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "sub",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.section.plate.mp4",
+        "poster": "preview/harris-atlas.t1.section.plate.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t1.section.route",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "route",
+      "file": "cards/tier1/t1-section-route.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "from",
+          "type": "text"
+        },
+        {
+          "name": "to",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.section.route.mp4",
+        "poster": "preview/harris-atlas.t1.section.route.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t1.section.film",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "film",
+      "file": "cards/tier1/t1-section-film.html",
+      "slots": [
+        {
+          "name": "index",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t1.section.film.mp4",
+        "poster": "preview/harris-atlas.t1.section.film.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t2.lower-third.boxed",
+      "tier": "tier2",
+      "purpose": "lower-third",
+      "treatment": "boxed",
+      "file": "cards/tier2/t2-lowerthird-boxed.html",
+      "slots": [
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "role",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t2.lower-third.boxed.mp4",
+        "poster": "preview/harris-atlas.t2.lower-third.boxed.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t2.label.coord",
+      "tier": "tier2",
+      "purpose": "label",
+      "treatment": "coord",
+      "file": "cards/tier2/t2-label-coord.html",
+      "slots": [
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "value",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t2.label.coord.mp4",
+        "poster": "preview/harris-atlas.t2.label.coord.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t2.list.legend",
+      "tier": "tier2",
+      "purpose": "list",
+      "treatment": "legend",
+      "file": "cards/tier2/t2-list-legend.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "i1",
+          "type": "text"
+        },
+        {
+          "name": "i2",
+          "type": "text"
+        },
+        {
+          "name": "i3",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t2.list.legend.mp4",
+        "poster": "preview/harris-atlas.t2.list.legend.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t2.definition.margin",
+      "tier": "tier2",
+      "purpose": "definition",
+      "treatment": "margin",
+      "file": "cards/tier2/t2-definition-margin.html",
+      "slots": [
+        {
+          "name": "term",
+          "type": "text"
+        },
+        {
+          "name": "def",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t2.definition.margin.mp4",
+        "poster": "preview/harris-atlas.t2.definition.margin.png"
+      }
+    },
+    {
+      "id": "harris-atlas.t2.lower-third.file",
+      "tier": "tier2",
+      "purpose": "lower-third",
+      "treatment": "file",
+      "file": "cards/tier2/t2-lowerthird-file.html",
+      "slots": [
+        {
+          "name": "file",
+          "type": "text"
+        },
+        {
+          "name": "topic",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/harris-atlas.t2.lower-third.file.mp4",
+        "poster": "preview/harris-atlas.t2.lower-third.file.png"
+      }
+    }
+  ]
+}

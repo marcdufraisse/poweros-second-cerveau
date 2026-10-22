@@ -1,0 +1,139 @@
+<!doctype html>
+<!--
+  KEYNOTE MINIMAL · tier1 · stat · RISE
+  Full-screen takeover. True-black stage; a soft stage glow breathes low in
+  frame; a centered metallic count-up number stays neutral while a thin
+  accent track-and-fill line beneath it grows left-to-right to a stop — a
+  progress feel, never a chart. Quiet kicker above, one-line claim below.
+  Silk motion, no bounce.
+  Slots: kicker, stat, label, foot.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-stat-rise {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      #t1-stat-rise .stage-glow {
+        position: absolute; inset: 0; background: var(--glow-stage); z-index: 1;
+      }
+      #t1-stat-rise .edge { position: absolute; inset: 0; background: var(--edge-falloff); z-index: 5; pointer-events: none; }
+
+      #t1-stat-rise .center {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-align: center;
+      }
+
+      #t1-stat-rise .kicker {
+        font-family: var(--font-body); font-weight: var(--wt-med);
+        font-size: var(--size-label); letter-spacing: var(--track-wide);
+        text-transform: uppercase; color: var(--text-dim);
+        margin-bottom: 8px;
+      }
+
+      /* metallic hero number stays neutral — the accent lives in the track below */
+      #t1-stat-rise .stat {
+        font-weight: var(--wt-black); font-size: var(--size-mega);
+        line-height: 1.02; letter-spacing: var(--track-display);
+        padding: 0 40px;
+        background: var(--metal-text);
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent; color: transparent;
+      }
+
+      /* progress track — the card's single accent element */
+      #t1-stat-rise .track {
+        position: relative; width: 620px; height: 2px;
+        background: var(--hairline); border-radius: 2px;
+        margin: 40px 0 32px;
+        overflow: hidden;
+      }
+      #t1-stat-rise .track-fill {
+        position: absolute; left: 0; top: 0; bottom: 0; width: 0;
+        background: var(--accent); border-radius: 2px;
+      }
+
+      #t1-stat-rise .label {
+        font-weight: var(--wt-semi); font-size: var(--size-headline);
+        letter-spacing: var(--track-snug); color: var(--text);
+        max-width: 1100px; line-height: 1.25;
+      }
+
+      #t1-stat-rise .foot {
+        position: absolute; left: 0; right: 0; bottom: 64px; z-index: 3;
+        text-align: center;
+        font-family: var(--font-mono); font-weight: var(--wt-reg);
+        font-size: var(--size-tiny); color: var(--text-faint);
+        letter-spacing: 0.04em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-stat-rise" data-composition-id="t1-stat-rise" data-start="0" data-width="1920" data-height="1080">
+      <div class="stage-glow"></div>
+
+      <div class="center">
+        <div class="kicker" data-slot="kicker">Certification progress</div>
+        <div class="stat" data-slot="stat" data-count-to="82" data-count-suffix="%">0%</div>
+
+        <div class="track">
+          <div class="track-fill" data-fill-to="82"></div>
+        </div>
+
+        <div class="label" data-slot="label">average completion across the automation specialization track</div>
+      </div>
+
+      <div class="foot" data-slot="foot">Acme certification analytics · 2026</div>
+      <div class="edge"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t1-stat-rise";
+
+      const statEl = document.querySelector(root + " .stat");
+      const target = parseFloat(statEl.dataset.countTo || "82");
+      const suffix = statEl.dataset.countSuffix || "";
+      const counter = { v: 0 };
+
+      const trackEl = document.querySelector(root + " .track");
+      const fillEl = document.querySelector(root + " .track-fill");
+      const fillTarget = parseFloat(fillEl.dataset.fillTo || "82");
+
+      tl.from(root + " .stage-glow", { autoAlpha: 0, scale: 0.9, transformOrigin: "50% 85%", duration: 1.6, ease: "expo.out" }, 0)
+
+        .from(root + " .kicker", { autoAlpha: 0, y: 22, filter: "blur(8px)", duration: 1.0, ease: "expo.out" }, 0.35)
+
+        /* number rises + resolves while it counts */
+        .from(root + " .stat", { autoAlpha: 0, y: 36, filter: "blur(12px)", duration: 1.2, ease: "expo.out" }, 0.55)
+        .to(counter, {
+          v: target, duration: 1.8, ease: "power3.out",
+          onUpdate: () => { statEl.textContent = Math.round(counter.v) + suffix; }
+        }, 0.55)
+
+        /* track frame resolves, then the fill grows to its stop */
+        .from(trackEl, { autoAlpha: 0, duration: 0.6, ease: "power2.out" }, 1.3)
+        .to(fillEl, { width: (fillTarget / 100) * 620, duration: 1.5, ease: "expo.out" }, 1.4)
+
+        .from(root + " .label", { autoAlpha: 0, y: 24, filter: "blur(8px)", duration: 1.0, ease: "expo.out" }, 1.9)
+        .from(root + " .foot",  { autoAlpha: 0, duration: 0.8, ease: "power2.out" }, 2.4)
+
+        /* glow breathes — finite */
+        .to(root + " .stage-glow", { scale: 1.06, transformOrigin: "50% 85%", duration: 2.4, ease: "sine.inOut", repeat: 1, yoyo: true }, 2.5)
+
+        .set({}, {}, 7);
+
+      window.__timelines["t1-stat-rise"] = tl;
+    </script>
+  </body>
+</html>

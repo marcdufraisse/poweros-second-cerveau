@@ -1,0 +1,62 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · tier2 · label · CAPTION SLAM
+  One short lime caps phrase slamming into the lower-center frame (the
+  "0 VALUE" / "NO MANUAL WORK" move): snaps in with a small overshoot, holds
+  dead still, exits fast. The punchiest tier2 in the style.
+  Slots: text.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-caption-slam {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; overflow: hidden; font-family: var(--font-display);
+      }
+      #t2-caption-slam .cap {
+        position: absolute; left: 0; right: 0; bottom: 140px; z-index: 3;
+        text-align: center;
+        font-weight: var(--wt-black); font-size: 76px; line-height: 1;
+        letter-spacing: 0.04em; text-transform: uppercase;
+        color: var(--lime); text-shadow: var(--kinetic-shadow);
+      }
+      #t2-caption-slam .cap .w { display: inline-block; white-space: pre; }
+    </style>
+  </head>
+  <body>
+    <div id="t2-caption-slam" data-composition-id="t2-caption-slam" data-start="0" data-width="1920" data-height="1080">
+      <div class="cap" data-slot="text">NO MANUAL WORK</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t2-caption-slam";
+
+      /* split into words so multi-word captions land word by word */
+      const cap = document.querySelector(root + " .cap");
+      const words = cap.textContent.trim().split(/\s+/);
+      cap.textContent = "";
+      words.forEach((w, i) => {
+        const s = document.createElement("span");
+        s.className = "w"; s.textContent = w + (i < words.length - 1 ? " " : "");
+        cap.appendChild(s);
+      });
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .cap .w", {
+          autoAlpha: 0, scale: 1.5, y: 10,
+          duration: 0.3, ease: "back.out(2)", stagger: 0.12
+        }, 0.1)
+        /* dead stillness - the hold is the timing */
+        .set({}, {}, 4);
+
+      window.__timelines["t2-caption-slam"] = tl;
+    </script>
+  </body>
+</html>

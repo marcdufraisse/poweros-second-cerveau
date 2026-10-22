@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>10 · l'utilisateur · nouveautés média + social</title>
+<style>
+  :root { --jaune: #8E16FA; --navy: #0b1220; --ink: #e8ecf4; --dim: #6f8090; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #070b14; color: var(--ink);
+    font-family: "Inter Tight", Inter, system-ui, sans-serif; padding: 40px 44px 80px; }
+  h1 { font-size: 30px; font-weight: 800; margin: 0 0 6px; }
+  h1 .j { color: var(--jaune); }
+  p.lead { color: var(--dim); margin: 0 0 26px; max-width: 900px; line-height: 1.5; }
+  h2 { font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--jaune);
+    border-bottom: 1px solid #1c2536; padding-bottom: 10px; margin: 44px 0 20px; }
+  h2 span { color: var(--dim); font-weight: 500; letter-spacing: 0.06em; text-transform: none; margin-left: 10px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 24px; }
+  .card { background: #0b1120; border: 1px solid #1c2536; border-radius: 12px; overflow: hidden; }
+  .card header { display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; font-family: ui-monospace, monospace; font-size: 12px; }
+  .card header .id { color: var(--ink); font-weight: 600; }
+  .card header button { background: var(--jaune); color: #170B30; border: 0; border-radius: 6px;
+    padding: 4px 12px; font-weight: 700; font-size: 11px; cursor: pointer; letter-spacing: 0.06em; }
+  .stage { position: relative; overflow: hidden; background: #444; }
+  .stage.wide { width: 560px; height: 315px; }
+  .stage.tall { width: 422px; height: 750px; }
+  .stage iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; }
+  .stage.wide iframe { width: 1920px; height: 1080px; transform: scale(0.29167); }
+  .stage.tall iframe { width: 1080px; height: 1920px; transform: scale(0.390625); }
+  .note { font-size: 12px; color: var(--dim); padding: 8px 14px 12px; max-width: 560px; line-height: 1.45; }
+  .card.tall-card .note { max-width: 422px; }
+</style>
+</head>
+<body>
+  <h1>Nouveautés · <span class="j">médias & templates sociaux</span></h1>
+  <p class="lead">Les 11 cartes ajoutées le 14/08 : 6 templates 9:16 calqués sur tes reels Instagram,
+    et 5 cartes média (verticales et horizontales) pour les vidéos long format. Les zones grises = ta
+    vidéo en dessous (cartes transparentes). Bouton Replay pour relancer l'animation.</p>
+
+  <h2>Templates sociaux <span>1080×1920 · calqués sur tes reels</span></h2>
+  <div class="grid" id="g-social"></div>
+
+  <h2>Cartes média <span>canvas 16:9 · pour les vidéos long format</span></h2>
+  <div class="grid" id="g-media"></div>
+
+<script>
+  const MEDIA = [
+    ["t1.media.cinema", "../cards/tier1/t1-media-cinema.html", "Takeover : un média 16:9 quasi plein cadre, contour jaune, légende."],
+    ["t1.media.vertical", "../cards/tier1/t1-media-vertical.html", "Takeover : un média 9:16 pleine hauteur + titre à côté, halo jaune."],
+    ["t1.media.duo", "../cards/tier1/t1-media-duo.html", "Takeover : deux médias 9:16 côte à côte (avant/après), contour jaune sur le résultat."],
+    ["t2.media.phone", "../cards/tier2/t2-media-phone.html", "Overlay : un vertical flottant à droite pendant que tu parles (fond gris = toi)."],
+    ["t2.media.wide", "../cards/tier2/t2-media-wide.html", "Overlay : panneau glass 16:9 flottant en haut à gauche (fond gris = toi)."],
+  ];
+  const SOCIAL = [
+    ["soc.media.top", "../cards/social/soc-media-top.html", "Ton layout signature : média en haut ~58%, coins arrondis, pill source. Toi en dessous."],
+    ["soc.compare.stack", "../cards/social/soc-stack-compare.html", "Le stack A/B de ton reel Higgsfield : deux 16:9 empilés + bandeau titre."],
+    ["soc.proof.views", "../cards/social/soc-view-badges.html", "Badges de vues (œil + compteur) qui popent en cascade sur le média."],
+    ["soc.proof.profile", "../cards/social/soc-profile-card.html", "Carte profil blanche : avatar à anneau jaune + stats."],
+    ["soc.cta.comment", "../cards/social/soc-cta-comment.html", "Fin de reel : « commente » + mot-clé en jaune géant qui claque."],
+    ["soc.label.header", "../cards/social/soc-header-brand.html", "Bandeau marque persistant en haut (collab, nom d'outil)."],
+    ["soc.ui.chat-live", "../cards/social/soc-chat-live.html", "L'UI vivante : le prompt se tape, envoi flash jaune, réponse en squelettes."],
+    ["soc.section.title-build", "../cards/social/soc-title-build.html", "Titre serif italique qui se construit mot à mot, emphase en or."],
+    ["soc.captions.karaoke", "../cards/social/soc-captions-karaoke.html", "Sous-titres karaoké : un mot à la fois, mots-clés en jaune."],
+    ["soc.proof.finder", "../cards/social/soc-finder-system.html", "Fenêtre Finder animée : le dossier se remplit, la ligne clé s'allume en jaune."],
+  ];
+
+  function build(listId, items, wide) {
+    const grid = document.getElementById(listId);
+    for (const [id, src, note] of items) {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML =
+        '<header><span class="id">marc.' + id + '</span><button>REPLAY</button></header>' +
+        '<div class="stage ' + (wide ? "wide" : "tall") + '"><iframe loading="lazy" src="' + src + '"></iframe></div>' +
+        '<p class="note">' + note + "</p>";
+      const iframe = card.querySelector("iframe");
+      const play = () => {
+        try {
+          const tls = iframe.contentWindow.__timelines || {};
+          Object.values(tls).forEach((t) => { t.pause(0); t.play(0); });
+        } catch (e) {}
+      };
+      iframe.addEventListener("load", () => setTimeout(play, 250));
+      card.querySelector("button").addEventListener("click", play);
+      grid.appendChild(card);
+    }
+  }
+  build("g-media", MEDIA, true);
+  build("g-social", SOCIAL, false);
+</script>
+</body>
+</html>

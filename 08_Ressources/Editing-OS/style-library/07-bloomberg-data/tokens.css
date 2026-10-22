@@ -1,0 +1,103 @@
+/* ============================================================================
+   BLOOMBERG DATA — style tokens
+   Single source of palette / type / motion for every card in this style.
+   Cards reference these vars and never hardcode colors, fonts, or easings.
+   Tweak here, all cards update. See DESIGN.md.
+   Aesthetic: Bloomberg-Originals brutalist data journalism — stark black
+   canvas, white condensed caps in labeled boxes, thin editorial rules,
+   terminal-amber numerals, market green/red deltas, precise chart geometry.
+   Serious money energy: everything measured, nothing decorative.
+   ============================================================================ */
+
+/* The HyperFrames compiler embeds supported fonts by name at render time;
+   this @import makes standalone / browser preview show the right faces. */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&family=Archivo+Narrow:wght@500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap");
+
+:root {
+  /* --- palette (mirror style.json + DESIGN.md) ----------------------------- */
+  --canvas:      #0A0A0A;   /* stark black */
+  --panel:       #141518;   /* lifted panel for charts/tables */
+  --rule:        #33363B;   /* thin editorial rules */
+
+  --white:       #FFFFFF;   /* headline white + label boxes */
+  --text:        #F2F2F0;
+  --text-dim:    rgba(242, 242, 240, 0.58);
+  --text-faint:  rgba(242, 242, 240, 0.32);
+  --black:       #0A0A0A;   /* text inside white label boxes */
+
+  --accent:      #37BDF8;   /* brand blue — the editorial accent (underlines, keys) */
+  --amber:       #FFB020;   /* terminal amber — numerals, tickers */
+  --up:          #4AF6C3;   /* market green — positive delta */
+  --down:        #FF433D;   /* market red — negative delta */
+
+  --accent-rgb:  55, 189, 248;
+  --amber-rgb:   255, 176, 32;
+  --up-rgb:      74, 246, 195;
+  --down-rgb:    255, 67, 61;
+
+  /* semantic aliases the blueprint contract expects */
+  --bg:    var(--canvas);
+  --fg:    var(--text);
+  --muted: var(--text-dim);
+
+  /* --- typography ----------------------------------------------------------
+     Archivo (600-800, tight) is the editorial voice: headlines, claims.
+     Archivo Narrow (600-700, UPPERCASE) is the label voice: white boxes,
+     kickers, axis labels. IBM Plex Mono is the data voice: every numeral,
+     ticker, delta, and timestamp. */
+  --font-display: "Archivo", system-ui, sans-serif;
+  --font-label:   "Archivo Narrow", "Archivo", system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, monospace;
+  --font-body:    "Archivo", system-ui, sans-serif;
+  --font-hand:    var(--font-mono);
+
+  --wt-reg: 400; --wt-med: 500; --wt-semi: 600; --wt-bold: 700; --wt-black: 800;
+
+  /* sizes for 1920x1080 */
+  --size-mega:     300px;   /* hero numeral (mono) */
+  --size-display:  138px;   /* takeover headline */
+  --size-title:    84px;    /* section title */
+  --size-headline: 50px;    /* card headline */
+  --size-body:     30px;    /* supporting copy */
+  --size-label:    24px;    /* boxed labels, kickers */
+  --size-tiny:     18px;    /* sources, timestamps */
+
+  --track-tight:  -0.02em;  /* Archivo display tracking */
+  --track-caps:    0.06em;  /* Narrow uppercase tracking */
+
+  /* --- the white label box — signature component ---------------------------
+     Black Archivo-Narrow caps in a white box, with a thin accent underline
+     bar (their lower-third grammar). Cards build:
+     background var(--white); color var(--black); padding var(--label-pad);
+     plus an .underbar div: height var(--bar-h); background var(--accent). */
+  --label-pad:   10px 18px 12px;
+  --bar-h:       5px;
+
+  /* --- rules + charts ------------------------------------------------------ */
+  --hairline:    1px solid var(--rule);
+  --tick:        2px solid var(--rule);      /* axis ticks */
+  --chart-bar:   var(--accent);              /* default bar fill */
+  --grid-line:   rgba(242, 242, 240, 0.10);  /* chart gridlines */
+
+  /* scanline texture — extremely subtle, keeps black from banding */
+  --tex-scan: repeating-linear-gradient(0deg,
+                transparent 0 3px, rgba(255, 255, 255, 0.012) 3px 4px);
+
+  /* --- shape ---------------------------------------------------------------- */
+  --radius:     0px;        /* NOTHING is rounded — brutalist */
+  --radius-sm:  0px;
+  --pad:        96px;
+
+  /* --- motion — precise, mechanical, editorial. ----------------------------- */
+  /* Rules draw, boxes clip-reveal, numbers roll. No bounce, no blur-in
+     (that's Keynote), no springs. Snap is acceptable; sloppiness is not. */
+  --ease-draw:   cubic-bezier(0.6, 0, 0.2, 1);   /* rule draws / wipes */
+  --ease-snap:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  /* GSAP string eases */
+  --gsap-draw:   power3.inOut;
+  --gsap-snap:   expo.out;
+  --gsap-roll:   power2.out;    /* number roll-ups */
+  --dur-in:  0.5s;
+  --dur-out: 0.35s;
+}

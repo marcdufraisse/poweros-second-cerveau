@@ -1,0 +1,124 @@
+<!doctype html>
+<!--
+  FIRESHIP TERMINAL · tier1 · section · VERSUS
+  Full-screen takeover. Two cream Luckiest-Guy words slam in from off-screen
+  left and right toward the outer thirds (fat rim, back.out); a flame-gradient
+  "VS" chip (Luckiest Guy on black) stamps dead-center last with a quick
+  impact shake; a thin mono footer line snaps in beneath. Dead stillness after.
+  Slots: left (text), right (text), foot (text).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-section-versus {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--cream);
+        font-family: var(--font-display); overflow: hidden;
+      }
+      #t1-section-versus .vig { position: absolute; inset: 0; background: var(--vignette); z-index: 5; pointer-events: none; }
+
+      #t1-section-versus .stage {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; align-items: center; justify-content: space-between;
+      }
+
+      /* left / right words — cream, fat rim */
+      #t1-section-versus .side {
+        flex: 0 0 620px;
+        font-size: var(--size-display); line-height: 1;
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+        color: var(--cream);
+        -webkit-text-stroke: var(--stroke-w) var(--outline);
+        paint-order: stroke fill;
+        text-shadow: var(--caption-shadow);
+        text-align: center;
+      }
+      #t1-section-versus .side.left { margin-left: 100px; text-align: left; }
+      #t1-section-versus .side.right { margin-right: 100px; text-align: right; }
+
+      /* flame VS chip, dead center */
+      #t1-section-versus .vs-wrap {
+        position: absolute; left: 50%; top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 4;
+      }
+      #t1-section-versus .vs-chip {
+        font-family: var(--font-display); font-size: var(--size-headline);
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+        color: var(--outline);
+        background: var(--flame-grad);
+        border-radius: 999px;
+        padding: 20px 44px;
+        box-shadow: 0 8px 0 rgba(0, 0, 0, 0.8), 0 0 40px rgba(var(--flame-rgb), 0.55);
+      }
+
+      /* mono footer line */
+      #t1-section-versus .foot {
+        position: absolute; bottom: 64px; left: 0; right: 0; z-index: 3;
+        text-align: center;
+        font-family: var(--font-mono); font-size: var(--size-tiny);
+        color: var(--text-dim); letter-spacing: 0.05em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-section-versus" data-composition-id="t1-section-versus" data-start="0" data-width="1920" data-height="1080">
+      <div class="stage">
+        <div class="side left" data-slot="left">DEVS</div>
+        <div class="side right" data-slot="right">BOTS</div>
+      </div>
+      <div class="vs-wrap"><div class="vs-chip">VS</div></div>
+      <div class="foot" data-slot="foot">// choose your fighter</div>
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-section-versus";
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* left word slams in from off-screen left */
+      tl.from(root + " .side.left", {
+          autoAlpha: 0, x: -420,
+          duration: 0.32, ease: "back.out(1.8)"
+        }, 0.2)
+
+        /* right word slams in from off-screen right, right after */
+        .from(root + " .side.right", {
+          autoAlpha: 0, x: 420,
+          duration: 0.32, ease: "back.out(1.8)"
+        }, ">0.1")
+
+        /* VS chip stamps center last */
+        .from(root + " .vs-chip", {
+          autoAlpha: 0, scale: 1.6, transformOrigin: "50% 50%",
+          duration: 0.28, ease: "back.out(2.2)"
+        }, ">0.15")
+
+        /* impact shake on the chip right after landing */
+        .to(root + " .vs-chip", {
+          keyframes: [
+            { x: 6, duration: 0.05 },
+            { x: -6, duration: 0.05 },
+            { x: 4, duration: 0.05 },
+            { x: -4, duration: 0.05 },
+            { x: 0, duration: 0.05 }
+          ], ease: "none"
+        }, ">-0.02")
+
+        /* thin mono footer line snaps in last */
+        .from(root + " .foot", { autoAlpha: 0, duration: 0.22, ease: "power2.out" }, ">0.12")
+
+        /* dead stillness — the hold is the timing */
+        .set({}, {}, 7);
+
+      window.__timelines["t1-section-versus"] = tl;
+    </script>
+  </body>
+</html>

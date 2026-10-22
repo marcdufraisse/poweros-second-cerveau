@@ -1,0 +1,93 @@
+<!doctype html>
+<!--
+  KEYNOTE MINIMAL · tier1 · quote · MARK
+  Full-screen takeover. True-black stage; the only decoration is one
+  enormous dim quotation mark floating top-left behind the text. Left-
+  aligned quote resolves in front of it; name in white, role dim below.
+  Slots: quote, name, role.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-quote-mark {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      #t1-quote-mark .edge { position: absolute; inset: 0; background: var(--edge-falloff); z-index: 5; pointer-events: none; }
+
+      /* the one decoration: an enormous dim quotation mark, top-left, behind the text */
+      #t1-quote-mark .mark {
+        position: absolute; top: -150px; left: 64px; z-index: 1;
+        font-family: var(--font-display); font-weight: var(--wt-black);
+        font-size: 420px; line-height: 1; color: var(--text-faint);
+        user-select: none; pointer-events: none;
+      }
+
+      #t1-quote-mark .content {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; flex-direction: column; justify-content: center;
+        padding: 0 var(--pad); padding-right: 300px;
+      }
+
+      #t1-quote-mark .quote {
+        font-weight: var(--wt-semi); font-size: calc(var(--size-headline) + 8px);
+        line-height: 1.34; letter-spacing: var(--track-snug);
+        max-width: 1280px; color: var(--text); text-align: left;
+      }
+
+      #t1-quote-mark .attribution { margin-top: 46px; }
+
+      #t1-quote-mark .name {
+        font-family: var(--font-body); font-weight: var(--wt-semi);
+        font-size: var(--size-body); color: var(--text);
+      }
+      #t1-quote-mark .role {
+        font-family: var(--font-body); font-weight: var(--wt-reg);
+        font-size: var(--size-label); color: var(--text-dim);
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-quote-mark" data-composition-id="t1-quote-mark" data-start="0" data-width="1920" data-height="1080">
+      <div class="mark">&ldquo;</div>
+
+      <div class="content">
+        <div class="quote" data-slot="quote">We stopped guessing at prompts and started shipping agents on a schedule. That&rsquo;s the whole difference.</div>
+        <div class="attribution">
+          <div class="name" data-slot="name">Devon Alcaraz</div>
+          <div class="role" data-slot="role">Founder, Northwind Automation</div>
+        </div>
+      </div>
+
+      <div class="edge"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t1-quote-mark";
+
+      tl.from(root + " .mark", { autoAlpha: 0, y: 24, filter: "blur(16px)", duration: 1.5, ease: "expo.out" }, 0)
+
+        .from(root + " .quote", { autoAlpha: 0, y: 32, filter: "blur(10px)", duration: 1.2, ease: "expo.out" }, 0.45)
+
+        .from(root + " .name", { autoAlpha: 0, y: 16, filter: "blur(6px)", duration: 0.9, ease: "expo.out" }, 1.25)
+        .from(root + " .role", { autoAlpha: 0, y: 16, filter: "blur(6px)", duration: 0.9, ease: "expo.out" }, 1.4)
+
+        /* mark drifts, finite */
+        .to(root + " .mark", { y: -14, duration: 2.4, ease: "sine.inOut", repeat: 1, yoyo: true }, 2.2)
+
+        .set({}, {}, 7);
+
+      window.__timelines["t1-quote-mark"] = tl;
+    </script>
+  </body>
+</html>

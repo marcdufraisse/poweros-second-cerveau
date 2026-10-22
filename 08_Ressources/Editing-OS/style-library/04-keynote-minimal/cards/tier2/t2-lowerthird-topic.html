@@ -1,0 +1,83 @@
+<!doctype html>
+<!--
+  KEYNOTE MINIMAL · tier2 · lower-third · TOPIC
+  Minimal bottom-center strip over talking-head video. Transparent stage; a
+  near-black hairline strip holds a small uppercase mono kicker, a middle
+  dot, and the topic in semi-bold white. A single hairline underlines the
+  whole strip, drawing left to right after the topic resolves.
+  Slots: kicker, topic.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      /* transparent stage — tier2 overlays float over live footage */
+      #t2-lt-topic {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      #t2-lt-topic .strip {
+        position: absolute; left: 50%; bottom: 100px; transform: translateX(-50%);
+        max-width: 1200px; white-space: nowrap; text-align: center;
+        background: rgba(0, 0, 0, 0.74);
+        border-top: var(--rule);
+        border-radius: var(--radius-sm);
+        padding: 22px 48px 26px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      #t2-lt-topic .kicker {
+        font-family: var(--font-mono); font-weight: var(--wt-med);
+        font-size: var(--size-label); letter-spacing: var(--track-wide);
+        text-transform: uppercase; color: var(--text-dim);
+      }
+
+      #t2-lt-topic .dot {
+        display: inline-block; margin: 0 14px;
+        font-size: var(--size-label); color: var(--text-faint);
+      }
+
+      #t2-lt-topic .topic {
+        font-family: var(--font-display); font-weight: var(--wt-semi);
+        font-size: var(--size-headline); letter-spacing: var(--track-snug);
+        color: var(--text);
+      }
+
+      #t2-lt-topic .underline {
+        position: absolute; left: 0; bottom: 0; width: 0%; height: 1px;
+        background: var(--hairline);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-lt-topic" data-composition-id="t2-lt-topic" data-start="0" data-width="1920" data-height="1080">
+      <div class="strip">
+        <span class="kicker" data-slot="kicker">Now</span>
+        <span class="dot">&bull;</span>
+        <span class="topic" data-slot="topic">Scaling Certification Cohorts with AI Agents</span>
+        <div class="underline"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t2-lt-topic";
+
+      tl.from(root + " .strip", { autoAlpha: 0, y: 18, filter: "blur(8px)", duration: 1.0, ease: "expo.out" }, 0)
+        .from(root + " .kicker", { autoAlpha: 0, duration: 0.6, ease: "power3.out" }, 0.35)
+        .from(root + " .dot", { autoAlpha: 0, duration: 0.4, ease: "power3.out" }, 0.5)
+        .from(root + " .topic", { autoAlpha: 0, y: 10, filter: "blur(6px)", duration: 0.8, ease: "expo.out" }, 0.55)
+        .to(root + " .underline", { width: "100%", duration: 1.1, ease: "expo.out" }, 0.9)
+
+        .set({}, {}, 6);
+
+      window.__timelines["t2-lt-topic"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<!--
+  HOUSE · social 9:16 · SPOTLIGHT JAUNE
+  Le geste d'annotation importé de Nick Saraev (13), porté au violet de marque :
+  une VRAIE capture d'écran plein cadre, floutée et assombrie partout SAUF
+  une zone nette encadrée d'un trait violet #8B5CF6 épais. Pour pointer LE
+  chiffre, LE bouton, LA ligne dont on parle — sans label, le cadre suffit.
+  À réserver aux 1-2 moments par reel où il faut pointer précisément ;
+  pour montrer un asset sans zone, prendre soc-media-slam.
+  La zone en % : --rx/--ry/--rw/--rh. Voir 10-marc/PLAYBOOK.md.
+  Slots: screen (media).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-spotlight-jaune {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden; background: var(--navy);
+
+        /* LA ZONE — Agent 3 écrase ces quatre valeurs par beat.
+           IMPORTANT : la zone se décrit en % du CADRE 1080x1920 affiché
+           (après le crop object-fit: cover), pas en % de l'image source.
+           Valeurs de démo : la cellule « 1136 cards » de la capture. */
+        --rx: 32%;
+        --ry: 76.5%;
+        --rw: 19%;
+        --rh: 6.5%;
+      }
+
+      /* deux couches de la MÊME capture : nette dessous, floutée dessus,
+         trouée sur la zone par clip-path */
+      #soc-spotlight-jaune .shot, #soc-spotlight-jaune .blurshot {
+        position: absolute; inset: 0;
+      }
+      #soc-spotlight-jaune .shot img, #soc-spotlight-jaune .blurshot img {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+      #soc-spotlight-jaune .blurshot {
+        filter: blur(14px) brightness(0.5);
+        transform: scale(1.03);
+        opacity: 0;
+        clip-path: polygon(
+          0 0, 100% 0, 100% 100%, 0 100%, 0 var(--ry),
+          var(--rx) var(--ry),
+          var(--rx) calc(var(--ry) + var(--rh)),
+          calc(var(--rx) + var(--rw)) calc(var(--ry) + var(--rh)),
+          calc(var(--rx) + var(--rw)) var(--ry),
+          0 var(--ry)
+        );
+      }
+
+      /* le cadre jaune — le SVG est dimensionné en pixels par le script
+         (viewBox = la taille réelle de la zone) : le trait fait le tour
+         COMPLET, coins ronds non déformés, dash calculé sur la vraie
+         longueur du périmètre. Une lueur jaune assoit le cadre. */
+      #soc-spotlight-jaune .frame {
+        position: absolute;
+        left: var(--rx); top: var(--ry); width: var(--rw); height: var(--rh);
+        pointer-events: none;
+        filter: drop-shadow(0 0 18px rgba(var(--jaune-rgb), 0.45));
+      }
+      #soc-spotlight-jaune .frame svg { width: 100%; height: 100%; display: block; overflow: visible; }
+      #soc-spotlight-jaune .frame rect {
+        fill: none; stroke: var(--jaune); stroke-width: 8px;
+        stroke-linecap: round;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="soc-spotlight-jaune" data-composition-id="soc-spotlight-jaune" data-start="0" data-width="1080" data-height="1920">
+      <div class="shot"><img data-slot="screen" src="../../references/ref-screen-demo.png" alt="" /></div>
+      <div class="blurshot"><img data-slot="screen" src="../../references/ref-screen-demo.png" alt="" /></div>
+      <div class="frame">
+        <svg id="ssj-svg"><rect id="ssj-rect" /></svg>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-spotlight-jaune";
+      const el = document.querySelector(root);
+
+      const css = getComputedStyle(el);
+      const pct = (n) => parseFloat(css.getPropertyValue(n)) / 100;
+      const rx = pct("--rx"), ry = pct("--ry"), rw = pct("--rw"), rh = pct("--rh");
+      const cx = (rx + rw / 2 - 0.5) * 100;
+      const cy = (ry + rh / 2 - 0.5) * 100;
+
+      /* le rect en pixels réels : trait complet, coins ronds propres */
+      const frame = el.querySelector(".frame");
+      const fw = frame.offsetWidth, fh = frame.offsetHeight;
+      const svg = document.getElementById("ssj-svg");
+      svg.setAttribute("viewBox", `0 0 ${fw} ${fh}`);
+      const rect = document.getElementById("ssj-rect");
+      const inset = 4; /* demi-trait : le trait reste entier dans la zone */
+      rect.setAttribute("x", inset); rect.setAttribute("y", inset);
+      rect.setAttribute("width", fw - inset * 2); rect.setAttribute("height", fh - inset * 2);
+      rect.setAttribute("rx", Math.min(24, fh / 4));
+      const perim = rect.getTotalLength();
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* 1. la capture claque, nette */
+      tl.fromTo(root, { scale: 1.12 }, { scale: 1.0, duration: 0.26, ease: "power4.out" }, 0);
+
+      /* 2. beat, puis le flou tombe partout sauf la zone */
+      tl.to(root + " .blurshot", { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 0.85);
+
+      /* 3. le trait jaune court le périmètre — vraie longueur, tour complet */
+      tl.fromTo(rect, { strokeDasharray: perim, strokeDashoffset: perim },
+        { strokeDashoffset: 0, duration: 0.45, ease: "power2.inOut" }, 0.9);
+      /* micro-pulse une fois fermé : le cadre "prend" */
+      tl.fromTo(frame, { scale: 1 }, { scale: 1.03, duration: 0.12, ease: "power2.out" }, 1.38);
+      tl.to(frame, { scale: 1, duration: 0.18, ease: "power2.inOut" }, 1.5);
+
+      /* 4. zoom continu vers la zone — jamais résolu, coupe en mouvement */
+      tl.to(root, {
+        scale: 1.14, xPercent: -cx * 0.14, yPercent: -cy * 0.14,
+        duration: 4.0, ease: "none"
+      }, 1.35);
+
+      tl.set({}, {}, 5.0);
+      window.__timelines["soc-spotlight-jaune"] = tl;
+    </script>
+  </body>
+</html>

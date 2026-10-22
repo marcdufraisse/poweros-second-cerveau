@@ -1,0 +1,135 @@
+<!doctype html>
+<!--
+  SCAFFOLD · FORMAT 02 — AVANT/APRÈS
+  Spec : ../../formats/02-avant-apres.md   ·   Mesures : ../../formats/MESURES.md
+
+  Ce qui est déjà juste et qu'il ne faut PAS retoucher :
+    - l'empilement (bandeau 354, volet A 399, volet B 1110, hauteurs 609 identiques)
+    - transformé EN HAUT, original EN BAS
+    - le noir de pied (201 px) reste vide
+    - le bandeau titre présent de la frame 1 à la dernière
+
+  Ce qu'il faut remplacer :
+    - assets/apres.mp4 et assets/avant.mp4 : la MÊME prise, au MÊME timecode,
+      cadrée pareil (crop 16:9). C'est toute la crédibilité du format.
+    - assets/voix.m4a (la voix off)
+    - le titre, les étiquettes, le CTA
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="tokens.css" />
+    <style>
+      /* Charte de marque (2026-10-01) : Outfit pour tout. Fichiers locaux
+         dans assets/fonts/, jamais de CDN. */
+      @font-face { font-family: "Outfit"; font-weight: 400; src: url("assets/fonts/Outfit-400.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 500; src: url("assets/fonts/Outfit-500.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 600; src: url("assets/fonts/Outfit-600.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 700; src: url("assets/fonts/Outfit-700.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 800; src: url("assets/fonts/Outfit-800.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 900; src: url("assets/fonts/Outfit-900.woff2") format("woff2"); }
+
+      html, body { margin: 0; background: #000; }
+
+      #reel {
+        position: absolute; inset: 0;
+        width: var(--reel-w); height: var(--reel-h);
+        overflow: hidden; background: #000;
+        font-family: "Outfit", system-ui, sans-serif;
+        letter-spacing: -0.03em;
+      }
+
+      /* ---------- bandeau titre : permanent, frame 1 -> fin ---------- */
+      #reel .header {
+        position: absolute; top: 0; left: 0; right: 0; height: var(--f02-header-h);
+        z-index: 5; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 10px;
+        text-align: center; color: #fff;
+      }
+      #reel .header .t1 { font-weight: 900; font-size: var(--f02-title-size); line-height: 1.05; }
+      #reel .header .t2 { font-weight: 700; font-size: var(--f02-subtitle-size); line-height: 1.1; }
+
+      /* ---------- volets : hauteurs STRICTEMENT égales ---------- */
+      #reel .pane {
+        position: absolute; left: 0; right: 0; height: var(--f02-pane-h);
+        overflow: hidden; background: #101010;
+      }
+      #reel .pane.a { top: var(--f02-pane-a-top); }   /* transformé — EN HAUT */
+      #reel .pane.b { top: var(--f02-pane-b-top); }   /* original  — EN BAS  */
+      #reel .pane video {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        object-fit: cover;
+      }
+
+      /* ---------- étiquettes : centrées AU-DESSUS des volets, sur le noir ---------- */
+      #reel .plabel {
+        position: absolute; left: 0; right: 0; z-index: 6;
+        text-align: center; font-weight: 800; font-size: var(--f02-label-size);
+        color: #fff;
+      }
+      #reel .plabel.a { top: 336px; }
+      #reel .plabel.b { top: 1043px; }
+
+      /* ---------- CTA : surimpression sur le volet A, 2 dernières secondes ---------- */
+      #reel .cta {
+        position: absolute; left: 40px; right: 40px; top: 672px; z-index: 7;
+        text-align: center; font-weight: 900; font-size: 56px; line-height: 1.15;
+        color: #fff; text-shadow: 0 3px 10px rgba(0,0,0,0.85);
+        visibility: hidden;
+      }
+      #reel .cta em { font-style: normal; color: var(--jaune); }
+    </style>
+  </head>
+
+  <body>
+    <div id="reel" data-composition-id="reel" data-start="0" data-width="1080" data-height="1920" data-fps="30">
+
+      <div class="header" id="header">
+        <div class="t1">Nom de l'outil</div>
+        <div class="t2">rend le montage vidéo trop facile 😳</div>
+      </div>
+
+      <div class="plabel a">Transformé</div>
+      <div class="pane a">
+        <video id="vA" src="assets/apres.mp4"
+               data-start="0" data-duration="12" data-media-start="0"
+               data-track-index="0" muted playsinline></video>
+      </div>
+
+      <div class="plabel b">Originale</div>
+      <div class="pane b">
+        <video id="vB" src="assets/avant.mp4"
+               data-start="0" data-duration="12" data-media-start="0"
+               data-track-index="1" muted playsinline></video>
+      </div>
+
+      <div class="cta" id="cta">Commente <em>MOTCLE</em> pour recevoir RESSOURCE</div>
+
+      <audio id="voix" src="assets/voix.m4a" data-start="0" data-duration="12" data-track-index="2"></audio>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      /* Durée du reel = durée de la prise montée (variante pure, façon F2b :
+         l'empilement tient du début à la fin). Pour la variante collab (F2a),
+         ajouter une bascule vers un split carte (format 01) après la démo. */
+      const DUR = 12;
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* Le bandeau ne bouge pas ; micro-pop d'entrée uniquement. */
+      tl.from("#header", { autoAlpha: 0, y: -24, duration: 0.35, ease: "expo.out" }, 0.02);
+
+      /* CTA en surimpression sur le volet A, 2 dernières secondes. */
+      tl.set("#cta", { visibility: "visible" }, DUR - 2.0);
+      tl.from("#cta", { autoAlpha: 0, scale: 0.92, duration: 0.25, ease: "back.out(1.8)" }, DUR - 2.0);
+
+      /* Padding : la durée de la composition = tl.duration(). */
+      tl.set({}, {}, DUR);
+
+      window.__timelines["reel"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · custom · highlight · LIME UI RING
+  For screen-recording sections: dims the frame with a scrim, then a lime
+  rounded-rect ring draws around the thing being talked about, with an
+  optional mono label chip hanging off its corner. Agent 3 positions the ring
+  via the CSS vars --hx/--hy/--hw/--hh on the root (defaults center a demo box).
+  Slots: label.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #cx-ui-highlight {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; overflow: hidden; font-family: var(--font-mono);
+        --hx: 640px; --hy: 380px; --hw: 640px; --hh: 320px;
+      }
+      /* scrim with a hole punched by the ring (4 panels) */
+      #cx-ui-highlight .scrim { position: absolute; background: rgba(0, 0, 0, 0.42); z-index: 2; }
+      #cx-ui-highlight .scrim.top    { left: 0; right: 0; top: 0; height: var(--hy); }
+      #cx-ui-highlight .scrim.bottom { left: 0; right: 0; top: calc(var(--hy) + var(--hh)); bottom: 0; }
+      #cx-ui-highlight .scrim.left   { left: 0; width: var(--hx); top: var(--hy); height: var(--hh); }
+      #cx-ui-highlight .scrim.right  { left: calc(var(--hx) + var(--hw)); right: 0; top: var(--hy); height: var(--hh); }
+
+      #cx-ui-highlight .ring {
+        position: absolute; z-index: 3;
+        left: var(--hx); top: var(--hy); width: var(--hw); height: var(--hh);
+        border: 4px solid var(--lime); border-radius: var(--radius-sm);
+        box-shadow: 0 0 22px rgba(var(--lime-rgb), 0.5), inset 0 0 22px rgba(var(--lime-rgb), 0.18);
+      }
+      #cx-ui-highlight .chip {
+        position: absolute; z-index: 4;
+        left: var(--hx); top: calc(var(--hy) - 54px);
+        font-weight: var(--wt-bold); font-size: var(--size-tiny);
+        letter-spacing: 0.08em; text-transform: uppercase;
+        color: var(--charcoal); background: var(--lime);
+        border-radius: 8px 8px 8px 0; padding: 10px 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cx-ui-highlight" data-composition-id="cx-ui-highlight" data-start="0" data-width="1920" data-height="1080">
+      <div class="scrim top"></div>
+      <div class="scrim bottom"></div>
+      <div class="scrim left"></div>
+      <div class="scrim right"></div>
+      <div class="ring"></div>
+      <div class="chip" data-slot="label">CLICK HERE</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#cx-ui-highlight";
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .scrim", { autoAlpha: 0, duration: 0.35, ease: "power2.out" }, 0.1)
+        .from(root + " .ring", { autoAlpha: 0, scale: 1.12, duration: 0.4, ease: "expo.out" }, 0.25)
+        .from(root + " .chip", { autoAlpha: 0, y: 12, duration: 0.32, ease: "back.out(1.9)" }, 0.6)
+        /* ring pulses once so the eye locks on */
+        .to(root + " .ring", { scale: 1.02, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1 }, 1.0)
+        .set({}, {}, 5);
+
+      window.__timelines["cx-ui-highlight"] = tl;
+    </script>
+  </body>
+</html>

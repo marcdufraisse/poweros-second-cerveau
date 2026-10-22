@@ -1,0 +1,146 @@
+<!doctype html>
+<!--
+  HARRIS ATLAS · custom · map · REGION
+  Full-frame region-highlight showpiece. Abstract sage-ocean map with a
+  parchment landmass (SVG coastline). One region on the landmass fills with
+  a translucent accent wash and its solid accent edge draws in. A boxed
+  slate label pins near the region, joined by a thin straight leader line —
+  no arrowhead. A Courier kicker + Oswald headline sit in the clear ocean
+  corner. Slow push-in toward the highlighted region; labels stay sharp.
+  Slots: kicker, headline, label.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #c-region {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--sage); color: var(--ink);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      /* map ground — pushed-in by the timeline (background only) */
+      #c-region .ground { position: absolute; inset: -60px; z-index: 1; }
+      #c-region .ground svg { width: 100%; height: 100%; }
+
+      #c-region .paper {
+        position: absolute; inset: 0; z-index: 2; pointer-events: none;
+        background-image: var(--tex-paper); background-size: 240px 240px;
+        mix-blend-mode: multiply; opacity: 0.16;
+      }
+      #c-region .age { position: absolute; inset: 0; z-index: 2; background: var(--paper-edge); pointer-events: none; }
+      #c-region .vig { position: absolute; inset: 0; z-index: 7; background: var(--vignette); pointer-events: none; }
+
+      #c-region .plate {
+        position: absolute; inset: 40px; z-index: 4;
+        border: var(--frame); border-radius: var(--radius-sm);
+        pointer-events: none;
+      }
+      #c-region .coord {
+        position: absolute; z-index: 5;
+        font-family: var(--font-mono); font-size: var(--size-tiny);
+        color: rgba(var(--ink-rgb), 0.65); letter-spacing: 0.06em;
+      }
+      #c-region .coord.tl { top: 54px; left: 62px; }
+      #c-region .coord.br { bottom: 54px; right: 62px; }
+
+      /* corner copy — sits over clear ocean, top-left */
+      #c-region .corner {
+        position: absolute; left: 138px; top: 152px; z-index: 5;
+        max-width: 700px;
+      }
+      #c-region .kicker {
+        font-family: var(--font-mono); font-size: var(--size-label);
+        letter-spacing: var(--track-wide); color: rgba(var(--ink-rgb), 0.72);
+        text-transform: uppercase; margin-bottom: 14px;
+      }
+      #c-region .headline {
+        font-weight: var(--wt-semi); font-size: var(--size-headline);
+        line-height: 1.14; color: var(--ink); text-transform: uppercase;
+        letter-spacing: 0.01em;
+      }
+
+      /* leader line + pinned label — screen space, does not push with the ground */
+      #c-region .leader { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+      #c-region .pin {
+        position: absolute; left: 1372px; top: 762px; z-index: 6;
+        background: var(--label-bg); color: var(--white);
+        padding: var(--label-pad); border-radius: var(--radius-sm);
+        font-weight: var(--wt-med); font-size: var(--size-label);
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="c-region" data-composition-id="c-region" data-start="0" data-width="1920" data-height="1080">
+
+      <div class="ground">
+        <svg viewBox="0 0 2040 1200" preserveAspectRatio="xMidYMid slice">
+          <rect x="0" y="0" width="2040" height="1200" fill="var(--sage)"/>
+          <path d="M 2120 -80 L 2120 1300 L 780 1300 C 700 1120, 860 980, 780 820 C 700 660, 880 560, 840 400 C 800 240, 980 140, 1160 60 C 1360 -30, 1600 -60, 1840 -20 C 1980 0, 2060 -40, 2120 -80 Z"
+                fill="var(--parchment)"/>
+          <path class="region" d="M 1180 560 C 1280 500, 1420 540, 1460 640 C 1500 740, 1420 820, 1300 800 C 1190 782, 1100 700, 1120 620 C 1130 590, 1150 575, 1180 560 Z"
+                fill="rgba(var(--accent-rgb), 0.35)"/>
+          <path class="region-edge" d="M 1180 560 C 1280 500, 1420 540, 1460 640 C 1500 740, 1420 820, 1300 800 C 1190 782, 1100 700, 1120 620 C 1130 590, 1150 575, 1180 560 Z"
+                fill="none" stroke="var(--accent)" stroke-width="5"/>
+        </svg>
+      </div>
+
+      <div class="paper"></div>
+      <div class="age"></div>
+      <div class="plate"></div>
+      <div class="coord tl">PLATE 11 · REGION OF INTEREST</div>
+      <div class="coord br">ACME ARCHIVE · SHEET 21</div>
+
+      <div class="corner">
+        <div class="kicker" data-slot="kicker">Dossier 04 · Contested Ground</div>
+        <div class="headline" data-slot="headline">Where Adoption Is Winning</div>
+      </div>
+
+      <svg class="leader" viewBox="0 0 1920 1080">
+        <line x1="1362" y1="600" x2="1372" y2="800" stroke="var(--slate)" stroke-width="3" class="leader-line"/>
+        <circle cx="1362" cy="600" r="6" fill="var(--slate)" class="leader-dot"/>
+      </svg>
+      <div class="pin" data-slot="label">Agent Adoption Zone</div>
+
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#c-region";
+
+      /* slow documentary push-in — GROUND ONLY, toward the region */
+      tl.fromTo(root + " .ground", { scale: 1.0 }, { scale: 1.07, transformOrigin: "63% 54%", duration: 8, ease: "power2.inOut" }, 0)
+
+        .from(root + " .region", { opacity: 0, duration: 0.9, ease: "power2.out" }, 0.3)
+        .fromTo(root + " .region-edge",
+          { strokeDasharray: 1400, strokeDashoffset: 1400, opacity: 1 },
+          { strokeDashoffset: 0, duration: 1.6, ease: "power1.inOut" }, 0.5)
+
+        .from(root + " .plate", { opacity: 0, duration: 0.7, ease: "power2.out" }, 0.15)
+        .from(root + " .coord.tl", { opacity: 0, y: -8, duration: 0.5, ease: "expo.out" }, 0.6)
+        .from(root + " .coord.br", { opacity: 0, y: 8, duration: 0.5, ease: "expo.out" }, 0.75)
+
+        .from(root + " .kicker", { autoAlpha: 0, y: 12, duration: 0.55, ease: "expo.out" }, 1.1)
+        .from(root + " .headline", { autoAlpha: 0, y: 16, duration: 0.6, ease: "power2.out" }, 1.35)
+
+        /* leader draws, then the pinned label stamps */
+        .fromTo(root + " .leader-line",
+          { strokeDasharray: 260, strokeDashoffset: 260, opacity: 0 },
+          { strokeDashoffset: 0, opacity: 1, duration: 0.7, ease: "power1.inOut" }, 2.0)
+        .from(root + " .leader-dot", { scale: 0, duration: 0.3, ease: "expo.out", transformOrigin: "50% 50%" }, 2.0)
+        .from(root + " .pin", { autoAlpha: 0, scale: 1.12, duration: 0.45, ease: "expo.out" }, 2.5)
+
+        .set({}, {}, 8);
+
+      window.__timelines["c-region"] = tl;
+    </script>
+  </body>
+</html>

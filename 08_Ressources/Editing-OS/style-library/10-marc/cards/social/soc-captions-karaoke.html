@@ -1,0 +1,85 @@
+<!doctype html>
+<!--
+  HOUSE · social 9:16 · CAPTIONS KARAOKE
+  One-word-at-a-time captions (the nathanhodgson / nick_saraev retention
+  device): each word appears alone, big, centered above the PIP zone, timed
+  on the voice. Words prefixed with "*" render in jaune (keywords).
+  Transparent overlay for the whole reel duration.
+  Slot convention: Agent 3 replaces the JSON in #skk-words with the real
+  word timings from transcript.json → [{ "t": 0.00, "w": "ce" }, ...].
+  A word ending at "t" of the next word; last word holds WORD_HOLD seconds.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-captions-karaoke {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        background: transparent; overflow: hidden; font-family: var(--font-body);
+      }
+      #soc-captions-karaoke .word {
+        position: absolute; left: 0; right: 0; top: 1150px;
+        text-align: center; font-weight: 800; font-size: 64px;
+        color: var(--white);
+        text-shadow: 0 3px 8px rgba(0, 0, 0, 0.75), 0 8px 30px rgba(0, 0, 0, 0.45);
+      }
+      #soc-captions-karaoke .word.jaune { color: var(--jaune); }
+    </style>
+  </head>
+  <body>
+    <div id="soc-captions-karaoke" data-composition-id="soc-captions-karaoke" data-start="0" data-width="1080" data-height="1920">
+      <div class="word" id="skk-word"></div>
+
+      <script type="application/json" id="skk-words" data-slot="words">
+        [
+          { "t": 0.10, "w": "ce" },
+          { "t": 0.38, "w": "montage" },
+          { "t": 0.80, "w": "est" },
+          { "t": 1.02, "w": "fait" },
+          { "t": 1.30, "w": "à" },
+          { "t": 1.46, "w": "*100%" },
+          { "t": 1.95, "w": "par" },
+          { "t": 2.18, "w": "*IA" },
+          { "t": 2.80, "w": "et" },
+          { "t": 3.00, "w": "ça" },
+          { "t": 3.22, "w": "change" },
+          { "t": 3.62, "w": "*tout" }
+        ]
+      </script>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-captions-karaoke";
+      const WORD_HOLD = 0.8; /* seconds the last word stays up */
+
+      const words = JSON.parse(document.getElementById("skk-words").textContent);
+      const el = document.getElementById("skk-word");
+
+      const tl = gsap.timeline({ paused: true });
+
+      words.forEach(({ t, w }) => {
+        const jaune = w.startsWith("*");
+        const text = jaune ? w.slice(1) : w;
+        /* swap text + color exactly at the word onset… */
+        tl.set(el, { textContent: text }, t);
+        tl.set(el, { className: "word" + (jaune ? " jaune" : "") }, t);
+        /* …with a tiny pop so each word lands physically */
+        tl.fromTo(el, { scale: 0.86, autoAlpha: 0.4 },
+          { scale: 1, autoAlpha: 1, duration: 0.16, ease: "back.out(2.2)" }, t);
+      });
+
+      /* clear after the last word */
+      const end = words[words.length - 1].t + WORD_HOLD;
+      tl.to(el, { autoAlpha: 0, duration: 0.2, ease: "power2.in" }, end);
+
+      tl.set({}, {}, end + 0.3);
+
+      window.__timelines["soc-captions-karaoke"] = tl;
+    </script>
+  </body>
+</html>

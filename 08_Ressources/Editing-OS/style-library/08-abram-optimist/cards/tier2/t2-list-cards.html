@@ -1,0 +1,92 @@
+<!doctype html>
+<!--
+  ABRAM OPTIMIST · tier2 · list · CARDS
+  Bottom-left overlay for talking-head footage (transparent canvas). A
+  floating white card carries a thin prism bar along its top edge, a small
+  mono title, and three rows — each a tiny accent-blue bullet + Inter
+  copy — popping in staggered. Face stays clear above y=720.
+  Slots: title, i1, i2, i3.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-list-cards {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; font-family: var(--font-body);
+        overflow: hidden;
+      }
+
+      #t2-list-cards .card {
+        position: absolute; left: 96px; bottom: 100px;
+        width: 560px;
+        background: var(--white); border-radius: var(--radius);
+        box-shadow: var(--lift);
+        padding: 34px 40px 32px;
+        overflow: hidden;
+      }
+
+      /* thin prism bar along the card's top edge */
+      #t2-list-cards .card::before {
+        content: ""; position: absolute; top: 0; left: 0; right: 0; height: 7px;
+        background: var(--prism);
+      }
+
+      #t2-list-cards .title {
+        font-family: var(--font-mono); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-mono);
+        text-transform: uppercase; color: var(--ink-soft);
+        margin: 6px 0 20px;
+      }
+
+      #t2-list-cards .row {
+        display: flex; align-items: center; gap: 16px;
+        font-family: var(--font-body); font-weight: var(--wt-med);
+        font-size: 27px; color: var(--ink);
+        margin-bottom: 16px;
+      }
+      #t2-list-cards .row:last-child { margin-bottom: 0; }
+
+      #t2-list-cards .dot {
+        flex: none; width: 14px; height: 14px; border-radius: 50%;
+        background: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-list-cards" data-composition-id="t2-list-cards" data-start="0" data-width="1920" data-height="1080">
+      <div class="card">
+        <div class="title" data-slot="title">What you'll build</div>
+        <div class="row"><span class="dot"></span><span data-slot="i1">Your first working AI agent</span></div>
+        <div class="row"><span class="dot"></span><span data-slot="i2">A prompt library you actually reuse</span></div>
+        <div class="row"><span class="dot"></span><span data-slot="i3">A certified project for your portfolio</span></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t2-list-cards";
+
+      tl.from(root + " .card", { autoAlpha: 0, y: 26, duration: 0.5, ease: "expo.out" }, 0)
+        .from(root + " .title", { autoAlpha: 0, y: 10, duration: 0.4, ease: "expo.out" }, 0.2)
+
+        /* three rows pop in staggered */
+        .from(root + " .row", {
+          autoAlpha: 0, scale: 0.6, transformOrigin: "0% 50%",
+          duration: 0.45, ease: "back.out(1.7)", stagger: 0.22
+        }, 0.4)
+
+        /* one gentle finite bob on the card */
+        .to(root + " .card", { y: -6, duration: 1.1, ease: "sine.inOut", repeat: 3, yoyo: true }, 1.6)
+
+        .set({}, {}, 6);
+
+      window.__timelines["t2-list-cards"] = tl;
+    </script>
+  </body>
+</html>

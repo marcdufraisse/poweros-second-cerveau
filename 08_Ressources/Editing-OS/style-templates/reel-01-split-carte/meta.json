@@ -1,0 +1,13 @@
+{
+  "slug": "reel-01-split-carte",
+  "title": "Reel · Format 01 — Split carte",
+  "family": "reel",
+  "type": "format-scaffold",
+  "format": "01-split-carte",
+  "style": "10-marc",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "spec": "formats/01-split-carte.md",
+  "notes": "Squelette du format par défaut : carte speaker en tiers bas, tête détourée qui dépasse, zone d'illustrations en haut, sous-titres dans l'interstice. Les assets sont des placeholders noirs."
+}

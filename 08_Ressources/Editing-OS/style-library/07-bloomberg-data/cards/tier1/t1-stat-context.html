@@ -1,0 +1,161 @@
+<!doctype html>
+<!--
+  BLOOMBERG DATA · tier1 · stat · CONTEXT
+  Full-screen takeover. Editorial number-in-context: a white label-box
+  headline clip-reveals top; a giant amber mono value sits left; a right
+  column stacks three hairline-separated mini comparator rows (Narrow-caps
+  label + smaller amber mono value); source cites bottom-left. Mechanical
+  draws, no decoration, dead-still hold.
+  Slots: kicker, stat, c1l, c1v, c2l, c2v, c3l, c3v, source.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-stat-context {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-display); overflow: hidden;
+      }
+      #t1-stat-context .scan { position: absolute; inset: 0; background: var(--tex-scan); z-index: 1; pointer-events: none; }
+
+      #t1-stat-context .toprule {
+        position: absolute; top: 120px; left: 96px; right: 96px; height: 1px;
+        background: var(--rule); transform-origin: 0% 50%;
+      }
+      #t1-stat-context .labelbox {
+        position: absolute; top: 150px; left: 96px;
+        overflow: hidden;
+      }
+      #t1-stat-context .boxinner {
+        background: var(--white); color: var(--black);
+        font-family: var(--font-label); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-caps);
+        text-transform: uppercase; padding: var(--label-pad);
+      }
+      #t1-stat-context .underbar {
+        position: absolute; top: 204px; left: 96px;
+        width: 260px; height: var(--bar-h); background: var(--accent);
+        transform-origin: 0% 50%;
+      }
+
+      #t1-stat-context .row {
+        position: absolute; left: 96px; right: 96px; top: 320px; bottom: 260px;
+        display: flex; align-items: center; gap: 96px;
+      }
+      #t1-stat-context .stat {
+        font-family: var(--font-mono); font-weight: var(--wt-semi);
+        font-size: var(--size-mega); line-height: 0.92;
+        color: var(--amber); letter-spacing: -0.03em;
+        min-width: 640px;
+      }
+
+      #t1-stat-context .compcol {
+        flex: 1; display: flex; flex-direction: column;
+        border-top: var(--hairline);
+      }
+      #t1-stat-context .comprow {
+        display: flex; align-items: baseline; justify-content: space-between;
+        padding: 26px 0; border-bottom: var(--hairline);
+      }
+      #t1-stat-context .compL {
+        font-family: var(--font-label); font-weight: var(--wt-semi);
+        font-size: var(--size-label); letter-spacing: var(--track-caps);
+        text-transform: uppercase; color: var(--text-dim);
+      }
+      #t1-stat-context .compV {
+        font-family: var(--font-mono); font-weight: var(--wt-semi);
+        font-size: 44px; color: var(--amber);
+      }
+
+      #t1-stat-context .botrule {
+        position: absolute; bottom: 170px; left: 96px; right: 96px; height: 1px;
+        background: var(--rule); transform-origin: 100% 50%;
+      }
+      #t1-stat-context .source {
+        position: absolute; bottom: 118px; left: 96px;
+        font-family: var(--font-label); font-weight: var(--wt-semi);
+        font-size: var(--size-tiny); letter-spacing: var(--track-caps);
+        text-transform: uppercase; color: var(--text-faint);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-stat-context" data-composition-id="t1-stat-context" data-start="0" data-width="1920" data-height="1080">
+      <div class="scan"></div>
+
+      <div class="toprule"></div>
+      <div class="labelbox"><div class="boxinner" data-slot="kicker">TIME-TO-CERTIFY, IN CONTEXT</div></div>
+      <div class="underbar"></div>
+
+      <div class="row">
+        <div class="stat" data-slot="stat" data-count-to="19" data-count-suffix=" DAYS">0 DAYS</div>
+
+        <div class="compcol">
+          <div class="comprow">
+            <div class="compL" data-slot="c1l">Cohort average, 2024</div>
+            <div class="compV" data-slot="c1v" data-count-to="46" data-count-suffix=" DAYS">0 DAYS</div>
+          </div>
+          <div class="comprow">
+            <div class="compL" data-slot="c2l">Self-paced course average</div>
+            <div class="compV" data-slot="c2v" data-count-to="61" data-count-suffix=" DAYS">0 DAYS</div>
+          </div>
+          <div class="comprow">
+            <div class="compL" data-slot="c3l">Bootcamp cohort, competitor</div>
+            <div class="compV" data-slot="c3v" data-count-to="34" data-count-suffix=" DAYS">0 DAYS</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="botrule"></div>
+      <div class="source" data-slot="source">SOURCE: ACME CERTIFICATION COHORT LOG 2026</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t1-stat-context";
+
+      function rollUp(sel, delay, dur) {
+        const el = document.querySelector(sel);
+        const target = parseFloat(el.dataset.countTo || "0");
+        const pre = el.dataset.countPrefix || "";
+        const suf = el.dataset.countSuffix || "";
+        const counter = { v: 0 };
+        const fmt = (n) => pre + Math.round(n).toLocaleString("en-US") + suf;
+        tl.from(sel, { autoAlpha: 0, duration: 0.3, ease: "power2.out" }, delay)
+          .to(counter, {
+            v: target, duration: dur, ease: "power2.out",
+            onUpdate: () => { el.textContent = fmt(counter.v); }
+          }, delay);
+      }
+
+      tl.fromTo(root + " .toprule", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 0.05)
+        .from(root + " .labelbox .boxinner", { xPercent: -101, duration: 0.5, ease: "power3.inOut" }, 0.3)
+        .fromTo(root + " .underbar", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.inOut" }, 0.55);
+
+      rollUp(root + " .stat", 0.7, 1.5);
+
+      tl.fromTo(root + " .compcol", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut", transformOrigin: "0% 50%" }, 1.0);
+
+      rollUp(root + " .comprow:nth-child(1) .compV", 1.6, 0.9);
+      rollUp(root + " .comprow:nth-child(2) .compV", 1.75, 0.9);
+      rollUp(root + " .comprow:nth-child(3) .compV", 1.9, 0.9);
+
+      tl.from(root + " .comprow:nth-child(1) .compL", { autoAlpha: 0, x: 20, duration: 0.35, ease: "power2.out" }, 1.6)
+        .from(root + " .comprow:nth-child(2) .compL", { autoAlpha: 0, x: 20, duration: 0.35, ease: "power2.out" }, 1.75)
+        .from(root + " .comprow:nth-child(3) .compL", { autoAlpha: 0, x: 20, duration: 0.35, ease: "power2.out" }, 1.9)
+
+        .fromTo(root + " .botrule", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 1.4)
+        .from(root + " .source", { autoAlpha: 0, duration: 0.4, ease: "power2.out" }, 2.9)
+
+        .set({}, {}, 7);
+
+      window.__timelines["t1-stat-context"] = tl;
+    </script>
+  </body>
+</html>

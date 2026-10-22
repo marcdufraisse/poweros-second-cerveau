@@ -1,0 +1,242 @@
+<!doctype html>
+<!--
+  SCAFFOLD · FORMAT 01 — SPLIT CARTE
+  Spec : ../../formats/01-split-carte.md   ·   Mesures : ../../formats/MESURES.md
+
+  Ce qui est déjà juste et qu'il ne faut PAS retoucher :
+    - la géométrie (zone haute 970, sous-titre 985, carte 1250, marge 55, rayon 42)
+    - les deux couches carte + détourage au MÊME transform (règle des « 4 oreilles »)
+    - la ligne de tête : tout punch-in est compensé en y
+
+  Ce qu'il faut remplacer :
+    - assets/edit.mp4, assets/edit-cutout.webm, assets/voix.m4a (placeholders noirs)
+    - SEG / CUTS (l'EDL du montage parole)
+    - CAPS (les sous-titres, timecodes SOURCE)
+    - les 4 beats de démonstration de la zone haute
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="tokens.css" />
+    <style>
+      /* Charte de marque (2026-10-01) : Outfit pour tout, JetBrains Mono pour
+         les labels. Fichiers locaux dans assets/fonts/, jamais de CDN. */
+      @font-face { font-family: "Outfit"; font-weight: 400; src: url("assets/fonts/Outfit-400.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 500; src: url("assets/fonts/Outfit-500.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 600; src: url("assets/fonts/Outfit-600.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 700; src: url("assets/fonts/Outfit-700.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 800; src: url("assets/fonts/Outfit-800.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 900; src: url("assets/fonts/Outfit-900.woff2") format("woff2"); }
+      @font-face { font-family: "JetBrains Mono"; font-weight: 400; src: url("assets/fonts/JetBrainsMono-Regular.woff2") format("woff2"); }
+      @font-face { font-family: "Instrument Serif"; font-style: italic; font-weight: 400; src: url("assets/fonts/instrument-serif-italic.woff2") format("woff2"); }
+
+      html, body { margin: 0; background: #000; }
+
+      #reel {
+        position: absolute; inset: 0;
+        width: var(--reel-w); height: var(--reel-h);
+        overflow: hidden; background: var(--bg);
+        font-family: "Outfit", system-ui, sans-serif;
+        letter-spacing: -0.03em;
+      }
+
+      /* ---------- zone illustration : 0 -> 970px ---------- */
+      #reel .top {
+        position: absolute; top: 0; left: 0; right: 0; height: var(--f01-top-h);
+        z-index: 3; overflow: hidden;
+        border-radius: 0 0 var(--f01-top-radius) var(--f01-top-radius);
+        /* charte de marque : noir violet + grille + nappe violette figée */
+        background:
+          radial-gradient(60% 40% at 50% 18%, rgba(139, 92, 246, 0.16) 0%, transparent 70%),
+          linear-gradient(var(--grid-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+          var(--bg);
+        background-size: 100% 100%, 60px 60px, 60px 60px, auto;
+      }
+      #reel .beat {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        visibility: hidden;
+      }
+
+      /* placeholders de beats — à remplacer par les cartes de style-library */
+      #reel .ph {
+        width: 780px; height: 700px; border-radius: 32px;
+        border: 3px dashed rgba(167,139,250,0.30);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 24px; color: rgba(255,255,255,0.5);
+        font-family: ui-monospace, monospace; letter-spacing: 0.14em; font-size: 30px;
+      }
+      #reel .ph b { color: var(--jaune); font-size: 92px; letter-spacing: -0.04em; }
+
+      /* ---------- sous-titre : dans l'interstice, jamais sur le visage ---------- */
+      #reel .cap {
+        position: absolute; left: 60px; right: 60px; top: var(--f01-cap-top);
+        z-index: 8; text-align: center;
+        font-weight: 900; font-size: var(--f01-cap-size); line-height: 1.08;
+        color: #fff; text-shadow: 0 3px 8px rgba(0,0,0,0.8);
+      }
+      #reel .cap em { font-style: normal; color: var(--jaune); }
+
+      /* ---------- carte speaker + détourage ---------- */
+      #reel .vidcard {
+        position: absolute; left: var(--f01-card-side); right: var(--f01-card-side);
+        top: var(--f01-card-top); bottom: var(--f01-card-bottom);
+        border-radius: var(--f01-card-radius); overflow: hidden;
+        z-index: 2; background: #101010; box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      }
+      #reel .cutover {
+        position: absolute; left: var(--f01-card-side); right: var(--f01-card-side);
+        top: var(--f01-card-top); bottom: var(--f01-card-bottom);
+        z-index: 4; pointer-events: none;
+      }
+      /* LES DEUX WRAPPERS PORTENT LE MÊME TRANSFORM, TOUJOURS. */
+      #reel .vwrap, #reel .cutwrap {
+        position: absolute; inset: 0;
+        transform: scale(var(--f01-card-scale)); transform-origin: 50% 100%;
+      }
+      #reel .vidcard video, #reel .cutover video {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        object-fit: cover; object-position: 50% 20%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="reel" data-composition-id="reel" data-start="0" data-width="1080" data-height="1920" data-fps="30">
+      <div class="reel-bg"></div>
+
+      <!-- ============ zone illustration ============ -->
+      <div class="top" id="top">
+        <div class="beat" id="b1"><div class="ph"><span>BEAT 1</span><b>LE PROBLÈME</b></div></div>
+        <div class="beat" id="b2"><div class="ph"><span>BEAT 2</span><b>LA PREUVE</b></div></div>
+        <div class="beat" id="b3"><div class="ph"><span>BEAT 3</span><b>LA MÉTHODE</b></div></div>
+        <div class="beat" id="b4"><div class="ph"><span>BEAT 4 · CTA · soc-cta-ressource</span><b>Commente MOT-CLÉ pour recevoir…</b></div></div>
+      </div>
+
+      <!-- ============ sous-titre ============ -->
+      <div class="cap" id="cap"></div>
+
+      <!-- ============ speaker ============ -->
+      <div class="vidcard">
+        <div class="vwrap" id="vwrap">
+          <video id="vmain" src="assets/edit.mp4"
+                 data-start="0" data-duration="12" data-media-start="0"
+                 data-track-index="0" muted playsinline></video>
+        </div>
+      </div>
+      <div class="cutover">
+        <div class="cutwrap" id="cutwrap">
+          <video id="vcut" src="assets/edit-cutout.webm"
+                 data-start="0" data-duration="12" data-media-start="0"
+                 data-track-index="1" muted playsinline></video>
+        </div>
+      </div>
+
+      <audio id="voix" src="assets/voix.m4a" data-start="0" data-duration="12" data-track-index="2"></audio>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      /* ==========================================================
+         1. L'EDL — remplacer par le montage parole réel.
+            SEG  : segments gardés, en temps SOURCE (vrais start/end de mots)
+            CUTS : micro-blancs rabotés au niveau SONORE, en temps BAKÉ
+            ed(t): temps source -> temps monté. TOUT passe par ed().
+         ========================================================== */
+      const SEG = [[0, 12]];
+      const CUTS = [];
+
+      const STARTS = []; let acc = 0;
+      SEG.forEach(([a, b]) => { STARTS.push(acc); acc += b - a; });
+      const DUR = acc - CUTS.reduce((s, [a, b]) => s + (b - a), 0);
+
+      function shiftCut(t) {
+        let d = 0;
+        for (const [a, b] of CUTS) { if (t >= b) d += b - a; else if (t > a) d += t - a; }
+        return t - d;
+      }
+      function ed(src) {
+        for (let i = 0; i < SEG.length; i++)
+          if (src >= SEG[i][0] - 0.01 && src <= SEG[i][1] + 0.01)
+            return shiftCut(STARTS[i] + (src - SEG[i][0]));
+        return null;
+      }
+
+      /* ==========================================================
+         2. LES SOUS-TITRES — groupes de 1 à 4 mots, remplacés en bloc,
+            0,6 à 1,2 s par groupe, coupés sur le SENS (tranché 18/08,
+            mesures dans formats/MESURES.md). Timecodes SOURCE ;
+            un `*` préfixe le mot jauni.
+         ========================================================== */
+      const CAPS = [
+        [0.4, "Remplace ces groupes"],
+        [1.6, "par les tiens"],
+        [2.8, "depuis le transcript"],
+        [4.2, "un groupe tient"],
+        [5.4, "entre 0,6 et 1,2 seconde"],
+        [7.0, "et se coupe sur le sens"],
+        [8.6, "pas sur le nombre de mots"],
+        [10.2, "commente *MOTCLE"],
+      ];
+
+      const cap = document.getElementById("cap");
+      const tl = gsap.timeline({ paused: true });
+
+      CAPS.forEach(([src, raw]) => {
+        const t = ed(src);
+        if (t === null) return;
+        tl.set(cap, { innerHTML: raw.replace(/\*(\S+)/g, "<em>$1</em>") }, t);
+        tl.fromTo(cap, { scale: 0.94, autoAlpha: 0 },
+          { scale: 1, autoAlpha: 1, duration: 0.12, ease: "power3.out" }, t);
+      });
+
+      /* ==========================================================
+         3. LES BEATS — zone haute.
+            Règle dure : jamais plus de 1,5 s sans changement ici.
+            Viser 1 changement / 0,8 à 1,2 s (formats/MESURES.md).
+         ========================================================== */
+      const BEATS = [
+        ["#b1", 0.2, 3.0],
+        ["#b2", 3.0, 6.0],
+        ["#b3", 6.0, 9.5],
+        ["#b4", 9.5, 12.0],
+      ];
+
+      BEATS.forEach(([sel, aSrc, bSrc]) => {
+        const a = ed(aSrc), b = ed(bSrc);
+        tl.set(sel, { visibility: "visible" }, a);
+        tl.fromTo(sel, { autoAlpha: 0, y: 40 },
+          { autoAlpha: 1, y: 0, duration: 0.35, ease: "expo.out" }, a);
+        /* entretien : rien ne reste immobile plus de 0,5 s */
+        tl.to(sel + " .ph", { y: -14, duration: (b - a) / 2, ease: "sine.inOut",
+          yoyo: true, repeat: 1 }, a + 0.35);
+        tl.to(sel, { autoAlpha: 0, duration: 0.2, ease: "power2.in" }, b - 0.2);
+        tl.set(sel, { visibility: "hidden" }, b);
+      });
+
+      /* ==========================================================
+         4. PUNCH-INS — 2 à 3 par minute, sur une phrase d'emphase.
+            Le scale monte la tête : la translation y la RAMÈNE sur sa ligne.
+            Barème validé v14 : base 1.28/y0 · punch 1.33/y50 · zoom 1.43/y150.
+            Les deux couches bougent ensemble, sinon « 4 oreilles ».
+         ========================================================== */
+      function punch(srcT, scale, y) {
+        const t = ed(srcT);
+        if (t === null) return;
+        tl.set(["#vwrap", "#cutwrap"], { scale: scale, y: y }, t);
+      }
+      punch(6.0, 1.33, 50);
+      punch(9.5, 1.28, 0);
+
+      /* ==========================================================
+         5. Durée = tl.duration(). On la cale sur la fin de la parole.
+         ========================================================== */
+      tl.set({}, {}, DUR);
+
+      window.__timelines["reel"] = tl;
+    </script>
+  </body>
+</html>

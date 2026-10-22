@@ -1,0 +1,67 @@
+<!doctype html>
+<!--
+  HOUSE · social 9:16 · CTA COMMENT
+  The end-card CTA from reel Dba-jOyIbom: small white line ("commente") then
+  the comment keyword slammed huge in jaune caps. Transparent — sits over the
+  talking-head footage in the last seconds. Keyword pops with a slam + settle.
+  Slots: line (text), keyword (text, 2-10 chars).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-cta-comment {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        background: transparent; overflow: hidden; font-family: var(--font-display);
+      }
+      #soc-cta-comment .cta {
+        position: absolute; left: 0; right: 0; top: 620px;
+        display: flex; flex-direction: column; align-items: center; gap: 4px;
+        text-align: center;
+      }
+      #soc-cta-comment .line {
+        font-family: var(--font-body); font-weight: var(--wt-heavy);
+        font-size: 44px; color: var(--white);
+        text-shadow: 0 3px 14px rgba(0, 0, 0, 0.65);
+      }
+      #soc-cta-comment .keyword {
+        font-weight: var(--wt-black); font-size: 190px; line-height: 1;
+        letter-spacing: 0.02em; text-transform: uppercase;
+        color: var(--jaune);
+        text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="soc-cta-comment" data-composition-id="soc-cta-comment" data-start="0" data-width="1080" data-height="1920">
+      <div class="cta">
+        <div class="line" data-slot="line">commente</div>
+        <div class="keyword" data-slot="keyword">IA</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-cta-comment";
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .line", { autoAlpha: 0, y: 24, duration: 0.35, ease: "expo.out" }, 0.1)
+        /* keyword slams in from big — punch, then settle */
+        .from(root + " .keyword", { autoAlpha: 0, scale: 2.2, duration: 0.38, ease: "power4.in" }, 0.3)
+        .to(root + " .keyword", { scale: 1.06, duration: 0.16, ease: "power2.out" }, 0.68)
+        .to(root + " .keyword", { scale: 1, duration: 0.22, ease: "power2.inOut" }, 0.84)
+
+        /* breathing pulse while the CTA holds */
+        .to(root + " .keyword", { scale: 1.04, duration: 1.4, ease: "sine.inOut", yoyo: true, repeat: 3 }, 1.4)
+
+        .set({}, {}, 8);
+
+      window.__timelines["soc-cta-comment"] = tl;
+    </script>
+  </body>
+</html>

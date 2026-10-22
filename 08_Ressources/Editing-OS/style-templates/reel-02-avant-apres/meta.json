@@ -1,0 +1,13 @@
+{
+  "slug": "reel-02-avant-apres",
+  "title": "Reel · Format 02 — Avant/après",
+  "family": "reel",
+  "type": "format-scaffold",
+  "format": "02-avant-apres",
+  "style": "10-marc",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "spec": "formats/02-avant-apres.md",
+  "notes": "Empilement deux volets 16:9 de la même prise : transformé en haut, original en bas, bandeau titre permanent, noir de pied vide. Les assets sont des placeholders."
+}

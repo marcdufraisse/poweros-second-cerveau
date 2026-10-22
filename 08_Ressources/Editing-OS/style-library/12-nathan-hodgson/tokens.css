@@ -1,0 +1,124 @@
+/* ============================================================================
+   NATHAN HODGSON — style tokens
+   Single source of palette / type / motion for every card in this style.
+   Cards reference these vars and never hardcode colors, fonts or easings.
+   Tweak here, all cards update. See DESIGN.md.
+
+   Aesthetic: instagram.com/nathanhodgson.ai — le reel « tutoriel rejoué ».
+   Un fond crème chaud qui n'est jamais plat, un accent orange unique, et des
+   interfaces REDESSINÉES (pas capturées) qui s'exécutent toutes seules pendant
+   qu'il parle. Sandwich permanent : le graphique occupe le haut du cadre, le
+   visage le bas, séparés par une arête franche. Sous-titres mot à mot dans une
+   pastille grise. Chaque reel se termine sur la même carte violette « Comment ».
+   Couleurs échantillonnées au pixel sur 10 reels (03/08 → 17/08 2026).
+   ============================================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+:root {
+  /* --- le décor crème -----------------------------------------------------
+     JAMAIS un aplat. Toujours un dégradé chaud du haut (papier) vers le bas
+     (pêche), plus des blocs flous à peine plus clairs qui dérivent derrière.
+     C'est ce gradient qui empêche la scène de ressembler à une slide. */
+  --cream:        #F1E7DC;   /* haut de scène — papier chaud */
+  --cream-deep:   #E0CABB;   /* bas de scène — pêche poudré */
+  --cream-panel:  #F8F6F2;   /* le panneau graphique posé sur la scène */
+  --cream-page:   #EAE4DD;   /* la scène derrière ce panneau */
+  --card:         #FAEBE1;   /* les cartes de contenu claires */
+  --card-white:   #FDFAFE;   /* les lignes de specs — blanc quasi pur */
+  --chip:         #F1EAE8;   /* la pastille d'icône dans une ligne de specs */
+
+  /* --- l'encre ------------------------------------------------------------ */
+  --ink:          #1F140E;   /* les titres. Brun-noir, jamais #000. */
+  --ink-soft:     #39302A;   /* le texte de carte */
+  --ink-mute:     rgba(31, 20, 14, 0.48);
+
+  /* --- L'ACCENT, un seul -------------------------------------------------- */
+  --orange:       #E88050;   /* THE accent : chiffres, filet, playhead, jauges */
+  --orange-deep:  #C86038;   /* extrémité gauche du filet dégradé */
+  --orange-lit:   #F8A078;   /* extrémité droite du filet dégradé */
+  --orange-dim:   rgba(232, 128, 80, 0.18);
+  --orange-rule:  linear-gradient(90deg, var(--orange-deep), var(--orange-lit));
+
+  /* --- la scène sombre (les UI rejouées y vivent) ------------------------- */
+  --panel:        #25201F;   /* le corps d'une app redessinée */
+  --panel-lit:    #302E2F;   /* un champ / une bulle dans cette app */
+  --panel-line:   rgba(255, 255, 255, 0.08);
+  --panel-fg:     #F2EDEA;
+  --panel-mute:   rgba(242, 237, 234, 0.46);
+
+  /* --- les deux statuts, jamais plus ------------------------------------- */
+  --green:        #489860;   /* ✓ APPLIED — l'état terminé */
+  --green-bg:     rgba(72, 152, 96, 0.14);
+  --blue:         #0068B8;   /* les logos tiers, LinkedIn, Chrome */
+  --select:       #2D5ECB;   /* LA sélection de texte du navigateur = son surligneur */
+
+  /* --- la carte de fin, identique dans 10 reels sur 10 ------------------- */
+  --violet-deep:  #100038;
+  --violet:       #280850;
+  --violet-lit:   #4D1289;
+  --violet-cta:   radial-gradient(120% 90% at 85% -10%, var(--violet-lit), transparent 62%),
+                  linear-gradient(160deg, var(--violet), var(--violet-deep) 70%, #000 100%);
+
+  /* --- la pastille de sous-titre ----------------------------------------- */
+  --pill-bg:      rgba(37, 27, 21, 0.56);
+  --pill-fg:      #FFFFFF;
+  --pill-radius:  14px;
+
+  --white:        #FFFFFF;
+
+  /* semantic aliases the blueprint contract expects */
+  --bg:     var(--cream);
+  --fg:     var(--ink);
+  --accent: var(--orange);
+  --muted:  var(--ink-mute);
+
+  /* --- typographie ---------------------------------------------------------
+     Deux voix seulement. Inter Tight 900 CAPS très serré pour le titre de
+     section (l'original est une grotesque lourde condensée). Poppins, la
+     géométrique, pour TOUT le reste : sous-titres, labels d'UI, corps de
+     carte — c'est elle qui donne le côté « produit » et pas « éditorial ».
+     JetBrains Mono uniquement pour les valeurs, compteurs et chemins. */
+  --font-display: "Inter Tight", "Archivo", system-ui, sans-serif;
+  --font-body:    "Poppins", "Inter", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+  --fs-title:     104px;  /* HANDS OFF / BIG DECISIONS — 9:16, 1080 de large */
+  --fs-caption:   62px;   /* le mot de la pastille */
+  --fs-card:      44px;   /* le label d'une ligne de specs */
+  --fs-sub:       30px;   /* le sous-label gris */
+  --fs-mono:      32px;
+
+  --tracking-title: -0.035em;  /* le titre est SERRÉ, c'est sa signature */
+
+  /* --- géométrie ---------------------------------------------------------- */
+  --r-panel:      34px;   /* une app redessinée */
+  --r-card:       26px;   /* une carte de contenu */
+  --r-row:        22px;   /* une ligne de specs */
+  --r-chip:       16px;
+  --rule-w:       43%;    /* la largeur du filet sous le titre */
+  --rule-h:       7px;
+
+  --shadow-panel: 0 26px 60px rgba(46, 26, 14, 0.22), 0 4px 14px rgba(46, 26, 14, 0.10);
+  --shadow-row:   0 10px 26px rgba(46, 26, 14, 0.10);
+
+  /* --- le sandwich --------------------------------------------------------
+     Le cadre est coupé en deux par une arête FRANCHE. Le graphique en haut,
+     le visage en dessous. La valeur bouge selon la hauteur de l'asset, mais
+     jamais hors de 44–60%. Le sous-titre se pose juste sous cette arête. */
+  --seam:         52%;
+  --caption-y:    56%;
+
+  /* --- moteur ------------------------------------------------------------
+     Trois vitesses. POP pour tout ce qui arrive (0.32s, back léger : l'UI
+     doit avoir l'air de RÉPONDRE). RUN pour ce qui s'exécute — compteurs,
+     jauges, frappe au clavier — linéaire, c'est une machine. FLOAT pour la
+     dérive du fond crème, très lente, jamais résolue. */
+  --dur-pop:      0.32s;
+  --dur-run:      1.20s;
+  --dur-type:     0.045s;  /* par caractère */
+  --dur-float:    9s;
+  --ease-pop:     back.out(1.8);
+  --ease-snap:    power3.out;
+  --ease-run:     none;
+}

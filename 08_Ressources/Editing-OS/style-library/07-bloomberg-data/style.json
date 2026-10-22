@@ -1,0 +1,777 @@
+{
+  "$schema": "../registry.schema.json",
+  "id": "bloomberg-data",
+  "name": "Bloomberg Data",
+  "number": "07",
+  "status": "draft",
+  "inspiration": "Bloomberg-Originals brutalist data journalism. Stark black canvas, white Archivo-Narrow caps in label boxes with accent underline bars, thin broadsheet rules, terminal-amber mono numerals, market green/red deltas, precise square-cornered chart geometry. Reference frames in references/.",
+  "summary": "The serious data/business voice. Use for market-style claims, numbers-heavy arguments, rankings, and anything that should feel like financial journalism rather than marketing.",
+  "palette": {
+    "bg": "#0A0A0A",
+    "fg": "#F2F2F0",
+    "accent": "#37BDF8",
+    "amber": "#FFB020",
+    "up": "#4AF6C3",
+    "down": "#FF433D",
+    "notes": "Flat fills only. Amber = numerals; blue = editorial accents (underline bars, chart keys); green/red = deltas exclusively. Mirrored in tokens.css."
+  },
+  "fonts": {
+    "display": "Archivo",
+    "body": "Archivo",
+    "mono": "IBM Plex Mono",
+    "notes": "Archivo 600-800 headlines; Archivo Narrow 600-700 UPPERCASE label boxes/kickers/axes; IBM Plex Mono for every numeral, ticker, delta, timestamp."
+  },
+  "motion": "Mechanical precision. Rules draw (scaleX, power3.inOut), label boxes clip-reveal with wipes, numbers roll up (power2.out), chart bars grow from the axis with staggers. No blur-ins, no springs, no ambience. End dead still.",
+  "transitions": "Rule draws and hard wipes along the grid. Never dissolves, never whips.",
+  "cards": [
+    {
+      "id": "bloomberg-data.t1.stat.numeral",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "numeral",
+      "file": "cards/tier1/t1-stat-numeral.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "delta",
+          "type": "text"
+        },
+        {
+          "name": "source",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.stat.numeral.mp4",
+        "poster": "preview/bloomberg-data.t1.stat.numeral.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t1.overview.table",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "table",
+      "file": "cards/tier1/t1-overview-table.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "r1l",
+          "type": "text"
+        },
+        {
+          "name": "r1v",
+          "type": "text"
+        },
+        {
+          "name": "r2l",
+          "type": "text"
+        },
+        {
+          "name": "r2v",
+          "type": "text"
+        },
+        {
+          "name": "r3l",
+          "type": "text"
+        },
+        {
+          "name": "r3v",
+          "type": "text"
+        },
+        {
+          "name": "r4l",
+          "type": "text"
+        },
+        {
+          "name": "r4v",
+          "type": "text"
+        },
+        {
+          "name": "source",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.overview.table.mp4",
+        "poster": "preview/bloomberg-data.t1.overview.table.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t1.overview.ranked",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "ranked",
+      "file": "cards/tier1/t1-overview-ranked.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "n1",
+          "type": "text"
+        },
+        {
+          "name": "v1",
+          "type": "text"
+        },
+        {
+          "name": "n2",
+          "type": "text"
+        },
+        {
+          "name": "v2",
+          "type": "text"
+        },
+        {
+          "name": "n3",
+          "type": "text"
+        },
+        {
+          "name": "v3",
+          "type": "text"
+        },
+        {
+          "name": "n4",
+          "type": "text"
+        },
+        {
+          "name": "v4",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.overview.ranked.mp4",
+        "poster": "preview/bloomberg-data.t1.overview.ranked.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.custom.chart.bars",
+      "tier": "custom",
+      "purpose": "chart",
+      "treatment": "bars",
+      "file": "cards/custom/c-barchart.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "tag",
+          "type": "text"
+        },
+        {
+          "name": "b1",
+          "type": "text"
+        },
+        {
+          "name": "b2",
+          "type": "text"
+        },
+        {
+          "name": "b3",
+          "type": "text"
+        },
+        {
+          "name": "b4",
+          "type": "text"
+        },
+        {
+          "name": "b5",
+          "type": "text"
+        },
+        {
+          "name": "q1",
+          "type": "text"
+        },
+        {
+          "name": "q2",
+          "type": "text"
+        },
+        {
+          "name": "q3",
+          "type": "text"
+        },
+        {
+          "name": "q4",
+          "type": "text"
+        },
+        {
+          "name": "q5",
+          "type": "text"
+        },
+        {
+          "name": "source",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.custom.chart.bars.mp4",
+        "poster": "preview/bloomberg-data.custom.chart.bars.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.custom.chart.line",
+      "tier": "custom",
+      "purpose": "chart",
+      "treatment": "line",
+      "file": "cards/custom/c-linechart.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "endval",
+          "type": "text"
+        },
+        {
+          "name": "xleft",
+          "type": "text"
+        },
+        {
+          "name": "xright",
+          "type": "text"
+        },
+        {
+          "name": "source",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.custom.chart.line.mp4",
+        "poster": "preview/bloomberg-data.custom.chart.line.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.custom.wall.tickerwall",
+      "tier": "custom",
+      "purpose": "wall",
+      "treatment": "tickerwall",
+      "file": "cards/custom/c-tickerwall.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "headline",
+          "type": "text"
+        },
+        {
+          "name": "t1",
+          "type": "text"
+        },
+        {
+          "name": "t2",
+          "type": "text"
+        },
+        {
+          "name": "t3",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.custom.wall.tickerwall.mp4",
+        "poster": "preview/bloomberg-data.custom.wall.tickerwall.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t1.stat.delta",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "delta",
+      "file": "cards/tier1/t1-stat-delta.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.stat.delta.mp4",
+        "poster": "preview/bloomberg-data.t1.stat.delta.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t1.stat.pair",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "pair",
+      "file": "cards/tier1/t1-stat-pair.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "l1",
+          "type": "text"
+        },
+        {
+          "name": "v1",
+          "type": "text"
+        },
+        {
+          "name": "d1",
+          "type": "text"
+        },
+        {
+          "name": "l2",
+          "type": "text"
+        },
+        {
+          "name": "v2",
+          "type": "text"
+        },
+        {
+          "name": "d2",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.stat.pair.mp4",
+        "poster": "preview/bloomberg-data.t1.stat.pair.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t1.stat.context",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "context",
+      "file": "cards/tier1/t1-stat-context.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "c1l",
+          "type": "text"
+        },
+        {
+          "name": "c1v",
+          "type": "text"
+        },
+        {
+          "name": "c2l",
+          "type": "text"
+        },
+        {
+          "name": "c2v",
+          "type": "text"
+        },
+        {
+          "name": "c3l",
+          "type": "text"
+        },
+        {
+          "name": "c3v",
+          "type": "text"
+        },
+        {
+          "name": "source",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.stat.context.mp4",
+        "poster": "preview/bloomberg-data.t1.stat.context.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t1.quote.attrib",
+      "tier": "tier1",
+      "purpose": "quote",
+      "treatment": "attrib",
+      "file": "cards/tier1/t1-quote-attrib.html",
+      "slots": [
+        {
+          "name": "quote",
+          "type": "text"
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "role",
+          "type": "text"
+        },
+        {
+          "name": "date",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.quote.attrib.mp4",
+        "poster": "preview/bloomberg-data.t1.quote.attrib.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t1.quote.pull",
+      "tier": "tier1",
+      "purpose": "quote",
+      "treatment": "pull",
+      "file": "cards/tier1/t1-quote-pull.html",
+      "slots": [
+        {
+          "name": "quote",
+          "type": "richtext"
+        },
+        {
+          "name": "attrib",
+          "type": "text"
+        },
+        {
+          "name": "ref",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.quote.pull.mp4",
+        "poster": "preview/bloomberg-data.t1.quote.pull.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t1.thesis.broadsheet",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "broadsheet",
+      "file": "cards/tier1/t1-thesis-broadsheet.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "headline",
+          "type": "richtext"
+        },
+        {
+          "name": "source",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.thesis.broadsheet.mp4",
+        "poster": "preview/bloomberg-data.t1.thesis.broadsheet.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t1.thesis.splitrule",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "splitrule",
+      "file": "cards/tier1/t1-thesis-splitrule.html",
+      "slots": [
+        {
+          "name": "tag",
+          "type": "text"
+        },
+        {
+          "name": "date",
+          "type": "text"
+        },
+        {
+          "name": "claim",
+          "type": "text"
+        },
+        {
+          "name": "sub",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.thesis.splitrule.mp4",
+        "poster": "preview/bloomberg-data.t1.thesis.splitrule.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t1.section.ruled",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "ruled",
+      "file": "cards/tier1/t1-section-ruled.html",
+      "slots": [
+        {
+          "name": "index",
+          "type": "text"
+        },
+        {
+          "name": "eyebrow",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.section.ruled.mp4",
+        "poster": "preview/bloomberg-data.t1.section.ruled.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t1.section.ticker",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "ticker",
+      "file": "cards/tier1/t1-section-ticker.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "tape",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.section.ticker.mp4",
+        "poster": "preview/bloomberg-data.t1.section.ticker.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t1.section.grid",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "grid",
+      "file": "cards/tier1/t1-section-grid.html",
+      "slots": [
+        {
+          "name": "index",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "foot",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t1.section.grid.mp4",
+        "poster": "preview/bloomberg-data.t1.section.grid.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t2.lower-third.box",
+      "tier": "tier2",
+      "purpose": "lower-third",
+      "treatment": "box",
+      "file": "cards/tier2/t2-lowerthird-box.html",
+      "slots": [
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "role",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t2.lower-third.box.mp4",
+        "poster": "preview/bloomberg-data.t2.lower-third.box.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t2.ticker.strip",
+      "tier": "tier2",
+      "purpose": "ticker",
+      "treatment": "strip",
+      "file": "cards/tier2/t2-ticker-strip.html",
+      "slots": [
+        {
+          "name": "tape",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t2.ticker.strip.mp4",
+        "poster": "preview/bloomberg-data.t2.ticker.strip.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t2.label.delta",
+      "tier": "tier2",
+      "purpose": "label",
+      "treatment": "delta",
+      "file": "cards/tier2/t2-label-delta.html",
+      "slots": [
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "value",
+          "type": "number"
+        },
+        {
+          "name": "delta",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t2.label.delta.mp4",
+        "poster": "preview/bloomberg-data.t2.label.delta.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t2.label.source",
+      "tier": "tier2",
+      "purpose": "label",
+      "treatment": "source",
+      "file": "cards/tier2/t2-label-source.html",
+      "slots": [
+        {
+          "name": "source",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t2.label.source.mp4",
+        "poster": "preview/bloomberg-data.t2.label.source.png"
+      }
+    },
+    {
+      "id": "bloomberg-data.t2.lower-third.headline",
+      "tier": "tier2",
+      "purpose": "lower-third",
+      "treatment": "headline",
+      "file": "cards/tier2/t2-lowerthird-headline.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "headline",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/bloomberg-data.t2.lower-third.headline.mp4",
+        "poster": "preview/bloomberg-data.t2.lower-third.headline.png"
+      }
+    }
+  ]
+}

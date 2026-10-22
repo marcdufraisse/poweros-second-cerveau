@@ -1,0 +1,128 @@
+<!doctype html>
+<!--
+  KEYNOTE MINIMAL · tier1 · stat · COPPER
+  Full-screen takeover. True-black stage; a warm copper glow breathes low in
+  frame; one enormous copper-metal count-up number carries product-grade
+  energy; quiet kicker above, one-line claim below with a hairline that
+  draws in. Silk motion, no bounce.
+  Slots: kicker, stat, label, foot.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-stat-copper {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      /* one light source, low in frame, warm copper */
+      #t1-stat-copper .stage-glow {
+        position: absolute; inset: 0; background: var(--glow-copper); z-index: 1;
+      }
+      #t1-stat-copper .edge { position: absolute; inset: 0; background: var(--edge-falloff); z-index: 5; pointer-events: none; }
+
+      #t1-stat-copper .center {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-align: center;
+      }
+
+      #t1-stat-copper .kicker {
+        font-family: var(--font-body); font-weight: var(--wt-med);
+        font-size: var(--size-label); letter-spacing: var(--track-wide);
+        text-transform: uppercase; color: var(--text-dim);
+        margin-bottom: 8px;
+      }
+
+      /* copper-metal hero number — background-clip:text; padding protects edges;
+         NO will-change here (render gotcha) */
+      #t1-stat-copper .stat {
+        font-weight: var(--wt-black); font-size: var(--size-mega);
+        line-height: 1.02; letter-spacing: var(--track-display);
+        padding: 0 40px;
+        background: var(--copper-text);
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent; color: transparent;
+      }
+
+      #t1-stat-copper .rule {
+        width: 0px; height: 1px; background: var(--hairline);
+        margin: 34px 0 30px;
+      }
+
+      #t1-stat-copper .label {
+        font-weight: var(--wt-semi); font-size: var(--size-headline);
+        letter-spacing: var(--track-snug); color: var(--text);
+        max-width: 1200px; line-height: 1.25;
+      }
+      #t1-stat-copper .label em {
+        font-style: normal; color: var(--accent);
+      }
+
+      #t1-stat-copper .foot {
+        position: absolute; left: 0; right: 0; bottom: 64px; z-index: 3;
+        text-align: center;
+        font-family: var(--font-mono); font-weight: var(--wt-reg);
+        font-size: var(--size-tiny); color: var(--text-faint);
+        letter-spacing: 0.04em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-stat-copper" data-composition-id="t1-stat-copper" data-start="0" data-width="1920" data-height="1080">
+      <div class="stage-glow"></div>
+
+      <div class="center">
+        <div class="kicker" data-slot="kicker">Workflow build velocity</div>
+        <div class="stat" data-slot="stat" data-count-to="212" data-count-suffix="%">0%</div>
+        <div class="rule"></div>
+        <div class="label" data-slot="label">faster time-to-launch when members ship with prebuilt <em>agent templates</em></div>
+      </div>
+
+      <div class="foot" data-slot="foot">Acme Agent Track · 2026 cohort</div>
+      <div class="edge"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t1-stat-copper";
+
+      /* count-up driver — reads the slot's data attrs so filled text stays simple */
+      const statEl = document.querySelector(root + " .stat");
+      const target = parseFloat(statEl.dataset.countTo || "212");
+      const suffix = statEl.dataset.countSuffix || "";
+      const counter = { v: 0 };
+
+      tl.from(root + " .stage-glow", { autoAlpha: 0, scale: 0.88, transformOrigin: "50% 85%", duration: 1.7, ease: "expo.out" }, 0)
+
+        .from(root + " .kicker", { autoAlpha: 0, y: 20, filter: "blur(8px)", duration: 1.0, ease: "expo.out" }, 0.3)
+
+        /* number rises + resolves while it counts */
+        .from(root + " .stat", { autoAlpha: 0, y: 34, filter: "blur(12px)", duration: 1.2, ease: "expo.out" }, 0.5)
+        .to(counter, {
+          v: target, duration: 1.7, ease: "power3.out",
+          onUpdate: () => { statEl.textContent = Math.round(counter.v) + suffix; }
+        }, 0.5)
+
+        /* hairline draws across */
+        .to(root + " .rule", { width: 480, duration: 1.1, ease: "expo.out" }, 1.25)
+
+        .from(root + " .label", { autoAlpha: 0, y: 22, filter: "blur(8px)", duration: 1.0, ease: "expo.out" }, 1.5)
+        .from(root + " .foot",  { autoAlpha: 0, duration: 0.8, ease: "power2.out" }, 2.05)
+
+        /* glow breathes — finite */
+        .to(root + " .stage-glow", { scale: 1.05, transformOrigin: "50% 85%", duration: 2.3, ease: "sine.inOut", repeat: 1, yoyo: true }, 2.15)
+
+        .set({}, {}, 7);
+
+      window.__timelines["t1-stat-copper"] = tl;
+    </script>
+  </body>
+</html>

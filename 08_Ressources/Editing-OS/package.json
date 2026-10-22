@@ -1,0 +1,23 @@
+{
+  "name": "editing-os",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "description": "Modular agent pipeline that turns a raw talking-head recording into a polished, human-feeling edit: cut silences, cut mistakes, add tiered motion-graphic cards, b-roll. Built on HyperFrames.",
+  "scripts": {
+    "transcribe": "node scripts/transcribe-whisper.mjs",
+    "transcribe:elevenlabs": "node scripts/transcribe-elevenlabs.mjs",
+    "validate-beats": "node scripts/validate-beat-sync.mjs",
+    "verify": "python3 scripts/autoverify.py",
+    "master": "python3 scripts/master.py",
+    "preflight": "node scripts/preflight.mjs",
+    "os": "node editing-os/server.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "hyperframes": "^0.8.13",
+    "playwright": "^1.60.0"
+  }
+}

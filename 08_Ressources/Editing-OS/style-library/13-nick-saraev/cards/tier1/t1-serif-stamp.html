@@ -1,0 +1,74 @@
+<!doctype html>
+<!--
+  NICK SARAEV · tier1 · thesis · LE MOT SERIF TAMPONNÉ
+  Le mot-choc plein cadre : serif italique CAPITALES, tamponné sec
+  (scale 0.94 → 1.0, 0.22s), tenu 0.8-1.5s, la coupe tombe.
+  1 à 3 mots MAXIMUM. slot theme = "white" ou "black".
+  S'enchaîne en ping-pong avec les captures : A FREE → capture → UNCENSORED.
+  Slots: word, theme.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t1-serif-stamp {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden; background: var(--white);
+        font-family: var(--font-serif);
+      }
+      #t1-serif-stamp.black { background: var(--black); }
+
+      /* l'ombre de feuillage, très douce, seulement sur blanc */
+      #t1-serif-stamp .foliage {
+        position: absolute; right: -140px; top: -120px;
+        width: 560px; height: 640px; border-radius: 50% 40% 55% 45%;
+        background: var(--white-shade); filter: blur(60px);
+        transform: rotate(18deg);
+      }
+      #t1-serif-stamp.black .foliage { display: none; }
+
+      #t1-serif-stamp .word {
+        position: absolute; left: 60px; right: 60px; top: 44%;
+        text-align: center;
+        font-style: italic; font-weight: 700;
+        font-size: var(--fs-serif); line-height: 1.04;
+        letter-spacing: var(--tracking-serif);
+        text-transform: uppercase;
+        color: var(--ink);
+      }
+      #t1-serif-stamp.black .word { color: var(--paper-fg); }
+    </style>
+  </head>
+  <body>
+    <div id="t1-serif-stamp" data-composition-id="t1-serif-stamp" data-start="0" data-width="1080" data-height="1920">
+      <div class="foliage"></div>
+      <div class="word" data-slot="word">UNCENSORED</div>
+      <div style="display:none" data-slot="theme">white</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-serif-stamp";
+      const el = document.querySelector(root);
+      const theme = el.querySelector('[data-slot="theme"]').textContent.trim();
+      if (theme === "black") el.classList.add("black");
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* le STAMP : sec, sans rebond */
+      tl.fromTo(root + " .word",
+        { scale: 0.94, autoAlpha: 0 },
+        { scale: 1, autoAlpha: 1, duration: 0.22, ease: "power3.out" }, 0.02);
+
+      /* micro-dérive pendant la tenue — jamais immobile */
+      tl.to(root + " .word", { scale: 1.015, duration: 1.4, ease: "none" }, 0.24);
+
+      tl.set({}, {}, 1.6);
+      window.__timelines["t1-serif-stamp"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,143 @@
+<!doctype html>
+<!--
+  FIRESHIP TERMINAL · custom · gag · ERROR
+  Full-screen takeover. An upper terminal panel titled "terminal — node"
+  snaps in; three dim mono stack-trace lines SNAP in fast, then a big
+  dot-red mono "ERROR:" line lands; a HUGE cream Luckiest-Guy reaction word
+  SLAMS over the lower half of the frame with an impact shake. Dead
+  stillness after — the panel stays frozen behind the joke.
+  Slots: e1, e2, e3, err, react.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #c-error {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-mono); overflow: hidden;
+      }
+      #c-error .vig { position: absolute; inset: 0; background: var(--vignette); z-index: 5; pointer-events: none; }
+
+      /* terminal panel sits in the upper portion of the frame */
+      #c-error .panel-wrap {
+        position: absolute; top: 90px; left: 0; right: 0; z-index: 2;
+        display: flex; justify-content: center;
+      }
+      #c-error .panel {
+        width: 1300px;
+        background: var(--panel); border: 1px solid var(--panel-edge);
+        border-radius: var(--radius);
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+        overflow: hidden;
+      }
+      #c-error .chrome {
+        height: var(--chrome-h);
+        display: flex; align-items: center; gap: 10px;
+        padding: 0 22px;
+        background: rgba(0, 0, 0, 0.22);
+        border-bottom: 1px solid var(--panel-edge);
+      }
+      #c-error .dot { width: var(--dot); height: var(--dot); border-radius: 50%; }
+      #c-error .dot.red { background: var(--dot-red); }
+      #c-error .dot.yellow { background: var(--dot-yellow); }
+      #c-error .dot.green { background: var(--dot-green); }
+      #c-error .filename { margin-left: 10px; font-size: var(--size-label); color: var(--text-dim); letter-spacing: 0.04em; }
+
+      #c-error .body { padding: 30px 40px 40px; font-size: var(--size-code); line-height: 1.75; }
+      #c-error .trace { color: var(--text-dim); white-space: pre; }
+      #c-error .err {
+        margin-top: 18px; font-weight: var(--wt-bold);
+        color: var(--dot-red);
+        background: color-mix(in srgb, var(--dot-red) 14%, transparent);
+        border-radius: var(--radius-sm);
+        display: inline-block;
+        padding: 8px 16px;
+      }
+
+      /* the reaction slam — over the lower half of the frame */
+      #c-error .react-wrap {
+        position: absolute; left: 0; right: 0; bottom: 60px; z-index: 4;
+        display: flex; justify-content: center;
+      }
+      #c-error .react {
+        font-family: var(--font-display);
+        font-size: var(--size-mega); line-height: 1;
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+        color: var(--cream);
+        -webkit-text-stroke: var(--stroke-w) var(--outline);
+        paint-order: stroke fill;
+        text-shadow: var(--caption-shadow);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="c-error" data-composition-id="c-error" data-start="0" data-width="1920" data-height="1080">
+      <div class="panel-wrap">
+        <div class="panel">
+          <div class="chrome">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="filename">terminal — node</span>
+          </div>
+          <div class="body">
+            <div class="trace e1" data-slot="e1">at Object.deployAgent (pipeline.js:42:17)</div>
+            <div class="trace e2" data-slot="e2">at Module._compile (internal/module.js:1105)</div>
+            <div class="trace e3" data-slot="e3">at Function.Module._load (internal/module.js:812)</div>
+            <div class="err" data-slot="err">ERROR: CERTIFICATION BUILD FAILED</div>
+          </div>
+        </div>
+      </div>
+      <div class="react-wrap">
+        <div class="react" data-slot="react">UH OH.</div>
+      </div>
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#c-error";
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* panel snaps in */
+      tl.from(root + " .panel", { autoAlpha: 0, y: 26, duration: 0.3, ease: "expo.out" }, 0.1)
+        .from(root + " .chrome .dot", { autoAlpha: 0, scale: 0.4, duration: 0.2, ease: "back.out(2)", stagger: 0.05 }, ">-0.1")
+        .from(root + " .filename", { autoAlpha: 0, duration: 0.2, ease: "power2.out" }, "<")
+
+        /* three dim stack-trace lines SNAP in fast, back to back */
+        .from(root + " .e1", { autoAlpha: 0, y: -6, duration: 0.14, ease: "expo.out" }, ">0.15")
+        .from(root + " .e2", { autoAlpha: 0, y: -6, duration: 0.14, ease: "expo.out" }, ">0.08")
+        .from(root + " .e3", { autoAlpha: 0, y: -6, duration: 0.14, ease: "expo.out" }, ">0.08")
+
+        /* the ERROR line lands hard */
+        .from(root + " .err", {
+          autoAlpha: 0, scale: 1.3, transformOrigin: "0% 50%",
+          duration: 0.24, ease: "back.out(2)"
+        }, ">0.14")
+
+        /* the reaction word SLAMS in with impact shake */
+        .from(root + " .react", {
+          autoAlpha: 0, scale: 1.6, transformOrigin: "50% 60%",
+          duration: 0.28, ease: "back.out(2.2)"
+        }, ">0.2")
+        .to(root + " .react", {
+          keyframes: [
+            { x: -12, duration: 0.045 },
+            { x: 10, duration: 0.045 },
+            { x: -7, duration: 0.045 },
+            { x: 4, duration: 0.045 },
+            { x: 0, duration: 0.045 }
+          ], ease: "none"
+        }, ">-0.02")
+
+        /* dead stillness — the hold is the punchline */
+        .set({}, {}, 8);
+
+      window.__timelines["c-error"] = tl;
+    </script>
+  </body>
+</html>

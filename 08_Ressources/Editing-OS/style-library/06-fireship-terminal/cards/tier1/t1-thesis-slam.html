@@ -1,0 +1,128 @@
+<!doctype html>
+<!--
+  FIRESHIP TERMINAL · tier1 · thesis · SLAM
+  Full-screen takeover. Near-black stage; a cream Luckiest-Guy caption STAMPS
+  in word by word (scale 1.6→1, back.out, ~0.28s each), fat black rim +
+  drop; one word carries the accent color; a flame-gradient underline bar
+  wipes in beneath; a mono kicker chip sits above. Dead stillness after the
+  hits — the hold IS the joke timing.
+  Slots: kicker, headline (words auto-split; <em> word = accent), tag.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-thesis-slam {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--cream);
+        font-family: var(--font-display); overflow: hidden;
+      }
+      #t1-thesis-slam .vig { position: absolute; inset: 0; background: var(--vignette); z-index: 5; pointer-events: none; }
+
+      #t1-thesis-slam .center {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-align: center;
+      }
+
+      /* mono kicker chip */
+      #t1-thesis-slam .kicker {
+        font-family: var(--font-mono); font-size: var(--size-label);
+        color: var(--text-dim); letter-spacing: 0.08em;
+        border: 1px solid var(--panel-edge); border-radius: var(--radius-sm);
+        background: var(--panel);
+        padding: 10px 22px; margin-bottom: 44px;
+      }
+      #t1-thesis-slam .kicker .prompt { color: var(--syn-green); }
+
+      /* the caption — cream, fat black rim, big drop */
+      #t1-thesis-slam .caption {
+        font-size: var(--size-display); line-height: 1.12;
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+        color: var(--cream);
+        -webkit-text-stroke: var(--stroke-w) var(--outline);
+        paint-order: stroke fill;
+        text-shadow: var(--caption-shadow);
+        max-width: 1500px;
+      }
+      #t1-thesis-slam .caption .w { display: inline-block; padding: 0 14px; }
+      #t1-thesis-slam .caption em, #t1-thesis-slam .caption em .w { font-style: normal; color: var(--accent); }
+
+      /* flame underline bar */
+      #t1-thesis-slam .bar {
+        width: 560px; height: 14px; border-radius: 7px;
+        background: var(--flame-grad);
+        margin-top: 46px;
+        transform-origin: 0% 50%;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.8);
+      }
+
+      /* mono footer tag */
+      #t1-thesis-slam .tag {
+        position: absolute; bottom: 56px; left: 0; right: 0; z-index: 3;
+        text-align: center;
+        font-family: var(--font-mono); font-size: var(--size-tiny);
+        color: var(--text-dim); letter-spacing: 0.05em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-thesis-slam" data-composition-id="t1-thesis-slam" data-start="0" data-width="1920" data-height="1080">
+      <div class="center">
+        <div class="kicker"><span class="prompt">$</span> <span data-slot="kicker">the code report</span></div>
+        <div class="caption" data-slot="headline">AI AGENTS ARE <em>EATING</em> YOUR JOB</div>
+        <div class="bar"></div>
+      </div>
+      <div class="tag" data-slot="tag">// and that's actually good news</div>
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-thesis-slam";
+
+      /* split the caption into stampable word spans (keeps <em> coloring) */
+      const cap = document.querySelector(root + " .caption");
+      function splitWords(node) {
+        [...node.childNodes].forEach((child) => {
+          if (child.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            child.textContent.split(/\s+/).filter(Boolean).forEach((word, i, arr) => {
+              const s = document.createElement("span");
+              s.className = "w"; s.textContent = word;
+              frag.appendChild(s);
+              if (i < arr.length - 1) frag.appendChild(document.createTextNode(" "));
+            });
+            node.replaceChild(frag, child);
+          } else if (child.nodeType === 1) splitWords(child);
+        });
+      }
+      splitWords(cap);
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .kicker", { autoAlpha: 0, y: -14, duration: 0.3, ease: "expo.out" }, 0.1)
+
+        /* THE STAMPS — one word per beat, hard and fast */
+        .from(root + " .caption .w", {
+          autoAlpha: 0, scale: 1.6, transformOrigin: "50% 60%",
+          duration: 0.28, ease: "back.out(2.2)", stagger: 0.3
+        }, 0.55)
+
+        /* flame bar wipes in right after the last word */
+        .fromTo(root + " .bar", { scaleX: 0 }, { scaleX: 1, duration: 0.34, ease: "expo.out" }, ">-0.05")
+
+        /* footer tag snaps last */
+        .from(root + " .tag", { autoAlpha: 0, duration: 0.25, ease: "power2.out" }, ">0.15")
+
+        /* dead stillness — the hold is the timing */
+        .set({}, {}, 7);
+
+      window.__timelines["t1-thesis-slam"] = tl;
+    </script>
+  </body>
+</html>

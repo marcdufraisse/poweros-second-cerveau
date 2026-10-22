@@ -1,0 +1,153 @@
+<!doctype html>
+<!--
+  FIRESHIP TERMINAL · tier1 · quote · ECHO
+  Full-screen takeover. A terminal window panel centered on the canvas: a
+  mono command line types on character by character — `$ echo "<quote>"`,
+  the quoted string in --syn-green — then the quote echoes below as plain
+  cream output text, then a dim mono attribution comment line snaps in
+  ("# — Name, Role"). Finite cursor blink at the very end.
+  Slots: quote, name, role.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-quote-echo {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-mono); overflow: hidden;
+      }
+      #t1-quote-echo .vig { position: absolute; inset: 0; background: var(--vignette); z-index: 5; pointer-events: none; }
+
+      #t1-quote-echo .stage {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; align-items: center; justify-content: center;
+      }
+
+      #t1-quote-echo .panel {
+        width: 1360px;
+        background: var(--panel);
+        border: 1px solid var(--panel-edge);
+        border-radius: var(--radius);
+        box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
+        overflow: hidden;
+      }
+
+      #t1-quote-echo .chrome {
+        height: var(--chrome-h);
+        display: flex; align-items: center; gap: 10px;
+        padding: 0 22px;
+        background: rgba(255, 255, 255, 0.02);
+        border-bottom: 1px solid var(--panel-edge);
+      }
+      #t1-quote-echo .dot { width: var(--dot); height: var(--dot); border-radius: 50%; }
+      #t1-quote-echo .dot.red { background: var(--dot-red); }
+      #t1-quote-echo .dot.yellow { background: var(--dot-yellow); }
+      #t1-quote-echo .dot.green { background: var(--dot-green); }
+      #t1-quote-echo .filename {
+        margin-left: 16px; font-size: var(--size-label); color: var(--text-dim);
+        letter-spacing: 0.02em;
+      }
+
+      #t1-quote-echo .body { padding: 60px 72px 74px; }
+
+      /* command line: $ echo "quote in green" */
+      #t1-quote-echo .cmdline {
+        font-size: var(--size-code); line-height: 1.7;
+        white-space: pre-wrap; word-break: break-word;
+      }
+      #t1-quote-echo .cmdline .prompt { color: var(--syn-green); margin-right: 14px; }
+      #t1-quote-echo .cmdline .cmd-word { color: var(--text); }
+      #t1-quote-echo .cmdline .qmark { color: var(--text-dim); }
+      #t1-quote-echo .cmdline .chars span { display: inline-block; color: var(--syn-green); }
+      #t1-quote-echo .cursor {
+        display: inline-block; width: 13px; height: 30px;
+        background: var(--accent); margin-left: 6px; transform: translateY(5px);
+      }
+
+      /* echoed output — plain cream text */
+      #t1-quote-echo .echo {
+        font-size: var(--size-headline); line-height: 1.5;
+        color: var(--cream); font-weight: var(--wt-med);
+        margin-top: 40px;
+        max-width: 1180px;
+      }
+
+      /* attribution comment */
+      #t1-quote-echo .attr {
+        font-size: var(--size-body); color: var(--text-dim);
+        margin-top: 34px;
+      }
+      #t1-quote-echo .attr .hash { color: var(--panel-edge); }
+      #t1-quote-echo .attr .name { color: var(--syn-green); }
+    </style>
+  </head>
+  <body>
+    <div id="t1-quote-echo" data-composition-id="t1-quote-echo" data-start="0" data-width="1920" data-height="1080">
+      <div class="stage">
+        <div class="panel">
+          <div class="chrome">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="filename">quote.sh</span>
+          </div>
+          <div class="body">
+            <div class="cmdline">
+              <span class="prompt">$</span><span class="cmd-word">echo </span><span class="qmark">"</span><span class="chars" data-slot="quote">the cert paid for itself in one client call</span><span class="qmark">"</span><span class="cursor"></span>
+            </div>
+            <div class="echo echo-mirror">the cert paid for itself in one client call</div>
+            <div class="attr"><span class="hash"># </span><span class="name" data-slot="name">Priya Shah</span><span data-slot="role">, Freelance AI Consultant</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-quote-echo";
+
+      /* keep the echoed output line in sync with the typed quote text */
+      const quoteText = document.querySelector(root + ' [data-slot="quote"]').textContent;
+      document.querySelector(root + " .echo-mirror").textContent = quoteText;
+
+      /* pre-split the quoted string into char spans for the typewriter */
+      const charsEl = document.querySelector(root + " .chars");
+      charsEl.textContent = "";
+      quoteText.split("").forEach((ch) => {
+        const s = document.createElement("span");
+        s.textContent = ch === " " ? " " : ch;
+        charsEl.appendChild(s);
+      });
+      const chars = charsEl.querySelectorAll("span");
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.set(chars, { autoAlpha: 0 }, 0)
+        .from(root + " .panel", { autoAlpha: 0, y: 26, duration: 0.3, ease: "expo.out" }, 0.15)
+
+        /* typewriter — pre-split char spans, stagger 0.02, linear */
+        .to(chars, { autoAlpha: 1, duration: 0.01, ease: "none", stagger: 0.02 }, 0.55)
+
+        /* cursor blinks finite times while it "runs" */
+        .to(root + " .cursor", { autoAlpha: 0, duration: 0.16, repeat: 5, yoyo: true, ease: "none" }, ">0.05")
+
+        /* the quote echoes below as plain output */
+        .from(root + " .echo", { autoAlpha: 0, y: 14, duration: 0.3, ease: "power2.out" }, ">-0.05")
+
+        /* attribution comment snaps in */
+        .from(root + " .attr", { autoAlpha: 0, y: 10, duration: 0.24, ease: "back.out(1.7)" }, ">0.2")
+
+        /* final finite cursor blink */
+        .to(root + " .cursor", { autoAlpha: 0, duration: 0.2, repeat: 3, yoyo: true, ease: "none" }, ">0.2")
+
+        /* dead stillness */
+        .set({}, {}, 7);
+
+      window.__timelines["t1-quote-echo"] = tl;
+    </script>
+  </body>
+</html>

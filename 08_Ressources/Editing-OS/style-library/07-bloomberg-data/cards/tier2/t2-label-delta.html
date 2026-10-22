@@ -1,0 +1,108 @@
+<!doctype html>
+<!--
+  BLOOMBERG DATA · tier2 · label · DELTA
+  Top-right compact corner block, transparent stage. A white label box
+  (Narrow caps) clip-reveals in from the right, then an opaque --panel chip
+  drops down beneath it carrying a mono amber value that rolls up beside a
+  CSS-triangle --up delta percentage. Square corners, dead-still hold.
+  Slots: label, value, delta.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-label-delta {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; color: var(--text);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      /* label — white box, clip-reveal from the right */
+      #t2-label-delta .labelbox {
+        position: absolute; right: 96px; top: 96px;
+        overflow: hidden; /* clip-reveal container */
+      }
+      #t2-label-delta .labelbox .boxinner {
+        background: var(--white); color: var(--black);
+        font-family: var(--font-label); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-caps);
+        text-transform: uppercase; padding: var(--label-pad);
+        white-space: nowrap; text-align: right;
+      }
+
+      /* value chip — panel, drops down beneath the label */
+      #t2-label-delta .chip {
+        position: absolute; right: 96px; top: 150px;
+        overflow: hidden; /* clip-reveal container */
+      }
+      #t2-label-delta .chip .chipinner {
+        background: var(--panel); border: 1px solid var(--rule);
+        display: flex; align-items: baseline; gap: 18px;
+        padding: 16px 22px;
+      }
+      #t2-label-delta .value {
+        font-family: var(--font-mono); font-weight: var(--wt-semi);
+        font-size: 52px; color: var(--amber); letter-spacing: -0.01em;
+      }
+      #t2-label-delta .delta {
+        display: flex; align-items: center; gap: 8px;
+        font-family: var(--font-mono); font-weight: var(--wt-med);
+        font-size: 22px; color: var(--up);
+      }
+      #t2-label-delta .delta .tri {
+        width: 0; height: 0;
+        border-left: 8px solid transparent; border-right: 8px solid transparent;
+        border-bottom: 12px solid var(--up);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-label-delta" data-composition-id="t2-label-delta" data-start="0" data-width="1920" data-height="1080">
+      <div class="labelbox"><div class="boxinner" data-slot="label">CERT COMPLETIONS</div></div>
+      <div class="chip">
+        <div class="chipinner">
+          <span class="value" data-slot="value" data-count-to="12400" data-count-prefix="" data-count-suffix="">0</span>
+          <span class="delta"><span class="tri"></span><span data-slot="delta">+38%</span></span>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t2-label-delta";
+
+      const valueEl = document.querySelector(root + " .value");
+      const target = parseFloat(valueEl.dataset.countTo || "12400");
+      const pre = valueEl.dataset.countPrefix || "";
+      const suf = valueEl.dataset.countSuffix || "";
+      const counter = { v: 0 };
+      const fmt = (n) => pre + Math.round(n).toLocaleString("en-US") + suf;
+
+      tl
+        /* label box clip-reveals from the right */
+        .from(root + " .labelbox .boxinner", { xPercent: 101, duration: 0.5, ease: "power3.inOut" }, 0.1)
+
+        /* chip drops down from beneath the label */
+        .from(root + " .chip .chipinner", { yPercent: -101, duration: 0.45, ease: "power3.inOut" }, 0.55)
+
+        /* value rolls up */
+        .from(root + " .value", { autoAlpha: 0, duration: 0.25, ease: "power2.out" }, 0.85)
+        .to(counter, {
+          v: target, duration: 1.2, ease: "power2.out",
+          onUpdate: () => { valueEl.textContent = fmt(counter.v); }
+        }, 0.85)
+
+        /* delta ticks in last */
+        .from(root + " .delta", { autoAlpha: 0, x: 10, duration: 0.35, ease: "expo.out" }, 1.9)
+
+        .set({}, {}, 6);
+
+      window.__timelines["t2-label-delta"] = tl;
+    </script>
+  </body>
+</html>

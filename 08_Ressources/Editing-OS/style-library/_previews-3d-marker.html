@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Écran 3D + marqueur · previews</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#06090f;color:#e8eef5;
+       font:15px/1.55 -apple-system,Inter,system-ui,sans-serif;padding:30px}
+  header{max-width:1240px;margin:0 auto 26px}
+  h1{font-size:30px;margin:0 0 6px;letter-spacing:-.02em}
+  header p{color:#8aa0b4;margin:0;max-width:760px}
+  h2.sec{max-width:1240px;margin:34px auto 16px;font-size:15px;letter-spacing:.14em;
+         text-transform:uppercase;color:#7d93a8;font-weight:600}
+  .grid{max-width:1240px;margin:0 auto;display:grid;
+        grid-template-columns:repeat(auto-fill,600px);justify-content:center;gap:24px}
+  .card{width:600px;background:#0c121b;border:1px solid #1b2634;border-radius:14px;overflow:hidden}
+  /* la vignette joue la vraie carte, à l'échelle */
+  .thumb{position:relative;width:600px;height:337.5px;background:#000;
+         border-bottom:1px solid #1b2634;overflow:hidden}
+  .thumb iframe{position:absolute;top:0;left:0;width:1920px;height:1080px;border:0;
+                transform:scale(.3125);transform-origin:top left;pointer-events:none}
+  .meta{padding:15px 18px 18px}
+  .meta h3{margin:0 0 4px;font-size:18px}
+  .meta code{color:#4db4f0;font-size:12.5px}
+  .meta p{color:#9db2c6;font-size:13px;margin:9px 0 0}
+  .pal{display:flex;gap:6px;margin:11px 0 0}
+  .sw{width:22px;height:22px;border-radius:5px;border:1px solid rgba(255,255,255,.14)}
+  a.open{color:#4db4f0;text-decoration:none;font-size:12.5px;font-weight:600}
+  a.open:hover{text-decoration:underline}
+</style></head>
+<body>
+<header>
+  <h1>Écran 3D + marqueur</h1>
+  <p>Les cartes ajoutées le 18/08, dérivées de la chaîne Dan Kieft. Chaque vignette
+     est la <b>vraie carte</b> qui joue sa timeline en boucle — pas une image.
+     En haut la version sur ta charte (celle qu'on utilise), en bas le style source.</p>
+</header>
+
+<h2 class="sec">10 · l'utilisateur — ta charte</h2>
+<div class="grid">
+  <div class="card">
+    <div class="thumb"><iframe loading="lazy" scrolling="no" src="10-marc/cards/custom/cx-screen-push3d.html"></iframe></div>
+    <div class="meta">
+      <h3>Push-in 3D</h3><code>marc.custom.screen.push3d</code>
+      <p>L'écran se redresse en approchant. C'est le lacet qui passe de −11° à −2,5° qui fait l'effet, pas le zoom.</p>
+      <div class="pal"><i class="sw" style="background:#8E16FA"></i><i class="sw" style="background:#0A0718"></i><i class="sw" style="background:#170B30"></i></div>
+      <p><a class="open" href="10-marc/cards/custom/cx-screen-push3d.html" target="_blank">ouvrir en grand →</a></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><iframe loading="lazy" scrolling="no" src="10-marc/cards/custom/cx-screen-punch.html"></iframe></div>
+    <div class="meta">
+      <h3>Plongée sur une zone</h3><code>marc.custom.screen.punch</code>
+      <p>Le filet violet se pose sur la zone, puis la caméra y plonge. Zone décrite en % : <code>--rx / --ry / --rw / --rh</code>.</p>
+      <div class="pal"><i class="sw" style="background:#8E16FA"></i><i class="sw" style="background:#0A0718"></i><i class="sw" style="background:#170B30"></i></div>
+      <p><a class="open" href="10-marc/cards/custom/cx-screen-punch.html" target="_blank">ouvrir en grand →</a></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><iframe loading="lazy" scrolling="no" src="10-marc/cards/custom/cx-text-marker.html"></iframe></div>
+    <div class="meta">
+      <h3>Marqueur progressif</h3><code>marc.custom.highlight.marker</code>
+      <p>La liste arrive entière et éteinte, chaque ligne s'allume sur le mot. Un seul item allumé à la fois.</p>
+      <div class="pal"><i class="sw" style="background:#8E16FA"></i><i class="sw" style="background:#170B30"></i><i class="sw" style="background:#FFFFFF"></i></div>
+      <p><a class="open" href="10-marc/cards/custom/cx-text-marker.html" target="_blank">ouvrir en grand →</a></p>
+    </div>
+  </div>
+</div>
+
+<h2 class="sec">11 · Dan Kieft — le style source</h2>
+<div class="grid">
+  <div class="card">
+    <div class="thumb"><iframe loading="lazy" scrolling="no" src="11-dankieft/cards/tier1/t1-prompt-highlight.html"></iframe></div>
+    <div class="meta">
+      <h3>Mur de prompt surligné</h3><code>dankieft.t1.overview.prompthighlight</code>
+      <p>Deux marqueurs pour opposer deux natures de contenu : jaune et bleu électrique. Texte encre sur le jaune, blanc sur le bleu.</p>
+      <div class="pal"><i class="sw" style="background:#FFE930"></i><i class="sw" style="background:#0200FF"></i><i class="sw" style="background:#002085"></i><i class="sw" style="background:#000000"></i></div>
+      <p><a class="open" href="11-dankieft/cards/tier1/t1-prompt-highlight.html" target="_blank">ouvrir en grand →</a></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><iframe loading="lazy" scrolling="no" src="11-dankieft/cards/custom/screen-3d-push.html"></iframe></div>
+    <div class="meta">
+      <h3>Push-in 3D <span style="color:#7d93a8;font-weight:400">(source)</span></h3><code>dankieft.custom.screen.push3d</code>
+      <p>La version d'origine : scène charbon, titre serif à l'astérisque, départ plus lointain (−1050 px).</p>
+      <div class="pal"><i class="sw" style="background:#FFE930"></i><i class="sw" style="background:#262626"></i><i class="sw" style="background:#8889FF"></i></div>
+      <p><a class="open" href="11-dankieft/cards/custom/screen-3d-push.html" target="_blank">ouvrir en grand →</a></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="thumb"><iframe loading="lazy" scrolling="no" src="11-dankieft/cards/custom/screen-zoom-region.html"></iframe></div>
+    <div class="meta">
+      <h3>Zoom sur zone <span style="color:#7d93a8;font-weight:400">(source)</span></h3><code>dankieft.custom.screen.zoomregion</code>
+      <p>Même mécanique, palette de la chaîne.</p>
+      <div class="pal"><i class="sw" style="background:#FFE930"></i><i class="sw" style="background:#262626"></i><i class="sw" style="background:#8889FF"></i></div>
+      <p><a class="open" href="11-dankieft/cards/custom/screen-zoom-region.html" target="_blank">ouvrir en grand →</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Les cartes enregistrent leur timeline en PAUSE (contrat de rendu). Ici on
+   la joue et on la relance : c'est le seul endroit où on a le droit de le
+   faire — une galerie, pas un rendu. */
+function drive(iframe){
+  var w = iframe.contentWindow, tries = 0;
+  (function go(){
+    var t = w.__timelines, keys = t ? Object.keys(t) : [];
+    if (!keys.length) { if (tries++ < 150) setTimeout(go, 80); return; }
+    keys.forEach(function(k){
+      var tl = t[k];
+      tl.eventCallback("onComplete", function(){ setTimeout(function(){ tl.restart(); }, 1200); });
+      tl.play(0);
+    });
+  })();
+}
+addEventListener("DOMContentLoaded", function(){
+  document.querySelectorAll(".thumb iframe").forEach(function(f){
+    if (f.contentDocument && f.contentDocument.readyState === "complete") drive(f);
+    f.addEventListener("load", function(){ drive(f); });
+  });
+});
+</script>
+</body></html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · tier1 · stat · MONEY KINETIC
+  The cream kinetic-typography card: green-gradient mega number lands first,
+  then a caps line reveals word by word with one mid-sentence word emphasized
+  bigger, then a second smaller line tracks in while lime confetti shards fly.
+  Slots: stat, pre, emph, post, line2. (line1 = "pre EMPH post")
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t1-money-kinetic {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream) 60%);
+        overflow: hidden; font-family: var(--font-display);
+      }
+      #t1-money-kinetic .wrap {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 44px; z-index: 2;
+      }
+      #t1-money-kinetic .stat {
+        font-weight: var(--wt-black); font-size: var(--size-display); line-height: 1;
+        letter-spacing: -0.01em;
+        background: linear-gradient(180deg, var(--money-deep) 0%, var(--money-lite) 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+        padding: 0 24px; /* horizontal padding: gradient background-clip:text clips edges without it */
+      }
+      #t1-money-kinetic .line1 {
+        display: flex; align-items: baseline; gap: 22px;
+        font-weight: var(--wt-bold); font-size: var(--size-headline);
+        letter-spacing: 0.06em; text-transform: uppercase; color: var(--charcoal);
+      }
+      #t1-money-kinetic .line1 .emph { font-weight: var(--wt-black); font-size: 74px; }
+      #t1-money-kinetic .line1 .w { display: inline-block; }
+      #t1-money-kinetic .line2 {
+        font-weight: var(--wt-semi); font-size: var(--size-body);
+        letter-spacing: 0.12em; text-transform: uppercase; color: var(--charcoal-soft);
+      }
+      #t1-money-kinetic .line2 .ch { display: inline-block; }
+
+      /* confetti shards — small parallelograms in lime + deep green */
+      #t1-money-kinetic .shard {
+        position: absolute; width: 26px; height: 38px; z-index: 1;
+        transform: skewX(-12deg);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-money-kinetic" data-composition-id="t1-money-kinetic" data-start="0" data-width="1920" data-height="1080">
+      <div class="wrap">
+        <div class="stat" data-slot="stat">$39.5K</div>
+        <div class="line1">
+          <span class="w" data-slot="pre">EVERY</span>
+          <span class="w emph" data-slot="emph">SINGLE</span>
+          <span class="w" data-slot="post">MONTH</span>
+        </div>
+        <div class="line2" data-slot="line2">AND IT MADE ME WONDER</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-money-kinetic";
+      const stage = document.querySelector(root);
+
+      function splitChars(el) {
+        const text = el.textContent; el.textContent = "";
+        text.split("").forEach((ch) => {
+          const s = document.createElement("span");
+          s.className = "ch"; s.textContent = ch === " " ? "\u00A0" : ch;
+          el.appendChild(s);
+        });
+      }
+      splitChars(document.querySelector(root + " .line2"));
+
+      /* seeded LCG for confetti scatter (determinism rule: no Math.random) */
+      let seed = 42;
+      function rnd() { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+
+      /* confetti colors come from tokens.css */
+      const cssv = getComputedStyle(document.documentElement);
+      const shardColors = ["--lime", "--money-deep", "--money-lite", "--money-deep"]
+        .map((v) => cssv.getPropertyValue(v).trim());
+      const shards = [];
+      for (let i = 0; i < 14; i++) {
+        const d = document.createElement("div");
+        d.className = "shard";
+        d.style.background = shardColors[i % shardColors.length];
+        d.style.left = (rnd() * 1800 + 40) + "px";
+        d.style.top = "-60px";
+        d.style.opacity = "0";
+        stage.appendChild(d);
+        shards.push(d);
+      }
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* 1 — stat number lands with a small settle */
+      tl.from(root + " .stat", { autoAlpha: 0, scale: 1.4, y: -20, duration: 0.5, ease: "expo.out" }, 0.1)
+
+        /* 2 — line1 words reveal one by one, emphasis word pops harder */
+        .from(root + " .line1 .w", {
+          autoAlpha: 0, y: 26, duration: 0.34, ease: "expo.out", stagger: 0.16
+        }, 0.62)
+        .from(root + " .line1 .emph", { scale: 1.35, duration: 0.3, ease: "back.out(1.9)" }, 0.82)
+
+        /* 3 — line2 tracks in per character */
+        .from(root + " .line2 .ch", { autoAlpha: 0, x: 10, duration: 0.03, stagger: 0.018, ease: "none" }, 1.35)
+
+        .set({}, {}, 4.5);
+
+      /* confetti — falls through the frame as line2 lands */
+      shards.forEach((d, i) => {
+        const t0 = 1.3 + rnd() * 0.5;
+        tl.to(d, { opacity: 1, duration: 0.05 }, t0)
+          .to(d, {
+            y: 1240, rotation: (rnd() * 2 - 1) * 260, x: "+=" + ((rnd() * 2 - 1) * 140),
+            duration: 1.7 + rnd() * 0.9, ease: "power1.in"
+          }, t0);
+      });
+
+      window.__timelines["t1-money-kinetic"] = tl;
+    </script>
+  </body>
+</html>

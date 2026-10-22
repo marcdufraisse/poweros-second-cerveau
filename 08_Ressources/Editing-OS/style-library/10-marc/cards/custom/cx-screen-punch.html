@@ -1,0 +1,159 @@
+<!doctype html>
+<!--
+  HOUSE · custom · screen · PLONGÉE SUR UNE ZONE
+  L'écran entier est à l'image, puis la caméra plonge sur UN rectangle — le
+  champ dont on parle à cet instant. Un filet jaune encadre la zone, un label
+  serif la nomme.
+
+  Deux différences avec cx-ui-highlight, qui encercle sans bouger :
+    · ici on entre physiquement dans la zone (transform sur un wrapper),
+    · et l'écran vit en 3D dans une pièce, pas à plat sur un fond.
+
+  La zone se décrit en % de l'écran via --rx / --ry / --rw / --rh, posés sur
+  la racine. Largeur ET hauteur libres : le cadre épouse ce qu'on montre, il
+  n'est pas contraint en 16:9 (une carte large et basse, une ligne de texte,
+  un bouton). C'est aussi la manière dont un agent peut désigner « le bouton
+  Publier » ou « la troisième ligne » à partir d'une capture.
+
+  overflow:hidden sur le panneau : la plongée se passe DANS la fenêtre de
+  l'écran, elle ne déborde jamais par-dessus le reste du cadre.
+
+  Slots: label (ce que la zone EST), screen.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #cx-screen-punch {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        overflow: hidden; background: var(--navy);
+        font-family: var(--font-display);
+
+        /* LA ZONE — Agent 3 réécrit ces quatre valeurs par beat.
+           left / top / width / height, en % de l'écran. */
+        --rx: 11.5%;
+        --ry: 36.5%;
+        --rw: 26.5%;
+        --rh: 15.5%;
+      }
+
+      #cx-screen-punch .room {
+        position: absolute; inset: 0;
+        background: var(--room-key), var(--room-warm), var(--navy);
+      }
+      #cx-screen-punch .halo {
+        position: absolute; left: 50%; top: 46%;
+        width: 1500px; height: 900px; margin: -450px 0 0 -750px;
+        background: radial-gradient(50% 50% at 50% 50%, rgba(18,32,58,0.9) 0%, transparent 72%);
+      }
+
+      #cx-screen-punch .stage {
+        position: absolute; inset: 0;
+        perspective: var(--perspective);
+        perspective-origin: var(--perspective-origin);
+        transform-style: preserve-3d;
+      }
+      /* .panel porte l'attitude 3D, .zoom fait la plongée. Deux couches pour
+         que perspective et plongée ne se disputent jamais un seul transform. */
+      #cx-screen-punch .panel {
+        position: absolute; left: 50%; top: 50%;
+        width: 1520px; height: 855px; margin: -427px 0 0 -760px;
+        border-radius: var(--radius); overflow: hidden;
+        transform: translateZ(-120px) rotateY(-4deg) rotateX(1.5deg);
+        transform-style: preserve-3d;
+        box-shadow: var(--screen-shadow);
+      }
+      #cx-screen-punch .zoom {
+        position: absolute; inset: 0; transform-origin: 50% 50%;
+        will-change: transform;
+      }
+
+      #cx-screen-punch .screen { position: absolute; inset: 0; background: var(--den); }
+      #cx-screen-punch .screen img,
+      #cx-screen-punch .screen video {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+
+      /* le filet est dessiné SUR l'écran : il grossit avec lui */
+      #cx-screen-punch .frame {
+        position: absolute;
+        left: var(--rx); top: var(--ry); width: var(--rw); height: var(--rh);
+        border: 3px solid var(--jaune);
+        border-radius: 6px;
+        box-shadow: 0 0 30px rgba(var(--jaune-rgb), 0.40);
+        opacity: 0;
+      }
+      #cx-screen-punch .label {
+        position: absolute; left: -3px; bottom: calc(100% + 10px);
+        padding: 5px 14px 7px; border-radius: 6px;
+        background: rgba(2, 6, 15, 0.88);
+        font-family: var(--font-serif); font-style: italic;
+        font-size: 32px; line-height: 1; color: var(--jaune); white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cx-screen-punch" data-composition-id="cx-screen-punch" data-start="0" data-width="1920" data-height="1080">
+      <div class="room"></div>
+      <div class="halo"></div>
+      <div class="stage">
+        <div class="panel">
+          <div class="zoom">
+            <div class="screen">
+              <img data-slot="screen" src="../../references/ref-screen-demo.png" alt="" />
+            </div>
+            <div class="frame">
+              <div class="label" data-slot="label">Le rail des 9 étapes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#cx-screen-punch";
+      const css = getComputedStyle(document.querySelector(root));
+      const pct = (n) => parseFloat(css.getPropertyValue(n)) / 100;
+      const num = (n) => parseFloat(css.getPropertyValue(n));
+
+      const PW = 1520, PH = 855;
+      const rx = pct("--rx"), ry = pct("--ry"), rw = pct("--rw"), rh = pct("--rh");
+
+      // l'échelle qui fait tenir la zone dans 70% du cadre, sur son axe le
+      // plus contraignant — puis on ramène son centre au centre du panneau
+      const s  = Math.min(0.70 / rw, 0.70 / rh);
+      const dx = -((rx + rw / 2) - 0.5) * PW * s;
+      const dy = -((ry + rh / 2) - 0.5) * PH * s;
+
+      const tl = gsap.timeline({ paused: true });
+      const Z = root + " .zoom";
+
+      // 1. large — déjà en train de dériver, jamais immobile
+      tl.fromTo(Z, { scale: 1, x: 0, y: 0 },
+        { scale: 1.04, duration: 1.6, ease: "none" }, 0);
+
+      // 2. le filet se pose sur la zone, un temps AVANT la plongée : on
+      //    montre où on va avant d'y aller
+      tl.fromTo(root + " .frame",
+        { opacity: 0, scale: 1.08, transformOrigin: "50% 50%" },
+        { opacity: 1, scale: 1, duration: 0.32, ease: "power3.out" }, 1.10);
+      tl.fromTo(root + " .label", { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.28, ease: "power2.out" }, 1.30);
+
+      // 3. la plongée — le beat
+      tl.to(Z, { scale: s, x: dx, y: dy,
+        duration: num("--dur-punch"), ease: "power3.inOut" }, 1.75);
+
+      // 4. tenu, mais ça continue de creuser
+      tl.to(Z, { scale: s * 1.05, x: dx * 1.05, y: dy * 1.05,
+        duration: 4.5, ease: "none" }, 2.60);
+
+      window.__timelines["cx-screen-punch"] = tl;
+    </script>
+  </body>
+</html>

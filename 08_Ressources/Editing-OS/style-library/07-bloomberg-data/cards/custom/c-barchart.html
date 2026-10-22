@@ -1,0 +1,170 @@
+<!doctype html>
+<!--
+  BLOOMBERG DATA · custom · chart · BARS
+  Quarterly bar-chart showpiece. A panel with a title bar (Narrow-caps title
+  + mono period tag), five vertical bars growing from a baseline rule over
+  faint gridlines (four dim rule-toned, the tallest/last in accent), mono
+  amber values snapping in above each bar, Narrow-caps quarter labels below.
+  Source line bottom-left. Mechanical grow, square corners, dead-still hold.
+  Slots: title, tag, b1, b2, b3, b4, b5, q1, q2, q3, q4, q5, source.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #c-barchart {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-display); overflow: hidden;
+      }
+      #c-barchart .scan { position: absolute; inset: 0; background: var(--tex-scan); z-index: 1; pointer-events: none; }
+
+      #c-barchart .panel {
+        position: absolute; top: 130px; left: 96px; right: 96px; bottom: 130px;
+        background: var(--panel);
+      }
+
+      #c-barchart .panelbar {
+        position: absolute; top: 0; left: 0; right: 0; height: 90px;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 48px; border-bottom: var(--hairline);
+      }
+      #c-barchart .paneltitle {
+        font-family: var(--font-label); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-caps);
+        text-transform: uppercase; color: var(--white);
+        overflow: hidden;
+      }
+      #c-barchart .paneltag {
+        font-family: var(--font-mono); font-weight: var(--wt-med);
+        font-size: var(--size-body); color: var(--text-faint);
+      }
+
+      #c-barchart .chartarea {
+        position: absolute; top: 90px; left: 48px; right: 48px; bottom: 90px;
+      }
+      #c-barchart .gridline {
+        position: absolute; left: 0; right: 0; height: 1px; background: var(--grid-line);
+        transform-origin: 100% 50%;
+      }
+
+      #c-barchart .bars {
+        position: absolute; left: 0; right: 0; bottom: 60px; top: 40px;
+        display: flex; align-items: flex-end; justify-content: space-between;
+        padding: 0 40px;
+      }
+      #c-barchart .baseline {
+        position: absolute; left: 40px; right: 40px; bottom: 60px; height: 2px;
+        background: var(--rule); transform-origin: 0% 50%;
+      }
+      #c-barchart .barcol {
+        position: relative; width: 150px; height: 100%;
+        display: flex; align-items: flex-end; justify-content: center;
+      }
+      #c-barchart .bar {
+        width: 84px; background: var(--rule); transform-origin: 50% 100%;
+      }
+      #c-barchart .barcol.hero .bar { background: var(--accent); }
+      #c-barchart .barval {
+        position: absolute; bottom: calc(100% + 14px);
+        font-family: var(--font-mono); font-weight: var(--wt-semi);
+        font-size: 30px; color: var(--amber); white-space: nowrap;
+      }
+      #c-barchart .barlabel {
+        position: absolute; bottom: -46px;
+        font-family: var(--font-label); font-weight: var(--wt-semi);
+        font-size: var(--size-tiny); letter-spacing: var(--track-caps);
+        text-transform: uppercase; color: var(--text-dim);
+      }
+      #c-barchart .barcol.hero .barlabel { color: var(--white); }
+
+      #c-barchart .source {
+        position: absolute; bottom: 60px; left: 96px;
+        font-family: var(--font-label); font-weight: var(--wt-semi);
+        font-size: var(--size-tiny); letter-spacing: var(--track-caps);
+        text-transform: uppercase; color: var(--text-faint);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="c-barchart" data-composition-id="c-barchart" data-start="0" data-width="1920" data-height="1080">
+      <div class="scan"></div>
+
+      <div class="panel">
+        <div class="panelbar">
+          <div class="paneltitle" data-slot="title">CERTIFICATION COMPLETIONS BY QUARTER</div>
+          <div class="paneltag" data-slot="tag">TTM · Q1&ndash;Q5</div>
+        </div>
+
+        <div class="chartarea">
+          <div class="gridline" style="top: 15%;"></div>
+          <div class="gridline" style="top: 40%;"></div>
+          <div class="gridline" style="top: 65%;"></div>
+
+          <div class="baseline"></div>
+          <div class="bars">
+            <div class="barcol" data-bar-height="196">
+              <div class="bar"><span class="barval" data-slot="b1">2,180</span></div>
+              <span class="barlabel" data-slot="q1">Q1</span>
+            </div>
+            <div class="barcol" data-bar-height="238">
+              <div class="bar"><span class="barval" data-slot="b2">2,640</span></div>
+              <span class="barlabel" data-slot="q2">Q2</span>
+            </div>
+            <div class="barcol" data-bar-height="282">
+              <div class="bar"><span class="barval" data-slot="b3">3,120</span></div>
+              <span class="barlabel" data-slot="q3">Q3</span>
+            </div>
+            <div class="barcol" data-bar-height="349">
+              <div class="bar"><span class="barval" data-slot="b4">3,860</span></div>
+              <span class="barlabel" data-slot="q4">Q4</span>
+            </div>
+            <div class="barcol hero" data-bar-height="398">
+              <div class="bar"><span class="barval" data-slot="b5">4,410</span></div>
+              <span class="barlabel" data-slot="q5">Q1&rsquo;27</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="source" data-slot="source">SOURCE: ACME CERTIFICATION LEDGER 2026</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#c-barchart";
+
+      /* bake hardcoded pixel heights onto the bars, then animate scaleY 0->1
+         from the baseline so the bar "grows" from the axis */
+      const cols = Array.from(document.querySelectorAll(root + " .barcol"));
+      cols.forEach((col) => {
+        const h = parseFloat(col.dataset.barHeight);
+        col.querySelector(".bar").style.height = h + "px";
+      });
+
+      tl.fromTo(root + " .panel", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: "power2.out" }, 0)
+        .from(root + " .paneltitle", { xPercent: -101, duration: 0.5, ease: "power3.inOut" }, 0.15)
+        .from(root + " .paneltag", { autoAlpha: 0, duration: 0.4, ease: "power2.out" }, 0.5)
+        .fromTo(root + " .gridline", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut", stagger: 0.08 }, 0.3)
+        .fromTo(root + " .baseline", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 0.55);
+
+      cols.forEach((col, i) => {
+        const t = 0.85 + i * 0.12;
+        tl.fromTo(root + " .barcol:nth-child(" + (i + 1) + ") .bar", { scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: "power3.inOut" }, t)
+          .from(root + " .barcol:nth-child(" + (i + 1) + ") .barlabel", { autoAlpha: 0, duration: 0.3, ease: "power2.out" }, t)
+          .from(root + " .barcol:nth-child(" + (i + 1) + ") .barval", { autoAlpha: 0, y: 10, duration: 0.3, ease: "expo.out" }, t + 0.5);
+      });
+
+      tl.from(root + " .source", { autoAlpha: 0, duration: 0.4, ease: "power2.out" }, 2.4)
+
+        .set({}, {}, 8);
+
+      window.__timelines["c-barchart"] = tl;
+    </script>
+  </body>
+</html>

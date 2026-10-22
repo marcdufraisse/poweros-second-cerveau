@@ -1,0 +1,123 @@
+<!doctype html>
+<!--
+  NICK SARAEV · social · screen · LE SPOTLIGHT NÉON
+  LE geste. Une VRAIE capture d'écran plein cadre :
+    1. elle arrive nette, whip-scale 1.12 → 1.0                0.26s
+    2. beat — on voit la page entière                          ~0.6s
+    3. tout se floute et s'assombrit SAUF une zone ; le cadre
+       néon (8px, arrondi 28) dessine son trait autour         0.4s
+    4. zoom continu léger vers la zone, jamais résolu
+  La zone en % : --rx/--ry/--rw/--rh. Pas de label — le cadre suffit.
+  slot neon = orange | lime | cyan | red. UN néon à l'écran, jamais deux.
+  Slots: screen (media), neon.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-neon-spotlight {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden; background: var(--black);
+
+        /* LA ZONE — Agent 3 écrase ces quatre valeurs par beat */
+        --rx: 12%;
+        --ry: 30%;
+        --rw: 76%;
+        --rh: 26%;
+        --neon: var(--neon-orange);
+      }
+
+      /* deux couches de la MÊME capture : nette dessous, floutée dessus.
+         La couche floue est trouée par clip-path sur la zone. */
+      #soc-neon-spotlight .shot, #soc-neon-spotlight .blurshot {
+        position: absolute; inset: 0;
+      }
+      #soc-neon-spotlight .shot img, #soc-neon-spotlight .blurshot img {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+      #soc-neon-spotlight .blurshot {
+        filter: blur(14px) brightness(0.55);
+        transform: scale(1.03); /* évite les bords transparents du blur */
+        opacity: 0;
+        /* le trou : polygone plein cadre moins le rectangle de la zone */
+        clip-path: polygon(
+          0 0, 100% 0, 100% 100%, 0 100%, 0 var(--ry),
+          var(--rx) var(--ry),
+          var(--rx) calc(var(--ry) + var(--rh)),
+          calc(var(--rx) + var(--rw)) calc(var(--ry) + var(--rh)),
+          calc(var(--rx) + var(--rw)) var(--ry),
+          0 var(--ry)
+        );
+      }
+
+      /* le cadre néon */
+      #soc-neon-spotlight .frame {
+        position: absolute;
+        left: var(--rx); top: var(--ry); width: var(--rw); height: var(--rh);
+        border-radius: var(--neon-r);
+        pointer-events: none;
+      }
+      #soc-neon-spotlight .frame svg { width: 100%; height: 100%; display: block; overflow: visible; }
+      #soc-neon-spotlight .frame rect {
+        fill: none; stroke: var(--neon); stroke-width: var(--neon-w);
+        vector-effect: non-scaling-stroke;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="soc-neon-spotlight" data-composition-id="soc-neon-spotlight" data-start="0" data-width="1080" data-height="1920">
+      <div class="shot"><img data-slot="screen" src="../../references/spotlight-neon-orange.png" alt="" /></div>
+      <div class="blurshot"><img data-slot="screen" src="../../references/spotlight-neon-orange.png" alt="" /></div>
+      <div class="frame">
+        <svg preserveAspectRatio="none" viewBox="0 0 100 100">
+          <rect id="nsp-rect" x="0" y="0" width="100" height="100" rx="4" pathLength="400" />
+        </svg>
+      </div>
+      <div style="display:none" data-slot="neon">orange</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-neon-spotlight";
+      const el = document.querySelector(root);
+
+      /* couleur du néon depuis le slot */
+      const pick = (el.querySelector('[data-slot="neon"]').textContent.trim() || "orange");
+      const map = { orange: "--neon-orange", lime: "--neon-lime", cyan: "--neon-cyan", red: "--neon-red" };
+      el.style.setProperty("--neon", `var(${map[pick] || "--neon-orange"})`);
+
+      /* géométrie de la zone, pour le zoom final */
+      const css = getComputedStyle(el);
+      const pct = (n) => parseFloat(css.getPropertyValue(n)) / 100;
+      const rx = pct("--rx"), ry = pct("--ry"), rw = pct("--rw"), rh = pct("--rh");
+      const cx = (rx + rw / 2 - 0.5) * 100;
+      const cy = (ry + rh / 2 - 0.5) * 100;
+
+      const rect = document.getElementById("nsp-rect");
+      const tl = gsap.timeline({ paused: true });
+
+      /* 1. la capture claque, nette */
+      tl.fromTo(root, { scale: 1.12 }, { scale: 1.0, duration: 0.26, ease: "power4.out" }, 0);
+
+      /* 2. beat 0.6s, puis le flou tombe */
+      tl.to(root + " .blurshot", { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 0.85);
+
+      /* 3. le trait néon court le périmètre */
+      tl.fromTo(rect, { strokeDasharray: 400, strokeDashoffset: 400 },
+        { strokeDashoffset: 0, duration: 0.4, ease: "power2.inOut" }, 0.9);
+
+      /* 4. zoom continu vers la zone — jamais résolu, coupe en mouvement */
+      tl.to(root, {
+        scale: 1.14, xPercent: -cx * 0.14, yPercent: -cy * 0.14,
+        duration: 4.0, ease: "none"
+      }, 1.35);
+
+      tl.set({}, {}, 5.0);
+      window.__timelines["soc-neon-spotlight"] = tl;
+    </script>
+  </body>
+</html>

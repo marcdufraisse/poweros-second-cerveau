@@ -1,0 +1,131 @@
+<!doctype html>
+<!--
+  DAN KIEFT · custom · screen · 3D PUSH-IN
+  THE signature move. A screen (screencast, doc, UI) stands in a charcoal room
+  in perspective and the camera walks toward it for the whole shot. It starts
+  small, deep and skewed; it ends large, nearly flat, overflowing the frame.
+  The de-skew as it approaches is what sells it — a flat scale() looks nothing
+  like this.
+
+  Never lands. The drift is still moving when the cut happens.
+
+  Slots: chapter (serif title anchored above the screen — optional), screen
+  (the <img>/<video> source is swapped in by Agent 3 via data-slot="screen").
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #screen-3d-push {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        overflow: hidden; background: var(--charcoal);
+        font-family: var(--font-display);
+      }
+
+      /* the room: a soft key from top-left, a deep floor. Cheap, no images. */
+      #screen-3d-push .room {
+        position: absolute; inset: 0;
+        background:
+          radial-gradient(70% 55% at 26% 12%, rgba(255,255,255,0.075), transparent 68%),
+          radial-gradient(90% 70% at 50% 118%, rgba(0,0,0,0.55), transparent 62%);
+      }
+
+      /* the stage carries the perspective; the panel is the thing that moves */
+      #screen-3d-push .stage {
+        position: absolute; inset: 0;
+        perspective: var(--perspective);
+        perspective-origin: var(--perspective-origin);
+        transform-style: preserve-3d;
+      }
+
+      #screen-3d-push .panel {
+        position: absolute;
+        left: 50%; top: 50%;
+        width: 1440px; height: 810px;   /* 16:9 — transform does the sizing, never w/h */
+        margin: -405px 0 0 -720px;
+        transform-style: preserve-3d;
+        will-change: transform;
+      }
+
+      #screen-3d-push .screen {
+        position: absolute; inset: 0;
+        border-radius: 14px;
+        overflow: hidden;
+        background: var(--charcoal-lit);
+        box-shadow: var(--screen-shadow);
+      }
+      #screen-3d-push .screen img,
+      #screen-3d-push .screen video {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+
+      /* a hairline lip on the lit edge — reads as a physical panel, not a div */
+      #screen-3d-push .screen::after {
+        content: ""; position: absolute; inset: 0; border-radius: 14px;
+        box-shadow: inset 1px 1px 0 rgba(255,255,255,0.11),
+                    inset -1px -1px 0 rgba(0,0,0,0.45);
+        pointer-events: none;
+      }
+
+      /* serif chapter line, anchored to the panel so it travels with it */
+      #screen-3d-push .chapter {
+        position: absolute; left: 0; right: 0; top: -104px;
+        text-align: center;
+        font-family: var(--font-serif);
+        font-size: var(--size-chapter); line-height: 1;
+        color: var(--bone);
+        white-space: nowrap;
+      }
+      #screen-3d-push .chapter .ast {
+        color: var(--ember); font-size: 0.52em;
+        vertical-align: 0.28em; margin-right: 0.22em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="screen-3d-push" data-composition-id="screen-3d-push" data-start="0" data-width="1920" data-height="1080">
+      <div class="room"></div>
+      <div class="stage">
+        <div class="panel">
+          <div class="chapter"><span class="ast">✳</span><span data-slot="chapter">What shall we think through?</span></div>
+          <div class="screen">
+            <img data-slot="screen" src="../../references/prompt-surlignage-bleu.png" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#screen-3d-push";
+      const css = getComputedStyle(document.querySelector(root));
+      const v = (n) => css.getPropertyValue(n).trim();
+      const num = (n) => parseFloat(v(n));
+
+      const tl = gsap.timeline({ paused: true });
+
+      // The camera walk. One tween, the whole shot. translateZ carries the
+      // approach; the yaw/pitch easing off is the de-skew that sells it.
+      tl.fromTo(root + " .panel",
+        {
+          transform: `translateZ(${num("--z-far")}px) rotateY(${num("--yaw-far")}deg) rotateX(${num("--pitch-far")}deg)`
+        },
+        {
+          transform: `translateZ(${num("--z-near")}px) rotateY(${num("--yaw-near")}deg) rotateX(${num("--pitch-near")}deg)`,
+          duration: parseFloat(v("--dur-drift")),
+          ease: "power1.inOut"
+        }, 0);
+
+      // The chapter line resolves early and then just rides the panel.
+      tl.fromTo(root + " .chapter",
+        { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" }, 0.25);
+
+      window.__timelines["screen-3d-push"] = tl;
+    </script>
+  </body>
+</html>

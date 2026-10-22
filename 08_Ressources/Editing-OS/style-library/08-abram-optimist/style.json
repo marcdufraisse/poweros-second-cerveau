@@ -1,0 +1,650 @@
+{
+  "$schema": "../registry.schema.json",
+  "id": "abram-optimist",
+  "name": "Abram Optimist",
+  "number": "08",
+  "status": "draft",
+  "inspiration": "Cleo-Abram bright tech optimism (Huge If True). Warm off-white canvas, big friendly Manrope 800 type, one prismatic gradient moment per card, springy pop entrances, light-leak flare sweeps, Space Mono tape-deck tags (REWIND <<). Reference frames in references/.",
+  "summary": "The bright, energetic style. Use for optimistic tech explainers, product wins, and member-success stories — anywhere the future should feel exciting rather than ominous.",
+  "palette": {
+    "bg": "#FAFAF7",
+    "fg": "#16161A",
+    "accent": "#37BDF8",
+    "prismPink": "#FF4D9D",
+    "prismOrange": "#FF9A3D",
+    "prismViolet": "#8B5CF6",
+    "sun": "#FFD449",
+    "notes": "Light canvas always. Prism colors exist only inside the --prism gradient / wash / flare; solo accents are brand blue; sun yellow for tiny marks. Mirrored in tokens.css."
+  },
+  "fonts": {
+    "display": "Manrope",
+    "body": "Inter",
+    "mono": "Space Mono",
+    "notes": "Manrope 700-800 sentence-case headlines and numbers; Inter supporting copy; Space Mono uppercase tape-deck tags in pill chips."
+  },
+  "motion": "Springy optimism. Pops (scale 0.6-to-1, back.out(1.7)) for chips and numbers; headlines rise-and-settle with expo.out; the prism gradient pans once; a light-leak flare sweeps the frame at the peak moment; eager count-ups. Pops land and stop - no continuous wobble.",
+  "transitions": "The flare sweep (skewed bright band crossing the frame) and quick white dissolves. Never dark whips, never hard cuts.",
+  "cards": [
+    {
+      "id": "abram-optimist.t1.thesis.prism",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "prism",
+      "file": "cards/tier1/t1-thesis-prism.html",
+      "slots": [
+        {
+          "name": "tag",
+          "type": "text"
+        },
+        {
+          "name": "headline",
+          "type": "richtext"
+        },
+        {
+          "name": "foot",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.thesis.prism.mp4",
+        "poster": "preview/abram-optimist.t1.thesis.prism.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t1.overview.trio",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "trio",
+      "file": "cards/tier1/t1-overview-trio.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "h1",
+          "type": "text"
+        },
+        {
+          "name": "b1",
+          "type": "text"
+        },
+        {
+          "name": "h2",
+          "type": "text"
+        },
+        {
+          "name": "b2",
+          "type": "text"
+        },
+        {
+          "name": "h3",
+          "type": "text"
+        },
+        {
+          "name": "b3",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.overview.trio.mp4",
+        "poster": "preview/abram-optimist.t1.overview.trio.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t1.overview.path",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "path",
+      "file": "cards/tier1/t1-overview-path.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "n1",
+          "type": "text"
+        },
+        {
+          "name": "n2",
+          "type": "text"
+        },
+        {
+          "name": "n3",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.overview.path.mp4",
+        "poster": "preview/abram-optimist.t1.overview.path.png"
+      }
+    },
+    {
+      "id": "abram-optimist.custom.moment.rewind",
+      "tier": "custom",
+      "purpose": "moment",
+      "treatment": "rewind",
+      "file": "cards/custom/c-rewind.html",
+      "slots": [
+        {
+          "name": "claim",
+          "type": "text"
+        },
+        {
+          "name": "again",
+          "type": "text"
+        },
+        {
+          "name": "time",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.custom.moment.rewind.mp4",
+        "poster": "preview/abram-optimist.custom.moment.rewind.png"
+      }
+    },
+    {
+      "id": "abram-optimist.custom.verdict.huge",
+      "tier": "custom",
+      "purpose": "verdict",
+      "treatment": "huge",
+      "file": "cards/custom/c-huge.html",
+      "slots": [
+        {
+          "name": "word1",
+          "type": "text"
+        },
+        {
+          "name": "word2",
+          "type": "text"
+        },
+        {
+          "name": "caveat",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.custom.verdict.huge.mp4",
+        "poster": "preview/abram-optimist.custom.verdict.huge.png"
+      }
+    },
+    {
+      "id": "abram-optimist.custom.compare.scale",
+      "tier": "custom",
+      "purpose": "compare",
+      "treatment": "scale",
+      "file": "cards/custom/c-scale.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "small",
+          "type": "text"
+        },
+        {
+          "name": "big",
+          "type": "text"
+        },
+        {
+          "name": "punch",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 6,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.custom.compare.scale.mp4",
+        "poster": "preview/abram-optimist.custom.compare.scale.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t1.stat.friendly",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "friendly",
+      "file": "cards/tier1/t1-stat-friendly.html",
+      "slots": [
+        {
+          "name": "kicker",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "foot",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.stat.friendly.mp4",
+        "poster": "preview/abram-optimist.t1.stat.friendly.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t1.stat.card",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "card",
+      "file": "cards/tier1/t1-stat-card.html",
+      "slots": [
+        {
+          "name": "tag",
+          "type": "text"
+        },
+        {
+          "name": "stat",
+          "type": "text"
+        },
+        {
+          "name": "label",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.stat.card.mp4",
+        "poster": "preview/abram-optimist.t1.stat.card.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t1.stat.duo",
+      "tier": "tier1",
+      "purpose": "stat",
+      "treatment": "duo",
+      "file": "cards/tier1/t1-stat-duo.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "l1",
+          "type": "text"
+        },
+        {
+          "name": "v1",
+          "type": "text"
+        },
+        {
+          "name": "l2",
+          "type": "text"
+        },
+        {
+          "name": "v2",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.stat.duo.mp4",
+        "poster": "preview/abram-optimist.t1.stat.duo.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t1.quote.delight",
+      "tier": "tier1",
+      "purpose": "quote",
+      "treatment": "delight",
+      "file": "cards/tier1/t1-quote-delight.html",
+      "slots": [
+        {
+          "name": "tag",
+          "type": "text"
+        },
+        {
+          "name": "quote",
+          "type": "richtext"
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "role",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.quote.delight.mp4",
+        "poster": "preview/abram-optimist.t1.quote.delight.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t1.quote.postcard",
+      "tier": "tier1",
+      "purpose": "quote",
+      "treatment": "postcard",
+      "file": "cards/tier1/t1-quote-postcard.html",
+      "slots": [
+        {
+          "name": "quote",
+          "type": "text"
+        },
+        {
+          "name": "attrib",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.quote.postcard.mp4",
+        "poster": "preview/abram-optimist.t1.quote.postcard.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t1.thesis.question",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "question",
+      "file": "cards/tier1/t1-thesis-question.html",
+      "slots": [
+        {
+          "name": "tag",
+          "type": "text"
+        },
+        {
+          "name": "headline",
+          "type": "richtext"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.thesis.question.mp4",
+        "poster": "preview/abram-optimist.t1.thesis.question.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t1.thesis.verdict",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "verdict",
+      "file": "cards/tier1/t1-thesis-verdict.html",
+      "slots": [
+        {
+          "name": "headline",
+          "type": "richtext"
+        },
+        {
+          "name": "verdict",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.thesis.verdict.mp4",
+        "poster": "preview/abram-optimist.t1.thesis.verdict.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t1.section.tape",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "tape",
+      "file": "cards/tier1/t1-section-tape.html",
+      "slots": [
+        {
+          "name": "tape",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "time",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.section.tape.mp4",
+        "poster": "preview/abram-optimist.t1.section.tape.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t1.section.chips",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "chips",
+      "file": "cards/tier1/t1-section-chips.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "c1",
+          "type": "text"
+        },
+        {
+          "name": "c2",
+          "type": "text"
+        },
+        {
+          "name": "c3",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.section.chips.mp4",
+        "poster": "preview/abram-optimist.t1.section.chips.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t1.section.sweep",
+      "tier": "tier1",
+      "purpose": "section",
+      "treatment": "sweep",
+      "file": "cards/tier1/t1-section-sweep.html",
+      "slots": [
+        {
+          "name": "tag",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 5,
+        "max": 8
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t1.section.sweep.mp4",
+        "poster": "preview/abram-optimist.t1.section.sweep.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t2.lower-third.pill",
+      "tier": "tier2",
+      "purpose": "lower-third",
+      "treatment": "pill",
+      "file": "cards/tier2/t2-lowerthird-pill.html",
+      "slots": [
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "role",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t2.lower-third.pill.mp4",
+        "poster": "preview/abram-optimist.t2.lower-third.pill.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t2.label.tape",
+      "tier": "tier2",
+      "purpose": "label",
+      "treatment": "tape",
+      "file": "cards/tier2/t2-label-tape.html",
+      "slots": [
+        {
+          "name": "tape",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t2.label.tape.mp4",
+        "poster": "preview/abram-optimist.t2.label.tape.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t2.list.cards",
+      "tier": "tier2",
+      "purpose": "list",
+      "treatment": "cards",
+      "file": "cards/tier2/t2-list-cards.html",
+      "slots": [
+        {
+          "name": "title",
+          "type": "text"
+        },
+        {
+          "name": "i1",
+          "type": "text"
+        },
+        {
+          "name": "i2",
+          "type": "text"
+        },
+        {
+          "name": "i3",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t2.list.cards.mp4",
+        "poster": "preview/abram-optimist.t2.list.cards.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t2.label.stat",
+      "tier": "tier2",
+      "purpose": "label",
+      "treatment": "stat",
+      "file": "cards/tier2/t2-label-stat.html",
+      "slots": [
+        {
+          "name": "label",
+          "type": "text"
+        },
+        {
+          "name": "value",
+          "type": "text"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t2.label.stat.mp4",
+        "poster": "preview/abram-optimist.t2.label.stat.png"
+      }
+    },
+    {
+      "id": "abram-optimist.t2.lower-third.callout",
+      "tier": "tier2",
+      "purpose": "lower-third",
+      "treatment": "callout",
+      "file": "cards/tier2/t2-lowerthird-callout.html",
+      "slots": [
+        {
+          "name": "tag",
+          "type": "text"
+        },
+        {
+          "name": "callout",
+          "type": "richtext"
+        }
+      ],
+      "duration": {
+        "min": 4,
+        "max": 10
+      },
+      "preview": {
+        "mp4": "preview/abram-optimist.t2.lower-third.callout.mp4",
+        "poster": "preview/abram-optimist.t2.lower-third.callout.png"
+      }
+    }
+  ]
+}

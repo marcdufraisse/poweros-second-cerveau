@@ -1,0 +1,66 @@
+<!doctype html>
+<!--
+  NICK SARAEV · social · cta · LE SCRIPT À CHEVAL
+  L'outro : PAS de panneau, pas de pastille. Deux mots superposés sur le
+  dernier plan visage : « comment » en italique script blanche, et le
+  mot-clé entre guillemets en géométrique très grasse, à cheval dessous.
+  Ombre douce. L'inverse exact de la carte violette de Nathan Hodgson.
+  Overlay transparent.
+  Slots: keyword.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-cta-script {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden; background: transparent;
+      }
+      #soc-cta-script .stack {
+        position: absolute; left: 0; right: 0; top: 66%;
+        display: flex; flex-direction: column; align-items: center;
+      }
+      #soc-cta-script .script {
+        font-family: var(--font-serif); font-style: italic; font-weight: 600;
+        font-size: var(--fs-script); color: var(--paper-fg);
+        text-shadow: 0 3px 12px rgba(0, 0, 0, 0.55);
+        margin-bottom: -26px; /* le chevauchement — la signature */
+        z-index: 2; position: relative;
+      }
+      #soc-cta-script .keyword {
+        font-family: var(--font-body); font-weight: 800;
+        font-size: 96px; color: var(--paper-fg); line-height: 1;
+        text-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 14px 44px rgba(0, 0, 0, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="soc-cta-script" data-composition-id="soc-cta-script" data-start="0" data-width="1080" data-height="1920">
+      <div class="stack">
+        <div class="script">comment</div>
+        <div class="keyword">&ldquo;<span data-slot="keyword">Claude</span>&rdquo;</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-cta-script";
+      const tl = gsap.timeline({ paused: true });
+
+      tl.fromTo(root + " .script", { y: 18, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.26, ease: "power4.out" }, 0.02);
+      tl.fromTo(root + " .keyword", { scale: 0.9, autoAlpha: 0 },
+        { scale: 1, autoAlpha: 1, duration: 0.24, ease: "back.out(1.8)" }, 0.16);
+
+      /* micro-dérive pendant la tenue */
+      tl.to(root + " .stack", { scale: 1.02, duration: 1.8, ease: "none" }, 0.4);
+
+      tl.set({}, {}, 2.4);
+      window.__timelines["soc-cta-script"] = tl;
+    </script>
+  </body>
+</html>

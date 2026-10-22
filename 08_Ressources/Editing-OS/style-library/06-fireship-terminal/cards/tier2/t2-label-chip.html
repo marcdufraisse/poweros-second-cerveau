@@ -1,0 +1,95 @@
+<!doctype html>
+<!--
+  FIRESHIP TERMINAL · tier2 · label · CHIP
+  Top-left compact panel chip inside the corner-safe zone. A "$" prompt in
+  syntax green sits beside a mono uppercase label and a bold accent value;
+  the chip STAMPS in as one unit, then its text types on character by
+  character.
+  Slots: label, value.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-label-chip {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; overflow: hidden; font-family: var(--font-mono);
+      }
+
+      #t2-label-chip .chip {
+        position: absolute; top: 64px; left: 64px; z-index: 3;
+        display: inline-flex; align-items: baseline; gap: 14px;
+        max-width: 480px;
+        background: var(--panel); border: 1px solid var(--panel-edge);
+        border-radius: var(--radius-sm);
+        padding: 18px 26px;
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+        transform-origin: 0% 50%;
+      }
+
+      #t2-label-chip .prompt { color: var(--syn-green); font-size: var(--size-body); }
+      #t2-label-chip .label {
+        font-size: var(--size-label); color: var(--text-dim);
+        letter-spacing: 0.1em; text-transform: uppercase;
+      }
+      #t2-label-chip .value {
+        font-size: var(--size-body); font-weight: var(--wt-bold); color: var(--accent);
+        letter-spacing: 0.01em; text-transform: uppercase;
+      }
+      #t2-label-chip .ch { display: inline-block; }
+    </style>
+  </head>
+  <body>
+    <div id="t2-label-chip" data-composition-id="t2-label-chip" data-start="0" data-width="1920" data-height="1080">
+      <div class="chip">
+        <span class="prompt">$</span>
+        <span class="label" data-slot="label">STACK</span>
+        <span class="value" data-slot="value">NEXT.JS 15</span>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t2-label-chip";
+
+      /* pre-split label + value into char spans for the typewriter */
+      function splitChars(el) {
+        const text = el.textContent;
+        el.textContent = "";
+        text.split("").forEach((ch) => {
+          const s = document.createElement("span");
+          s.className = "ch"; s.textContent = ch === " " ? " " : ch;
+          el.appendChild(s);
+        });
+      }
+      splitChars(document.querySelector(root + " .label"));
+      splitChars(document.querySelector(root + " .value"));
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* chip STAMPS in as one unit */
+      tl.from(root + " .chip", {
+          autoAlpha: 0, scale: 1.6, transformOrigin: "0% 50%",
+          duration: 0.28, ease: "back.out(2.2)"
+        }, 0.1)
+
+        /* prompt snaps in right after */
+        .from(root + " .prompt", { autoAlpha: 0, duration: 0.18, ease: "power2.out" }, ">-0.02")
+
+        /* label types on, linear */
+        .from(root + " .label .ch", { autoAlpha: 0, duration: 0.01, stagger: 0.02, ease: "none" }, ">0.02")
+
+        /* value types on right after */
+        .from(root + " .value .ch", { autoAlpha: 0, duration: 0.01, stagger: 0.02, ease: "none" }, ">0.05")
+
+        /* dead stillness — the hold is the timing */
+        .set({}, {}, 6);
+
+      window.__timelines["t2-label-chip"] = tl;
+    </script>
+  </body>
+</html>

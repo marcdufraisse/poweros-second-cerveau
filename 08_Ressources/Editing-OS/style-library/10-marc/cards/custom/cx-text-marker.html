@@ -1,0 +1,160 @@
+<!doctype html>
+<!--
+  HOUSE · custom · highlight · MARQUEUR PROGRESSIF
+  Une liste arrive ENTIÈRE et éteinte, puis chaque ligne s'allume au marqueur
+  jaune au moment où on en parle. Le bloc ne bouge jamais : seul le marqueur
+  avance.
+
+  C'est ce qui permet de tenir 30 secondes sur un pavé de texte sans perdre le
+  spectateur — il voit toujours où on en est.
+
+  LA règle technique : le marqueur est un background-size animé de 0% à 100%,
+  JAMAIS un fond qu'on insère ni un ::before qu'on déploie. Aucun reflow, donc
+  la liste ne se décale pas d'un pixel pendant qu'un item s'allume. Testé en
+  rendu le 18/08 sur le reel montage-video-par-ia.
+
+  Deuxième règle : UN SEUL item allumé à la fois. Le précédent s'éteint quand
+  le suivant arrive — sinon on ne sait plus où regarder.
+
+  Chaque ligne est dans une rangée bloc et le marqueur sur un span
+  inline-block : le fond épouse le texte, et les lignes restent empilées même
+  si la carte est remplie progressivement.
+
+  Timing : Agent 3 remplace le tableau BEATS par les timecodes réels des mots
+  du transcript. Le marqueur part 0.14s AVANT le mot — il doit être posé quand
+  le mot tombe, pas commencer à ce moment-là.
+
+  Slots: title, item1..item5 (les vides sont masqués automatiquement).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      /* tier2 par comportement : fond transparent, il se pose SUR la vidéo et
+         ne couvre jamais le visage (ancré à gauche). */
+      #cx-text-marker {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; overflow: hidden;
+        font-family: var(--font-display);
+      }
+
+      /* un voile local, pas plein cadre : le texte tient sur n'importe quel
+         décor sans noyer l'image */
+      #cx-text-marker .scrim {
+        position: absolute; left: 0; top: 0; bottom: 0; width: 1180px;
+        background: linear-gradient(90deg, rgba(2,6,15,0.90) 0%, rgba(2,6,15,0.72) 62%, transparent 100%);
+        opacity: 0;
+      }
+
+      #cx-text-marker .block {
+        position: absolute; left: 108px; top: 190px;
+        display: flex; flex-direction: column; align-items: flex-start; gap: 22px;
+      }
+      #cx-text-marker .title {
+        font-weight: var(--wt-black); font-size: 40px;
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+        color: var(--white); opacity: 0; margin-bottom: 6px;
+      }
+
+      /* une rangée bloc par ligne — les lignes restent empilées */
+      #cx-text-marker .row { opacity: 0; }
+      /* le marqueur : background-size animé DERRIÈRE le texte. Pas de reflow. */
+      #cx-text-marker .mark {
+        display: inline-block;
+        font-weight: var(--wt-bold); font-size: 50px;
+        letter-spacing: var(--track-caps);
+        color: rgba(255, 255, 255, 0.34);
+        background-image: linear-gradient(var(--jaune), var(--jaune));
+        background-repeat: no-repeat; background-size: 0% 100%;
+        padding: 6px 14px; margin-left: -14px; border-radius: 5px;
+        white-space: nowrap;
+      }
+      /* La bascule du texte est une TWEEN de couleur, pas une classe : GSAP
+         n'exécute pas ses callbacks quand on seek, et le moteur rend image
+         par image en seekant. Une tween s'interpole à n'importe quelle
+         position — une classe, non. */
+    </style>
+  </head>
+  <body>
+    <div id="cx-text-marker" data-composition-id="cx-text-marker" data-start="0" data-width="1920" data-height="1080">
+      <div class="scrim"></div>
+      <div class="block">
+        <div class="title" data-slot="title">Il s'occupe de tout</div>
+        <div class="row"><span class="mark" data-slot="item1">Les silences, coupés</span></div>
+        <div class="row"><span class="mark" data-slot="item2">Les ratés, supprimés</span></div>
+        <div class="row"><span class="mark" data-slot="item3">Chaque illustration, calée</span></div>
+        <div class="row"><span class="mark" data-slot="item4">Les sound effects, posés</span></div>
+        <div class="row"><span class="mark" data-slot="item5">Les zooms, placés</span></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#cx-text-marker";
+      const css = getComputedStyle(document.querySelector(root));
+      const num = (n) => parseFloat(css.getPropertyValue(n));
+
+      // Une ligne laissée vide par Agent 3 disparaît, elle ne laisse pas de trou.
+      const rows = Array.from(document.querySelectorAll(root + " .row"))
+        .filter((r) => {
+          const on = r.querySelector(".mark").textContent.trim().length > 0;
+          if (!on) r.style.display = "none";
+          return on;
+        });
+
+      // Les instants où chaque ligne s'allume. Agent 3 remplace ce tableau par
+      // les timecodes des mots du transcript — un par ligne, dans l'ordre.
+      const BEATS = [1.20, 2.40, 3.70, 5.10, 6.40];
+
+      const tl = gsap.timeline({ paused: true });
+      const MDUR = num("--marker-dur");
+      const INK = css.getPropertyValue("--marker-ink").trim();
+      const OFF = "rgba(255, 255, 255, 0.34)";
+
+      tl.to(root + " .scrim", { opacity: 1, duration: 0.45, ease: "power2.out" }, 0);
+      tl.fromTo(root + " .title", { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.34, ease: "power3.out" }, 0.12);
+      // la liste arrive entière et éteinte : on lit le tout avant que ça
+      // s'allume, sinon le marqueur n'a rien à révéler
+      tl.fromTo(rows, { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.30, ease: "power3.out",
+          stagger: num("--marker-stagger") }, 0.30);
+
+      rows.forEach((row, i) => {
+        const mark = row.querySelector(".mark");
+        const t = BEATS[i];
+        if (t == null) return;
+
+        // le balayage part avant le mot : il doit être POSÉ quand le mot tombe
+        tl.fromTo(mark, { backgroundSize: "0% 100%" },
+          { backgroundSize: "100% 100%", duration: MDUR, ease: "power2.inOut" }, t - 0.14);
+        // le texte bascule à mi-balayage, quand le fond est déjà sous lui
+        tl.to(mark, { color: INK, duration: 0.10, ease: "none" }, t - 0.02);
+
+        // un seul allumé à la fois — le précédent s'éteint quand celui-ci arrive
+        if (i > 0) {
+          const prev = rows[i - 1].querySelector(".mark");
+          tl.to(prev, { backgroundSize: "0% 100%", duration: 0.26, ease: "power2.in" }, t - 0.30);
+          tl.to(prev, { color: OFF, duration: 0.10, ease: "none" }, t - 0.26);
+        }
+      });
+
+      // le dernier s'éteint aussi : la carte ne se fige jamais allumée
+      const last = rows[rows.length - 1];
+      if (last) {
+        const lastMark = last.querySelector(".mark");
+        const end = BEATS[rows.length - 1] + 1.6;
+        tl.to(lastMark, { backgroundSize: "0% 100%", duration: 0.26, ease: "power2.in" }, end);
+        tl.to(lastMark, { color: OFF, duration: 0.10, ease: "none" }, end + 0.04);
+        tl.to([root + " .block", root + " .scrim"],
+          { opacity: 0, duration: 0.35, ease: "power2.in" }, end + 0.30);
+      }
+
+      window.__timelines["cx-text-marker"] = tl;
+    </script>
+  </body>
+</html>

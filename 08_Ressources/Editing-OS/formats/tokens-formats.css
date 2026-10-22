@@ -1,0 +1,98 @@
+/* ============================================================================
+   tokens-formats.css — géométrie canonique des reels 9:16 de l'utilisateur
+   Source de vérité : formats/*.md (mesures dans formats/MESURES.md).
+   Le LOOK (palette, typo, motion) vit dans style-library/10-marc/tokens.css.
+   Ce fichier ne porte QUE de la géométrie et les deux couleurs qui en dépendent.
+   Copié tel quel dans chaque scaffold : un projet est autonome.
+   ========================================================================= */
+
+:root {
+  /* ---- cadre ---- */
+  --reel-w: 1080px;
+  --reel-h: 1920px;
+  --reel-fps: 30;
+
+  /* ---- zones interdites (UI Instagram) ---- */
+  --safe-top: 288px;     /* 15 % — rien d'indispensable au-dessus */
+  --safe-bottom: 192px;  /* 10 % — rien d'indispensable en dessous */
+
+  /* ---- accents (repris de 10-marc, redéclarés pour l'autonomie) ---- */
+  --jaune: #A78BFA;      /* violet lavande, charte de marque — porte la fin des titres et le mot-clé du CTA */
+  --jaune-2: #C4B5FD;    /* lilas — fin du dégradé lavande (135deg) */
+  --or: #8B5CF6;         /* violet vif — boutons, halos, pastilles pleines */
+  --rouge-annot: #FF3B30;/* annotations manuscrites du format 03 */
+
+  /* ---- fond commun ---- */
+  --bg: #06060C;         /* noir violet — charte de marque, toujours */
+  --grid-line: rgba(139, 92, 246, 0.08);   /* grille V2 : trait 1 px, pas de 60 px */
+  --wave-1: rgba(167, 139, 250, 0.050);   /* conservé pour les anciens projets */
+  --wave-2: rgba(167, 139, 250, 0.035);
+
+  /* ============ FORMAT 01 · SPLIT CARTE ============ */
+  --f01-top-h: 970px;          /* zone illustration, 0 → 50,5 % */
+  --f01-top-radius: 44px;      /* arrondi bas de la zone haute */
+  --f01-cap-top: 985px;        /* sous-titre, 51,3 % */
+  --f01-cap-size: 66px;
+  --f01-head-line: 1115px;     /* haut de tête — INFRANCHISSABLE (58,1 %) */
+  --f01-card-top: 1250px;      /* carte speaker, 65,1 % */
+  --f01-card-side: 55px;       /* marge latérale, 5,1 % */
+  --f01-card-bottom: 42px;
+  --f01-card-radius: 42px;
+  --f01-card-scale: 1.28;      /* base ; punch 1.33/y50 ; zoom 1.43/y150 */
+
+  /* ============ FORMAT 02 · AVANT/APRÈS ============ */
+  --f02-header-h: 354px;       /* bandeau titre, 18,4 % */
+  --f02-title-size: 66px;
+  --f02-subtitle-size: 54px;
+  --f02-label-size: 42px;
+  --f02-pane-h: 609px;         /* 1080 × 9/16 — les deux volets, à l'identique */
+  --f02-pane-a-top: 399px;     /* volet transformé (EN HAUT) */
+  --f02-pane-b-top: 1110px;    /* volet original (EN BAS) */
+  --f02-foot-h: 201px;         /* noir de pied, reste vide */
+
+  /* ============ FORMAT 03 · RECRÉER VIRAL ============ */
+  --f03-hook-card-w: 700px;    /* carte du contenu viral, ~65 % de la largeur */
+  --f03-hook-card-top: 576px;  /* 30 % */
+  --f03-hook-card-radius: 28px;
+  --f03-hook-mute: 9s;         /* hook muet : 6 à 10 s */
+  --f03-cta-at: 0.23;          /* CTA à 20–30 % de la durée */
+  --f03-payoff-mute: 12s;      /* payoff muet : 8 à 12 s */
+  --f03-screen-radius: 28px;   /* cartes de capture d'écran, acte 2 */
+}
+
+/* Le fond commun aux trois formats, charte de marque : noir violet + grille fine
+   + deux nappes de lumière violette figées (les orbes ne bougent pas en
+   vidéo : la dérive lente se fait par un drift GSAP sur .reel-bg si besoin,
+   jamais plus rapide que 15 s). */
+.reel-bg {
+  position: absolute;
+  inset: -200px;
+  z-index: 0;
+  background:
+    radial-gradient(38% 26% at 28% 22%, rgba(139, 92, 246, 0.18) 0%, transparent 70%),
+    radial-gradient(34% 24% at 76% 46%, rgba(124, 58, 237, 0.13) 0%, transparent 70%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+}
+
+/* ============ FORMAT 04 · TELLA (vidéo longue YouTube, 1920×1080) ============
+   Spec : formats/04-tella.md. Ajouté le 2026-10-07.
+   Écran à gauche dans une fenêtre arrondie, cam verticale à droite,
+   panneau chapitres au-dessus de la cam. Panneaux en verre (liquid glass). */
+:root {
+  --yt-w: 1920px;
+  --yt-h: 1080px;
+  --yt-margin: 32px;          /* marge gauche et droite */
+  --yt-top: 53px;             /* haut des colonnes, centrées verticalement */
+  --yt-gap: 24px;             /* entre la fenêtre écran et la colonne de droite */
+  --yt-screen-w: 1488px;      /* fenêtre écran : contenu 16:10 de 1488 × 930 */
+  --yt-screen-bar: 44px;      /* barre de titre avec les 3 pastilles */
+  --yt-screen-h: 974px;       /* 44 + 930 */
+  --yt-radius: 28px;
+  --yt-side-w: 344px;         /* colonne de droite */
+  --yt-chap-h: 300px;         /* panneau chapitres */
+  --yt-side-gap: 20px;        /* entre panneau et cam */
+  --yt-cam-h: 654px;          /* cam verticale ~9:17 ; bas aligné sur la fenêtre écran */
+  --yt-bezel: 8px;            /* liseré de verre autour de l'écran et de la cam */
+}

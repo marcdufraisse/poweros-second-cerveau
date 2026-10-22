@@ -1,0 +1,73 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · transition · GLASS WIPE
+  A tilted frosted-glass pane whips across the frame left-to-right; the scene
+  hard-swaps at the covered midpoint. The pane is the same glass as the tier2
+  panels (blur, lime edge light), so the transition feels like a panel that
+  grew wings. Smooth power3 whip, ~0.8s edge to edge.
+  Slots: none.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+      #tr-glass-wipe {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--navy); overflow: hidden; font-family: var(--font-display);
+      }
+      .sceneA, .sceneB { position: absolute; inset: 0; }
+      .sceneA { background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 46%); }
+      .sceneA::after { content: ""; position: absolute; inset: 0; background: var(--streaks); }
+      .sceneB { background: var(--olive); visibility: hidden; }
+      .sceneB::after { content: ""; position: absolute; inset: 0; background-image: var(--dot-grid); background-size: var(--dot-grid-size); }
+      .tag {
+        position: absolute; left: 64px; bottom: 56px; z-index: 2;
+        font-family: var(--font-mono); font-weight: var(--wt-med); font-size: var(--size-tiny);
+        letter-spacing: var(--track-pill); text-transform: uppercase; color: var(--grey-pre);
+      }
+
+      /* the pane: oversized so the tilt never shows an edge gap mid-frame */
+      .pane {
+        position: absolute; left: 50%; top: 50%; width: 1400px; height: 1560px;
+        margin: -780px 0 0 -700px; z-index: 5;
+        background: var(--glass-bg);
+        border-left: 2px solid rgba(var(--lime-rgb), 0.75);
+        border-right: 1px solid rgba(255, 255, 255, 0.35);
+        backdrop-filter: var(--glass-blur) brightness(1.15);
+        -webkit-backdrop-filter: var(--glass-blur) brightness(1.15);
+        box-shadow: 0 0 90px rgba(0, 0, 0, 0.5);
+        transform: rotate(8deg);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tr-glass-wipe" data-composition-id="tr-glass-wipe" data-start="0" data-width="1920" data-height="1080">
+      <div class="sceneA"></div>
+      <div class="sceneB"></div>
+      <div class="tag">GLASS WIPE · PANE WHIPS, CUT UNDERNEATH</div>
+      <div class="pane"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#tr-glass-wipe";
+      const tl = gsap.timeline({ paused: true });
+
+      /* pane starts fully off-left, whips across, exits off-right */
+      tl.set(root + " .pane", { x: -2400 }, 0)
+        .to(root + " .pane", { x: 0, duration: 0.4, ease: "power3.in" }, 1.2)
+        .to(root + " .pane", { x: 2400, duration: 0.4, ease: "power3.out" }, 1.6)
+
+        /* swap while the pane covers center */
+        .set(root + " .sceneA", { visibility: "hidden" }, 1.6)
+        .set(root + " .sceneB", { visibility: "visible" }, 1.6)
+
+        .set({}, {}, 4);
+
+      window.__timelines["tr-glass-wipe"] = tl;
+    </script>
+  </body>
+</html>

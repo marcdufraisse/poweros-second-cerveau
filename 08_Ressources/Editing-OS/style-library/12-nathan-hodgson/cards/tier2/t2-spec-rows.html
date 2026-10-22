@@ -1,0 +1,99 @@
+<!doctype html>
+<!--
+  NATHAN HODGSON · tier2 · list · LES LIGNES DE SPECS
+  Trois cartes blanches empilées : pastille d'icône, label gras, sous-label
+  gris, VALEUR EN MONO alignée à droite. Elles arrivent du bas une par une.
+  Jamais plus de trois. Jamais une phrase dans la valeur.
+  Overlay transparent — se pose sur la zone haute du sandwich.
+  Slots: rowNlabel / rowNsub / rowNvalue (N = 1..3), rowNicon (emoji ok).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-spec-rows {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden; background: transparent;
+        font-family: var(--font-body);
+      }
+      #t2-spec-rows .stack {
+        position: absolute; left: 64px; right: 64px; top: 200px;
+        display: flex; flex-direction: column; gap: 24px;
+      }
+      #t2-spec-rows .row {
+        display: flex; align-items: center; gap: 26px;
+        background: var(--card-white); border-radius: var(--r-row);
+        box-shadow: var(--shadow-row);
+        padding: 30px 34px;
+      }
+      #t2-spec-rows .icon {
+        width: 84px; height: 84px; flex: 0 0 84px;
+        background: var(--chip); border-radius: var(--r-chip);
+        display: grid; place-items: center; font-size: 40px;
+      }
+      #t2-spec-rows .txt { flex: 1; min-width: 0; }
+      #t2-spec-rows .label {
+        font-size: var(--fs-card); font-weight: 700; color: var(--ink);
+        line-height: 1.15; white-space: nowrap; overflow: hidden;
+      }
+      #t2-spec-rows .sub {
+        margin-top: 6px; font-size: var(--fs-sub); font-weight: 400;
+        color: var(--ink-mute); white-space: nowrap; overflow: hidden;
+      }
+      #t2-spec-rows .value {
+        font-family: var(--font-mono); font-size: var(--fs-mono);
+        color: var(--ink-mute); white-space: nowrap;
+      }
+      #t2-spec-rows .value.hot { color: var(--orange); font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <div id="t2-spec-rows" data-composition-id="t2-spec-rows" data-start="0" data-width="1080" data-height="1920">
+      <div class="stack">
+        <div class="row">
+          <div class="icon" data-slot="row1icon">💳</div>
+          <div class="txt">
+            <div class="label" data-slot="row1label">API costs</div>
+            <div class="sub" data-slot="row1sub">no metered calls, no billing page</div>
+          </div>
+          <div class="value hot" data-slot="row1value">$0.00</div>
+        </div>
+        <div class="row">
+          <div class="icon" data-slot="row2icon">☁️</div>
+          <div class="txt">
+            <div class="label" data-slot="row2label">Cloud uploads</div>
+            <div class="sub" data-slot="row2sub">footage never leaves your machine</div>
+          </div>
+          <div class="value" data-slot="row2value">0 MB</div>
+        </div>
+        <div class="row">
+          <div class="icon" data-slot="row3icon">🔑</div>
+          <div class="txt">
+            <div class="label" data-slot="row3label">Extra keys</div>
+            <div class="sub" data-slot="row3sub">nothing to paste, nothing to rotate</div>
+          </div>
+          <div class="value" data-slot="row3value">none</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t2-spec-rows";
+      const tl = gsap.timeline({ paused: true });
+
+      tl.fromTo(root + " .row", { y: 44, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.34, ease: "power3.out", stagger: 0.18 }, 0.1);
+      /* micro-pop de la valeur chaude après l'arrivée de sa ligne */
+      tl.fromTo(root + " .value.hot", { scale: 0.85 },
+        { scale: 1, duration: 0.28, ease: "back.out(2.2)" }, 0.62);
+
+      tl.set({}, {}, 4.5);
+      window.__timelines["t2-spec-rows"] = tl;
+    </script>
+  </body>
+</html>

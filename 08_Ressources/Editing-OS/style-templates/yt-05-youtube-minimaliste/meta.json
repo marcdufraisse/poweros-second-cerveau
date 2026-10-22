@@ -1,0 +1,13 @@
+{
+  "slug": "yt-05-youtube-minimaliste",
+  "title": "YouTube · Format 05 — YouTube minimaliste",
+  "family": "youtube",
+  "type": "format-scaffold",
+  "format": "05-youtube-minimaliste",
+  "style": "charte-v2-violet",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "spec": "formats/05-youtube-minimaliste.md",
+  "notes": "Squelette de la vidéo longue YouTube minimaliste : ciel de nuit violet (THEME violet, ou noir-et-blanc), fenêtre Mac centrée qui contient la vidéo en 16:9 et s'ouvre comme sur macOS, notifications macOS en haut à droite pour les chapitres et les éléments clés, logo GIF animé en icône. Assets de démo : 20 s d'un rush du présentateur."
+}

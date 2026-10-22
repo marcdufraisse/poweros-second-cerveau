@@ -1,0 +1,100 @@
+<!doctype html>
+<!--
+  HOUSE · social 9:16 · TITLE BUILD
+  The cumulative serif title (deconstructed from nick_saraev): a cream chapter
+  card where the headline builds word by word in Outfit, the
+  <em> word landing in violet de marque (charte la marque — house
+  rule). Mono eyebrow on top. Opaque takeover, 9:16.
+  Charte la marque : une seule famille (Outfit). La voix secondaire passe
+  par la graisse et la casse, pas par un second caractere.
+  Slots: kicker (text), title (richtext, words revealed cumulatively, wrap
+  the emphasis word in <em>).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+
+      html, body { margin: 0; background: transparent; }
+
+      #soc-title-build {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden; font-family: var(--font-display);
+        background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream) 70%);
+        color: var(--charcoal);
+      }
+      #soc-title-build .wrap {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 34px;
+        padding: 0 90px; box-sizing: border-box; text-align: center;
+      }
+      #soc-title-build .kicker {
+        font-family: var(--font-mono); font-weight: var(--wt-med);
+        font-size: 26px; letter-spacing: var(--track-eyebrow);
+        text-transform: uppercase; color: rgba(23, 11, 48, 0.55);
+      }
+      #soc-title-build .title {
+        font-family: var(--font-serif); font-weight: var(--wt-med);
+        font-weight: 400; font-size: 120px; line-height: 1.08;
+        letter-spacing: 0.005em; color: var(--charcoal);
+      }
+      #soc-title-build .title .w { display: inline-block; white-space: pre; visibility: hidden; }
+      #soc-title-build .title .w.em { color: var(--jaune); }
+      #soc-title-build .rule {
+        width: 120px; height: 5px; border-radius: 3px; background: #8B5CF6;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="soc-title-build" data-composition-id="soc-title-build" data-start="0" data-width="1080" data-height="1920">
+      <div class="wrap">
+        <div class="kicker" data-slot="kicker">PARTIE 2 · 60 SECONDES</div>
+        <div class="title" data-slot="title">CES <em>5</em> TEMPLATES</div>
+        <div class="rule"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-title-build";
+
+      /* split the title into word spans, keeping <em> markers */
+      const titleEl = document.querySelector(root + " .title");
+      (function () {
+        const parts = [];
+        titleEl.childNodes.forEach((n) => {
+          const em = n.nodeType === 1;
+          (n.textContent || "").split(/\s+/).filter(Boolean).forEach((w) => parts.push({ w, em }));
+        });
+        titleEl.textContent = "";
+        parts.forEach(({ w, em }, i) => {
+          const s = document.createElement("span");
+          s.className = "w" + (em ? " em" : "");
+          s.textContent = w + (i < parts.length - 1 ? " " : "");
+          titleEl.appendChild(s);
+        });
+      })();
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .kicker", { autoAlpha: 0, y: -20, duration: 0.4, ease: "expo.out" }, 0.15)
+
+        /* cumulative build — each word lands and STAYS, next word joins it */
+        .fromTo(root + " .title .w",
+          { autoAlpha: 0, y: 30, scale: 0.92, visibility: "visible" },
+          { autoAlpha: 1, y: 0, scale: 1, visibility: "visible",
+            duration: 0.32, ease: "back.out(1.5)", stagger: 0.5 }, 0.5)
+
+        .from(root + " .rule", { scaleX: 0, duration: 0.4, ease: "power3.out", transformOrigin: "50% 50%" }, 2.2)
+
+        /* gentle breath while the card holds */
+        .to(root + " .title", { scale: 1.015, duration: 2.2, ease: "sine.inOut", yoyo: true, repeat: 1 }, 2.6)
+
+        .set({}, {}, 7);
+
+      window.__timelines["soc-title-build"] = tl;
+    </script>
+  </body>
+</html>

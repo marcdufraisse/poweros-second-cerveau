@@ -1,0 +1,98 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · tier1 · stat · NAVY COUNTUP
+  Navy canvas, huge lime number counting up with a label flipping in below.
+  The number gets the kinetic dark rim so it punches. Streaks + warm creep.
+  Slots: kicker, stat (final value, digits + optional prefix/suffix), label.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t1-stat-countup {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 46%);
+        overflow: hidden; font-family: var(--font-display);
+      }
+      #t1-stat-countup .streaks { position: absolute; inset: 0; background: var(--streaks); }
+      #t1-stat-countup .warm    { position: absolute; inset: 0; background: var(--warm-creep); opacity: 0; }
+      #t1-stat-countup .vig     { position: absolute; inset: 0; background: var(--vignette); }
+
+      #t1-stat-countup .wrap {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 30px; z-index: 2;
+      }
+      #t1-stat-countup .kicker {
+        font-weight: var(--wt-semi); font-size: var(--size-label);
+        letter-spacing: var(--track-eyebrow); text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.85);
+      }
+      #t1-stat-countup .stat {
+        font-weight: var(--wt-black); font-size: var(--size-mega); line-height: 1;
+        letter-spacing: -0.01em; color: var(--lime);
+        text-shadow: var(--kinetic-shadow);
+        font-variant-numeric: tabular-nums;
+      }
+      #t1-stat-countup .label {
+        font-weight: var(--wt-bold); font-size: var(--size-headline);
+        letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey-pre);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-stat-countup" data-composition-id="t1-stat-countup" data-start="0" data-width="1920" data-height="1080">
+      <div class="streaks"></div>
+      <div class="warm"></div>
+      <div class="vig"></div>
+      <div class="wrap">
+        <div class="kicker" data-slot="kicker">THE RESULT</div>
+        <div class="stat" data-slot="stat">$39.5K</div>
+        <div class="label" data-slot="label">EVERY SINGLE MONTH</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-stat-countup";
+      const css = getComputedStyle(document.documentElement);
+      const WHITE = css.getPropertyValue("--white").trim();
+
+      /* countup: parse the slot text into prefix / number / suffix and bake the
+         tween on a proxy. Decimal places are preserved. */
+      const statEl = document.querySelector(root + " .stat");
+      const raw = statEl.textContent.trim();
+      const m = raw.match(/^([^0-9]*)([0-9][0-9.,]*)(.*)$/);
+      const prefix = m ? m[1] : ""; const numStr = m ? m[2] : "0"; const suffix = m ? m[3] : "";
+      const target = parseFloat(numStr.replace(/,/g, ""));
+      const decimals = (numStr.split(".")[1] || "").length;
+      const useCommas = numStr.includes(",");
+      function fmt(v) {
+        let s = v.toFixed(decimals);
+        if (useCommas) s = s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return prefix + s + suffix;
+      }
+      const proxy = { v: 0 };
+      statEl.textContent = fmt(0);
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .kicker", { autoAlpha: 0, y: 16, duration: 0.4, ease: "expo.out" }, 0.1)
+        .from(root + " .stat", { autoAlpha: 0, scale: 0.9, duration: 0.4, ease: "expo.out" }, 0.28)
+        .to(proxy, {
+          v: target, duration: 1.1, ease: "power2.out",
+          onUpdate: () => { statEl.textContent = fmt(proxy.v); }
+        }, 0.32)
+        /* label enters grey-pre and flips white as the number finishes */
+        .from(root + " .label", { autoAlpha: 0, y: 22, duration: 0.4, ease: "expo.out" }, 0.7)
+        .to(root + " .label", { color: WHITE, duration: 0.24, ease: "power2.inOut" }, 1.5)
+        .to(root + " .warm", { opacity: 1, duration: 1.6, ease: "sine.inOut" }, 1.2)
+        .set({}, {}, 5);
+
+      window.__timelines["t1-stat-countup"] = tl;
+    </script>
+  </body>
+</html>

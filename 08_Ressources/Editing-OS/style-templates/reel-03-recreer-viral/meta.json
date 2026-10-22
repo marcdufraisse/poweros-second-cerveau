@@ -1,0 +1,17 @@
+{
+  "slug": "reel-03-recreer-viral",
+  "title": "Reel · Format 03 — Recréer ce contenu viral",
+  "family": "reel",
+  "type": "format-scaffold",
+  "format": "03-recreer-viral",
+  "style": "10-marc",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "spec": "formats/03-recreer-viral.md",
+  "notes": "Trois actes : hook muet 6-10 s (contenu viral + détouré + étiquette manuscrite), recette annotée en rouge avec CTA à ~23 %, payoff muet 8-12 s. TAIL_SILENCE_OK : le hook et le payoff sont muets PAR DESIGN — autoverify doit les exclure de ses passes silence/queue morte.",
+  "autoverify": {
+    "TAIL_SILENCE_OK": true,
+    "muteZones": [[0, 9], [21, 33]]
+  }
+}

@@ -1,0 +1,95 @@
+<!doctype html>
+<!--
+  NATHAN HODGSON · social · screen · LA SÉLECTION DE TEXTE COMME SURLIGNEUR
+  Son geste d'annotation : un document zoomé à 200-300%, et la sélection
+  NATIVE du navigateur (bleu #2D5ECB, texte blanc) qui balaie la phrase de
+  gauche à droite pendant qu'il la dit. Pas de cadre, pas de flèche.
+  L'inverse exact du cadre néon de Nick Saraev — ne jamais mélanger.
+  Le "document" est recomposé en HTML : trois lignes de texte, la sélection
+  balaie de la ligne selectStart à la ligne selectEnd (1-indexé).
+  Slots: line1..line3, selectStart, selectEnd.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-doc-select {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden; background: #FFFFFF;
+        font-family: Georgia, "Times New Roman", serif; /* le doc filmé est un vrai doc */
+      }
+      #soc-doc-select .page {
+        position: absolute; left: 70px; right: 70px; top: 260px;
+        font-size: 46px; line-height: 1.75; color: #1B1B1B;
+      }
+      #soc-doc-select .line { position: relative; width: fit-content; max-width: 100%; }
+      /* la sélection : un bloc bleu derrière le texte, qui se révèle par clip */
+      #soc-doc-select .line .sel {
+        position: absolute; inset: -2px -6px;
+        background: var(--select);
+        clip-path: inset(0 100% 0 0);
+        border-radius: 3px;
+      }
+      #soc-doc-select .line .txt { position: relative; }
+      #soc-doc-select .line.selected .txt { color: #FFFFFF; }
+      /* le curseur I-beam qui suit le balayage */
+      #soc-doc-select .cursor {
+        position: absolute; width: 6px; height: 58px;
+        background: #1B1B1B; border-radius: 2px; opacity: 0;
+        box-shadow: 0 0 0 1.5px #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="soc-doc-select" data-composition-id="soc-doc-select" data-start="0" data-width="1080" data-height="1920">
+      <div class="page">
+        <div class="line" data-line="1"><span class="sel"></span><span class="txt" data-slot="line1">Most people waste time re-prompting</span></div>
+        <div class="line" data-line="2"><span class="sel"></span><span class="txt" data-slot="line2">AI from scratch every single session.</span></div>
+        <div class="line" data-line="3"><span class="sel"></span><span class="txt" data-slot="line3">This library fixes all of that.</span></div>
+      </div>
+      <div class="cursor"></div>
+      <div style="display:none" data-slot="selectStart">1</div>
+      <div style="display:none" data-slot="selectEnd">2</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-doc-select";
+      const $ = (s) => document.querySelector(root + " " + s);
+      const $$ = (s) => document.querySelectorAll(root + " " + s);
+
+      const s = parseInt($('[data-slot="selectStart"]').textContent, 10) || 1;
+      const e = parseInt($('[data-slot="selectEnd"]').textContent, 10) || s;
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* 1. le doc arrive déjà zoomé, avec une dérive lente (jamais immobile) */
+      tl.fromTo(root, { scale: 1.06 }, { scale: 1.0, duration: 0.6, ease: "power2.out" }, 0);
+      tl.to(root + " .page", { y: -18, duration: 6, ease: "none" }, 0.4);
+
+      /* 2. la sélection balaie ligne par ligne, ~0.55s par ligne */
+      let t = 0.8;
+      for (let i = s; i <= e; i++) {
+        const line = document.querySelector(root + ` .line[data-line="${i}"]`);
+        if (!line) continue;
+        const sel = line.querySelector(".sel");
+        tl.to(sel, { clipPath: "inset(0 0% 0 0)", duration: 0.55, ease: "power1.inOut" }, t);
+        tl.set(line, { className: "line selected" }, t + 0.08);
+        /* le curseur suit le bord droit de la sélection */
+        const r = line.getBoundingClientRect;
+        tl.fromTo(root + " .cursor",
+          { opacity: 1, left: line.offsetLeft + 70, top: 260 + line.offsetTop + 6 },
+          { left: line.offsetLeft + 70 + line.offsetWidth, duration: 0.55, ease: "power1.inOut" }, t);
+        t += 0.55;
+      }
+      tl.to(root + " .cursor", { opacity: 0, duration: 0.2 }, t + 0.2);
+
+      tl.set({}, {}, t + 2.2);
+      window.__timelines["soc-doc-select"] = tl;
+    </script>
+  </body>
+</html>

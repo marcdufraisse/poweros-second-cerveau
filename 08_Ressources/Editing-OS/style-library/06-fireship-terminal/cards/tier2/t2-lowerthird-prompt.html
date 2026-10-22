@@ -1,0 +1,101 @@
+<!doctype html>
+<!--
+  FIRESHIP TERMINAL · tier2 · lowerthird · PROMPT
+  Bottom-left terminal-strip panel (~640px). "$ whoami" types out character
+  by character, a finite cursor blinks, then the name stamps in bold cream
+  mono and the role snaps in dim beneath it on the next line.
+  Slots: name, role.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-lowerthird-prompt {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; overflow: hidden; font-family: var(--font-mono);
+      }
+
+      #t2-lowerthird-prompt .panel {
+        position: absolute; left: 80px; bottom: 84px; z-index: 3;
+        width: 640px;
+        background: var(--panel); border: 1px solid var(--panel-edge);
+        border-radius: var(--radius);
+        padding: 26px 32px 30px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+      }
+
+      #t2-lowerthird-prompt .line1 {
+        font-size: var(--size-code); color: var(--text-dim);
+        letter-spacing: var(--track-mono); white-space: pre;
+      }
+      #t2-lowerthird-prompt .line1 .prompt { color: var(--syn-green); }
+      #t2-lowerthird-prompt .line1 .typed { color: var(--text); }
+      #t2-lowerthird-prompt .line1 .cursor {
+        display: inline-block; color: var(--accent); margin-left: 2px;
+      }
+
+      #t2-lowerthird-prompt .name {
+        margin-top: 14px;
+        font-size: 42px; font-weight: var(--wt-bold); color: var(--cream);
+        letter-spacing: 0.01em; text-transform: uppercase;
+      }
+      #t2-lowerthird-prompt .role {
+        margin-top: 6px;
+        font-size: var(--size-label); color: var(--text-dim);
+        letter-spacing: 0.02em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-lowerthird-prompt" data-composition-id="t2-lowerthird-prompt" data-start="0" data-width="1920" data-height="1080">
+      <div class="panel">
+        <div class="line1"><span class="prompt">$</span> <span class="typed"></span><span class="cursor">&#9615;</span></div>
+        <div class="name" data-slot="name">ADA STERLING</div>
+        <div class="role" data-slot="role">Staff Engineer, Platform</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t2-lowerthird-prompt";
+
+      /* pre-split the typed command into char spans for the typewriter */
+      const typed = document.querySelector(root + " .typed");
+      const command = "whoami";
+      command.split("").forEach((ch) => {
+        const s = document.createElement("span");
+        s.className = "ch"; s.textContent = ch;
+        typed.appendChild(s);
+      });
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* panel snaps in */
+      tl.from(root + " .panel", { autoAlpha: 0, y: 24, duration: 0.3, ease: "expo.out" }, 0.1)
+
+        /* typewriter — linear, character by character */
+        .from(root + " .typed .ch", { autoAlpha: 0, duration: 0.01, stagger: 0.02, ease: "none" }, 0.45)
+
+        /* finite cursor blink while resolving */
+        .to(root + " .cursor", { opacity: 0, duration: 0.22, repeat: 5, yoyo: true, ease: "none" }, ">0.05")
+
+        /* name STAMPS in, bold and hard */
+        .from(root + " .name", {
+          autoAlpha: 0, scale: 1.6, transformOrigin: "0% 50%",
+          duration: 0.28, ease: "back.out(2.2)"
+        }, ">-0.3")
+
+        /* role snaps in beneath */
+        .from(root + " .role", { autoAlpha: 0, y: 10, duration: 0.24, ease: "expo.out" }, ">0.05")
+
+        /* dead stillness — the hold is the timing */
+        .set({}, {}, 6);
+
+      window.__timelines["t2-lowerthird-prompt"] = tl;
+    </script>
+  </body>
+</html>

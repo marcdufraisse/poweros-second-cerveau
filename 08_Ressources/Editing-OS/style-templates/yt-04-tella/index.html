@@ -1,0 +1,323 @@
+<!doctype html>
+<!--
+  SCAFFOLD · FORMAT 04 — TELLA (vidéo longue YouTube, 1920×1080, 30 fps)
+  Spec : ../../formats/04-tella.md   ·   Géométrie : tokens.css (section FORMAT 04)
+
+  Le cadre :
+    - à gauche, le partage d'écran dans une fenêtre arrondie (barre à 3 pastilles)
+    - à droite, en haut, le panneau chapitres : la section en cours est surlignée
+    - à droite, en bas, la cam verticale du présentateur
+    - fond charte de marque (noir violet, grille, aurores), panneaux en verre (liquid glass)
+
+  Ce qu'il faut remplacer :
+    - assets/ecran.mp4 (l'enregistrement d'écran, 16:10 idéalement)
+    - assets/cam.mp4 (la cam, déjà recadrée en vertical ou non : object-fit cover)
+    - assets/voix.m4a (le son de la cam)
+    - SUJET, TITRE, CHAPITRES (timecodes SOURCE)
+    - SEG / CUTS (l'EDL du montage parole), DUR suit tout seul
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="tokens.css" />
+    <style>
+      @font-face { font-family: "Outfit"; font-weight: 500; src: url("assets/fonts/Outfit-500.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 600; src: url("assets/fonts/Outfit-600.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 700; src: url("assets/fonts/Outfit-700.woff2") format("woff2"); }
+      @font-face { font-family: "Outfit"; font-weight: 800; src: url("assets/fonts/Outfit-800.woff2") format("woff2"); }
+      @font-face { font-family: "JetBrains Mono"; font-weight: 400; src: url("assets/fonts/JetBrainsMono-Regular.woff2") format("woff2"); }
+      @font-face { font-family: "JetBrains Mono"; font-weight: 700; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+      html, body { margin: 0; background: #000; }
+
+      #yt {
+        position: absolute; inset: 0;
+        width: var(--yt-w); height: var(--yt-h);
+        overflow: hidden; background: var(--bg);
+        font-family: "Outfit", system-ui, sans-serif;
+        letter-spacing: -0.02em; color: #fff;
+      }
+
+      /* ---------- fond charte de marque : grille + aurores violettes ---------- */
+      #yt .grid {
+        position: absolute; inset: 0;
+        background:
+          linear-gradient(var(--grid-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 60px 60px;
+        -webkit-mask-image: radial-gradient(120% 90% at 50% 50%, #000 40%, transparent 100%);
+                mask-image: radial-gradient(120% 90% at 50% 50%, #000 40%, transparent 100%);
+      }
+      #yt .aurora {
+        position: absolute; border-radius: 50%;
+        filter: blur(90px); will-change: transform;
+      }
+      #yt .aurora.a1 { width: 900px; height: 700px; left: -200px; top: -260px;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.42) 0%, transparent 70%); }
+      #yt .aurora.a2 { width: 800px; height: 800px; right: -260px; bottom: -320px;
+        background: radial-gradient(circle, rgba(167, 139, 250, 0.32) 0%, transparent 70%); }
+      #yt .aurora.a3 { width: 600px; height: 500px; left: 46%; top: 55%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, transparent 70%); }
+
+      /* ---------- le verre (liquid glass) ---------- */
+      .glass {
+        position: absolute;
+        border-radius: var(--yt-radius);
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.04) 45%, rgba(167, 139, 250, 0.07) 100%);
+        -webkit-backdrop-filter: blur(26px) saturate(180%);
+                backdrop-filter: blur(26px) saturate(180%);
+        border: 1px solid rgba(196, 181, 253, 0.26);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.35),
+          inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+          inset 0 0 40px rgba(167, 139, 250, 0.08),
+          0 30px 80px rgba(0, 0, 0, 0.6),
+          0 0 60px rgba(139, 92, 246, 0.10);
+        overflow: hidden;
+      }
+      /* reflet spéculaire en haut à gauche, comme une plaque de verre */
+      .glass::before {
+        content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+        background: radial-gradient(70% 45% at 18% 0%, rgba(255, 255, 255, 0.22) 0%, transparent 60%);
+        z-index: 5;
+      }
+      /* balayage de lumière, rejoué à chaque chapitre */
+      .glass .sheen {
+        position: absolute; top: -20%; bottom: -20%; width: 38%; left: -60%;
+        background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.16) 50%, transparent 100%);
+        transform: skewX(-14deg); pointer-events: none; z-index: 6;
+      }
+
+      /* ---------- fenêtre écran (gauche) ---------- */
+      #screen {
+        left: var(--yt-margin); top: var(--yt-top);
+        width: var(--yt-screen-w); height: var(--yt-screen-h);
+      }
+      #screen .bar {
+        position: absolute; left: 0; right: 0; top: 0; height: var(--yt-screen-bar);
+        display: flex; align-items: center; gap: 10px; padding-left: 20px; z-index: 4;
+      }
+      #screen .bar i { width: 13px; height: 13px; border-radius: 50%; display: block; }
+      #screen .bar i:nth-child(1) { background: #FF5F57; }
+      #screen .bar i:nth-child(2) { background: #FEBC2E; }
+      #screen .bar i:nth-child(3) { background: #28C840; }
+      #screen .bar span {
+        position: absolute; left: 50%; transform: translateX(-50%);
+        font-family: "JetBrains Mono", monospace; font-size: 14px; letter-spacing: 0.06em;
+        color: rgba(255, 255, 255, 0.55);
+      }
+      #screen .view {
+        position: absolute; left: var(--yt-bezel); right: var(--yt-bezel);
+        top: var(--yt-screen-bar); bottom: var(--yt-bezel);
+        border-radius: 0 0 calc(var(--yt-radius) - 8px) calc(var(--yt-radius) - 8px);
+        overflow: hidden; background: #0b0b14; z-index: 3;
+      }
+      #screen .view video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; }
+
+      /* ---------- colonne de droite ---------- */
+      #chap {
+        left: calc(var(--yt-margin) + var(--yt-screen-w) + var(--yt-gap)); top: var(--yt-top);
+        width: var(--yt-side-w); height: var(--yt-chap-h);
+        box-sizing: border-box; padding: 22px 22px 18px;
+      }
+      #chap .label {
+        position: relative; z-index: 7;
+        font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 13px;
+        letter-spacing: 0.22em; text-transform: uppercase; color: var(--jaune);
+      }
+      #chap .title {
+        position: relative; z-index: 7; margin-top: 6px;
+        font-weight: 800; font-size: 25px; line-height: 1.12; letter-spacing: -0.03em;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      #chap .list {
+        position: absolute; left: 14px; right: 14px; top: 104px; height: 172px;
+        overflow: hidden; z-index: 7;
+        -webkit-mask-image: linear-gradient(#000 85%, transparent);
+                mask-image: linear-gradient(#000 85%, transparent);
+      }
+      #chap .inner { position: absolute; left: 0; right: 0; top: 0; }
+      #chap .pill {
+        position: absolute; left: 0; right: 0; top: 0; height: 38px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--or) 0%, var(--jaune) 100%);
+        box-shadow: 0 8px 24px rgba(139, 92, 246, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        overflow: hidden;
+      }
+      #chap .pill .prog {
+        position: absolute; left: 0; bottom: 0; height: 3px; width: 100%;
+        background: rgba(255, 255, 255, 0.85); transform-origin: 0 50%; transform: scaleX(0);
+      }
+      #chap .row {
+        position: absolute; left: 0; right: 0; height: 38px;
+        display: flex; align-items: center; gap: 12px; padding: 0 12px;
+        font-weight: 700; font-size: 19px; color: rgba(255, 255, 255, 0.5);
+        white-space: nowrap; overflow: hidden;
+      }
+      #chap .row b {
+        font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 15px;
+        color: rgba(196, 181, 253, 0.6); width: 16px; flex: none;
+      }
+      #chap .row span { overflow: hidden; text-overflow: ellipsis; }
+
+      #cam {
+        left: calc(var(--yt-margin) + var(--yt-screen-w) + var(--yt-gap));
+        top: calc(var(--yt-top) + var(--yt-chap-h) + var(--yt-side-gap));
+        width: var(--yt-side-w); height: var(--yt-cam-h);
+      }
+      #cam .view {
+        position: absolute; inset: var(--yt-bezel);
+        border-radius: calc(var(--yt-radius) - 8px); overflow: hidden; background: #0b0b14; z-index: 3;
+      }
+      #cam .view video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+    </style>
+  </head>
+
+  <body>
+    <div id="yt" data-composition-id="yt" data-start="0" data-width="1920" data-height="1080" data-fps="30">
+      <div class="aurora a1" id="a1"></div>
+      <div class="aurora a2" id="a2"></div>
+      <div class="aurora a3" id="a3"></div>
+      <div class="grid"></div>
+
+      <!-- ============ écran ============ -->
+      <div class="glass" id="screen">
+        <div class="sheen"></div>
+        <div class="bar"><i></i><i></i><i></i><span id="screen-title"></span></div>
+        <div class="view">
+          <video id="vscreen" src="assets/ecran.mp4"
+                 data-start="0" data-duration="20" data-media-start="0"
+                 data-track-index="0" muted playsinline></video>
+        </div>
+      </div>
+
+      <!-- ============ chapitres ============ -->
+      <div class="glass" id="chap">
+        <div class="sheen"></div>
+        <div class="label" id="chap-label"></div>
+        <div class="title" id="chap-title"></div>
+        <div class="list"><div class="inner" id="chap-inner">
+          <div class="pill" id="pill"><div class="prog" id="prog"></div></div>
+        </div></div>
+      </div>
+
+      <!-- ============ cam ============ -->
+      <div class="glass" id="cam">
+        <div class="sheen"></div>
+        <div class="view">
+          <video id="vcam" src="assets/cam.mp4"
+                 data-start="0" data-duration="20" data-media-start="0"
+                 data-track-index="1" muted playsinline></video>
+        </div>
+      </div>
+
+      <audio id="voix" src="assets/voix.m4a" data-start="0" data-duration="20" data-track-index="2"></audio>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      /* ==========================================================
+         1. LE CONTENU — à remplacer pour chaque vidéo.
+            CHAPITRES : [temps SOURCE de début, intitulé court].
+            C'est Claude qui les construit depuis le transcript monté
+            (règles dans formats/04-tella.md), l'utilisateur ne les fournit pas.
+            Un intitulé tient sur une ligne : 22 caractères maximum.
+         ========================================================== */
+      const SUJET = "Le sujet";
+      const TITRE = "Titre de la vidéo";
+      const BARRE = "formation-en-intelligence-artificielle.fr/liens";           // texte au centre de la barre de la fenêtre écran
+      const CHAPITRES = [
+        [0,  "Le problème"],
+        [5,  "La méthode"],
+        [10, "La démo"],
+        [15, "À toi de jouer"],
+      ];
+
+      /* ==========================================================
+         2. L'EDL — remplacer par le montage parole réel (même
+            convention que les reels) : SEG en temps SOURCE, CUTS en
+            temps BAKÉ, ed(t) convertit. TOUT passe par ed().
+         ========================================================== */
+      const SEG = [[0, 20]];
+      const CUTS = [];
+
+      const STARTS = []; let acc = 0;
+      SEG.forEach(([a, b]) => { STARTS.push(acc); acc += b - a; });
+      const DUR = acc - CUTS.reduce((s, [a, b]) => s + (b - a), 0);
+      function shiftCut(t) {
+        let d = 0;
+        for (const [a, b] of CUTS) { if (t >= b) d += b - a; else if (t > a) d += t - a; }
+        return t - d;
+      }
+      function ed(src) {
+        for (let i = 0; i < SEG.length; i++)
+          if (src >= SEG[i][0] - 0.01 && src <= SEG[i][1] + 0.01)
+            return shiftCut(STARTS[i] + (src - SEG[i][0]));
+        return null;
+      }
+
+      /* ==========================================================
+         3. CONSTRUCTION DU PANNEAU (statique, avant la timeline)
+         ========================================================== */
+      const ROW = 42, VISIBLE = 4;
+      document.getElementById("chap-label").textContent = SUJET;
+      document.getElementById("chap-title").textContent = TITRE;
+      document.getElementById("screen-title").textContent = BARRE;
+      const inner = document.getElementById("chap-inner");
+      const rows = CHAPITRES.map(([, nom], i) => {
+        const r = document.createElement("div");
+        r.className = "row";
+        r.style.top = (i * ROW) + "px";
+        r.innerHTML = "<b>" + (i + 1) + "</b><span></span>";
+        r.querySelector("span").textContent = nom;
+        inner.appendChild(r);
+        return r;
+      });
+
+      const tl = gsap.timeline({ paused: true });
+      const pts = CHAPITRES.map(([src]) => ed(src));
+      const end = (i) => (i + 1 < pts.length ? pts[i + 1] : DUR);
+
+      /* ==========================================================
+         4. LES CHAPITRES — la pastille glisse sur la ligne en cours,
+            la ligne s'allume, la barre de progression avance pendant
+            tout le chapitre (entretien : rien n'est figé).
+         ========================================================== */
+      tl.set("#pill", { y: 2 }, 0);
+      pts.forEach((t, i) => {
+        if (t === null) return;
+        const y = i * ROW + 2;
+        const scroll = Math.min(0, -(i - (VISIBLE - 1)) * ROW);
+        const mv = i === 0 ? 0 : 0.5;
+        tl.to("#pill", { y: y, duration: mv, ease: "expo.inOut" }, t);
+        tl.to("#chap-inner", { y: scroll, duration: mv, ease: "expo.inOut" }, t);
+        rows.forEach((r, j) => {
+          tl.to(r, { color: j === i ? "#ffffff" : "rgba(255,255,255,0.5)", duration: 0.3 }, t + mv * 0.4);
+          tl.to(r.querySelector("b"), { color: j === i ? "#ffffff" : "rgba(196,181,253,0.6)", duration: 0.3 }, t + mv * 0.4);
+        });
+        tl.set("#prog", { scaleX: 0 }, t);
+        tl.to("#prog", { scaleX: 1, duration: Math.max(0.1, end(i) - t), ease: "none" }, t);
+        /* reflet qui traverse le panneau à chaque nouveau chapitre */
+        tl.fromTo("#chap .sheen", { x: 0 }, { x: 900, duration: 1.1, ease: "power2.inOut" }, t + 0.1);
+      });
+
+      /* ==========================================================
+         5. ENTRÉE ET ENTRETIEN
+         ========================================================== */
+      tl.from("#screen", { autoAlpha: 0, y: 30, scale: 0.985, duration: 0.6, ease: "expo.out" }, 0);
+      tl.from("#chap",   { autoAlpha: 0, x: 40, duration: 0.6, ease: "expo.out" }, 0.1);
+      tl.from("#cam",    { autoAlpha: 0, x: 40, duration: 0.6, ease: "expo.out" }, 0.2);
+      tl.fromTo("#screen .sheen", { x: 0 }, { x: 3200, duration: 1.6, ease: "power2.inOut" }, 0.3);
+      tl.fromTo("#cam .sheen", { x: 0 }, { x: 900, duration: 1.2, ease: "power2.inOut" }, 0.5);
+      /* les aurores dérivent lentement pendant toute la vidéo */
+      tl.to("#a1", { x: 220, y: 120, duration: DUR, ease: "sine.inOut" }, 0);
+      tl.to("#a2", { x: -180, y: -140, duration: DUR, ease: "sine.inOut" }, 0);
+      tl.to("#a3", { x: -260, y: -90, duration: DUR, ease: "sine.inOut" }, 0);
+
+      tl.set({}, {}, DUR);
+      window.__timelines["yt"] = tl;
+    </script>
+  </body>
+</html>

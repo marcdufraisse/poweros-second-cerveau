@@ -1,0 +1,145 @@
+<!doctype html>
+<!--
+  DAN KIEFT · custom · screen · ÉCRAN AUX COULEURS DU PRODUIT
+  Relevé sur RlKg6oXLf7Y (1:19 → 1:21).
+
+  Quand il montre un outil, la scène ABANDONNE le bleu maison et prend la
+  couleur de marque de l'outil : brume teintée en fond, liseré de la même
+  teinte sur les bords de l'écran. Puis une ligne se tape lettre par lettre,
+  dans cette couleur, à côté de l'écran. Au plan suivant, le bleu revient.
+
+  C'est ce qui fait que la démo d'un produit ne ressemble pas au reste de la
+  vidéo : le fond appartient au produit le temps du plan.
+
+  Agent 3 remplace --brand-tint par la couleur de marque de l'app montrée.
+  Tout suit : brume, liseré, halo, texte.
+
+  L'écran garde son attitude 3D et sa dérive — mêmes règles que partout.
+
+  Slots: screen (la capture), line (le texte qui se tape).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #screen-brand-glow {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        overflow: hidden; background: #0B0410;
+        font-family: var(--font-display);
+        /* Agent 3 n'a QUE cette ligne à changer par plan. */
+        --tint: var(--brand-tint);
+      }
+
+      /* la brume du produit : trois nappes de la teinte, très diffuses */
+      #screen-brand-glow .haze {
+        position: absolute; inset: -12%;
+        background:
+          radial-gradient(34% 40% at 24% 32%, var(--tint), transparent 68%),
+          radial-gradient(30% 36% at 78% 70%, var(--tint), transparent 70%),
+          radial-gradient(40% 30% at 56% 18%, var(--tint), transparent 72%);
+        opacity: 0.28; filter: blur(28px);
+      }
+      /* un grain fin, sinon la brume fait dégradé de bannière */
+      #screen-brand-glow .grain {
+        position: absolute; inset: 0;
+        background-image: var(--stage-grid);
+        background-size: var(--stage-grid-size) var(--stage-grid-size);
+        opacity: 0.5;
+      }
+
+      #screen-brand-glow .stage {
+        position: absolute; inset: 0;
+        perspective: var(--perspective);
+        perspective-origin: 50% 50%;
+        transform-style: preserve-3d;
+      }
+      /* décalé à gauche : la ligne se pose À CÔTÉ de l'écran, jamais dessus */
+      #screen-brand-glow .panel {
+        position: absolute; left: 38%; top: 50%;
+        width: 1180px; height: 664px; margin: -332px 0 0 -590px;
+        transform-style: preserve-3d; will-change: transform;
+      }
+      #screen-brand-glow .screen {
+        position: absolute; inset: 0;
+        border-radius: var(--thumb-radius); overflow: hidden;
+        background: var(--ink-soft);
+        /* le liseré de la teinte : c'est lui qui marque l'appartenance */
+        box-shadow:
+          0 0 0 2px var(--tint),
+          0 0 46px var(--brand-haze),
+          var(--screen-shadow);
+      }
+      #screen-brand-glow .screen img,
+      #screen-brand-glow .screen video {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+
+      /* la ligne qui se tape, calée à droite de l'écran */
+      #screen-brand-glow .line {
+        position: absolute; right: 80px; top: 50%; margin-top: -22px;
+        max-width: 420px;
+        font-weight: var(--wt-bold); font-size: 34px; line-height: 1.25;
+        letter-spacing: 0.05em; text-transform: uppercase;
+        color: var(--tint);
+        text-shadow: 0 0 22px var(--brand-haze);
+        white-space: nowrap;
+        /* La frappe est un clip-path révélé par paliers, PAS un textContent
+           changé dans un onUpdate : GSAP supprime ses callbacks quand on seek,
+           et le moteur rend image par image en seekant — le texte ne
+           s'écrirait jamais au rendu. Une tween, elle, s'interpole partout. */
+        clip-path: inset(0 100% 0 0);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="screen-brand-glow" data-composition-id="screen-brand-glow" data-start="0" data-width="1920" data-height="1080">
+      <div class="haze"></div>
+      <div class="grain"></div>
+
+      <div class="stage">
+        <div class="panel">
+          <div class="screen">
+            <img data-slot="screen" src="../../references/screencast-pip.png" alt="" />
+          </div>
+        </div>
+      </div>
+
+      <div class="line" data-slot="line">Lien dans la description</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#screen-brand-glow";
+      const lineEl = document.querySelector(root + " .line");
+      const LETTERS = lineEl.textContent.trim().length || 1;
+
+      const tl = gsap.timeline({ paused: true });
+
+      // l'écran arrive et dérive, comme partout dans ce style
+      tl.fromTo(root + " .panel",
+        { transform: "translateZ(-420px) rotateY(-9deg) rotateX(3deg)", opacity: 0 },
+        { transform: "translateZ(40px) rotateY(-3deg) rotateX(1deg)", opacity: 1,
+          duration: 5.4, ease: "power2.out" }, 0);
+
+      // la brume respire : elle ne doit jamais paraître peinte
+      tl.fromTo(root + " .haze", { opacity: 0 }, { opacity: 0.28, duration: 0.9, ease: "power2.out" }, 0);
+      tl.fromTo(root + " .haze",
+        { xPercent: -2, yPercent: 1 },
+        { xPercent: 2, yPercent: -1, duration: 9, ease: "none" }, 0);
+
+      // la frappe : un palier par lettre, donc l'oeil lit bien des caractères
+      // qui s'ajoutent, et non un rideau qui glisse
+      tl.to(lineEl, {
+        clipPath: "inset(0 0% 0 0)",
+        duration: Math.min(2.2, 0.055 * LETTERS),
+        ease: "steps(" + LETTERS + ")"
+      }, 1.5);
+
+      window.__timelines["screen-brand-glow"] = tl;
+    </script>
+  </body>
+</html>

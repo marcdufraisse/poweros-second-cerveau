@@ -1,0 +1,93 @@
+<!doctype html>
+<!--
+  BLOOMBERG DATA · tier1 · section · RULED
+  Chapter divider. A rule draws in from the left above the eyebrow, a second
+  rule draws in from the right below the title — bracketing the block like a
+  broadsheet section break. A small amber mono index sits right-aligned,
+  floating on the top rule. Narrow-caps eyebrow, then a huge Archivo title
+  clip-reveals beneath it.
+  Slots: index, eyebrow, title.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-section-ruled {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-display); overflow: hidden;
+      }
+      #t1-section-ruled .scan { position: absolute; inset: 0; background: var(--tex-scan); z-index: 1; pointer-events: none; }
+
+      #t1-section-ruled .toprule {
+        position: absolute; top: 400px; left: 96px; right: 96px; height: 1px;
+        background: var(--rule); transform-origin: 0% 50%;
+      }
+      #t1-section-ruled .index {
+        position: absolute; top: 400px; right: 96px; transform: translateY(-50%);
+        background: var(--canvas); padding: 0 16px;
+        font-family: var(--font-mono); font-weight: var(--wt-semi);
+        font-size: 32px; letter-spacing: -0.01em; color: var(--amber);
+      }
+
+      #t1-section-ruled .eyebrowclip {
+        position: absolute; top: 452px; left: 96px; overflow: hidden;
+      }
+      #t1-section-ruled .eyebrow {
+        font-family: var(--font-label); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-caps);
+        text-transform: uppercase; color: var(--text-dim);
+      }
+
+      #t1-section-ruled .titleclip {
+        position: absolute; top: 500px; left: 96px; right: 96px; overflow: hidden;
+      }
+      #t1-section-ruled .title {
+        font-weight: var(--wt-black); font-size: var(--size-title);
+        letter-spacing: var(--track-tight); line-height: 1.05;
+        color: var(--white); text-transform: uppercase;
+      }
+
+      #t1-section-ruled .botrule {
+        position: absolute; top: 780px; left: 96px; right: 96px; height: 1px;
+        background: var(--rule); transform-origin: 100% 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-section-ruled" data-composition-id="t1-section-ruled" data-start="0" data-width="1920" data-height="1080">
+      <div class="scan"></div>
+
+      <div class="toprule"></div>
+      <div class="index" data-slot="index">03</div>
+
+      <div class="eyebrowclip"><div class="eyebrow" data-slot="eyebrow">MARKET STRUCTURE</div></div>
+      <div class="titleclip"><div class="title" data-slot="title">THE CERTIFICATION PIPELINE</div></div>
+
+      <div class="botrule"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t1-section-ruled";
+
+      tl.fromTo(root + " .toprule", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 0.05)
+        .fromTo(root + " .botrule", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 0.05)
+
+        .from(root + " .index", { autoAlpha: 0, duration: 0.35, ease: "expo.out" }, 0.55)
+
+        .from(root + " .eyebrow", { xPercent: -101, duration: 0.5, ease: "power3.inOut" }, 0.75)
+
+        .from(root + " .title", { yPercent: 105, duration: 0.7, ease: "power3.inOut" }, 1.0)
+
+        .set({}, {}, 7);
+
+      window.__timelines["t1-section-ruled"] = tl;
+    </script>
+  </body>
+</html>

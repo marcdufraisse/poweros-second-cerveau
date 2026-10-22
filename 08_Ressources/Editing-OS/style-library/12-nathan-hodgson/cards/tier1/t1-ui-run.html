@@ -1,0 +1,224 @@
+<!doctype html>
+<!--
+  NATHAN HODGSON · tier1 · overview · L'UI REJOUÉE QUI S'EXÉCUTE
+  LE geste signature. Une app sombre redessinée (pas une capture), posée en
+  carte sur la scène crème, qui joue sa séquence causale :
+    1. la bulle de prompt arrive          pop 0.32s
+    2. la requête SE TAPE                 45ms/caractère
+    3. la ligne de statut apparaît        « Opening browser ✓ »
+    4. les lignes de résultat tombent     stagger 0.18s
+    5. les badges basculent au vert       85% MATCH → ✓ APPLIED
+    6. le compteur + la jauge courent     linéaire, c'est une machine
+  La composer bar reste inerte en bas : preuve de contexte.
+  Slots: title, prompt, status, row1/row1badge, row2/row2badge,
+         counterLabel, counterEnd, counterTotal.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t1-ui-run {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden;
+        background: linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%);
+        font-family: var(--font-body);
+      }
+
+      /* le titre au filet, compact, au-dessus du panneau */
+      #t1-ui-run .head {
+        position: absolute; left: 0; right: 0; top: 96px;
+        display: flex; flex-direction: column; align-items: center; gap: 22px;
+      }
+      #t1-ui-run .spark { width: 44px; height: 44px; color: var(--orange); }
+      #t1-ui-run .spark svg { width: 100%; height: 100%; display: block; }
+      #t1-ui-run .title {
+        font-family: var(--font-display); font-size: 84px; font-weight: 900;
+        letter-spacing: var(--tracking-title); text-transform: uppercase;
+        color: var(--ink); line-height: 1;
+      }
+      #t1-ui-run .rule {
+        width: 380px; height: var(--rule-h); border-radius: 99px;
+        background: var(--orange-rule); transform-origin: 0% 50%;
+      }
+
+      /* le panneau : l'app redessinée */
+      #t1-ui-run .panel {
+        position: absolute; left: 64px; right: 64px; top: 400px;
+        background: var(--panel); border-radius: var(--r-panel);
+        box-shadow: var(--shadow-panel);
+        padding: 44px 40px 36px;
+        color: var(--panel-fg);
+      }
+      #t1-ui-run .prompt {
+        margin-left: auto; width: fit-content; max-width: 78%;
+        background: var(--panel-lit); border-radius: 22px;
+        padding: 24px 30px; font-size: 33px; font-weight: 500; line-height: 1.3;
+      }
+      #t1-ui-run .prompt .caret {
+        display: inline-block; width: 3px; height: 1em;
+        background: var(--panel-fg); vertical-align: -0.15em;
+        animation: uirun-blink 0.9s steps(1) infinite;
+      }
+      @keyframes uirun-blink { 50% { opacity: 0; } }
+
+      #t1-ui-run .status {
+        display: flex; align-items: center; gap: 14px;
+        margin-top: 34px; font-family: var(--font-mono);
+        font-size: 28px; color: var(--panel-mute);
+      }
+      #t1-ui-run .status .ok {
+        width: 34px; height: 34px; border-radius: 50%;
+        background: var(--orange); color: var(--panel);
+        display: grid; place-items: center; font-size: 20px; font-weight: 700;
+      }
+
+      #t1-ui-run .rows { margin-top: 26px; display: flex; flex-direction: column; gap: 16px; }
+      #t1-ui-run .row {
+        display: flex; align-items: center; justify-content: space-between;
+        background: var(--panel-lit); border: 1px solid var(--panel-line);
+        border-radius: var(--r-row); padding: 24px 26px;
+      }
+      #t1-ui-run .row .label { font-size: 32px; font-weight: 600; }
+      #t1-ui-run .badge {
+        font-family: var(--font-mono); font-size: 24px; font-weight: 700;
+        padding: 10px 18px; border-radius: 12px; white-space: nowrap;
+        color: var(--orange); background: var(--orange-dim);
+      }
+      #t1-ui-run .badge.done { color: #7BD59A; background: var(--green-bg); }
+      #t1-ui-run .badge .alt { display: none; }
+      #t1-ui-run .badge.done .alt { display: inline; }
+      #t1-ui-run .badge.done .base { display: none; }
+
+      #t1-ui-run .counter {
+        margin-top: 34px; display: flex; align-items: baseline; gap: 16px;
+        font-family: var(--font-mono);
+      }
+      #t1-ui-run .counter .clabel { font-size: 28px; letter-spacing: .12em; color: var(--panel-mute); }
+      #t1-ui-run .counter .val { font-size: 64px; font-weight: 700; color: var(--orange); font-variant-numeric: tabular-nums; }
+      #t1-ui-run .counter .total { font-size: 30px; color: var(--panel-mute); }
+      #t1-ui-run .bar {
+        margin-top: 16px; height: 10px; border-radius: 99px;
+        background: rgba(255,255,255,0.10); overflow: hidden;
+      }
+      #t1-ui-run .bar .fill {
+        height: 100%; border-radius: 99px; background: var(--orange-rule);
+        transform-origin: 0% 50%;
+      }
+
+      /* la composer bar, inerte : la preuve de contexte */
+      #t1-ui-run .composer {
+        margin-top: 36px; background: var(--panel-lit);
+        border-radius: 20px; padding: 22px 26px;
+        display: flex; align-items: center; justify-content: space-between;
+        font-size: 27px; color: var(--panel-mute);
+      }
+      #t1-ui-run .composer .mode { display: flex; gap: 10px; align-items: center; }
+      #t1-ui-run .composer .tag {
+        background: var(--panel); color: var(--panel-fg);
+        border-radius: 10px; padding: 6px 14px; font-weight: 600; font-size: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-ui-run" data-composition-id="t1-ui-run" data-start="0" data-width="1080" data-height="1920">
+      <div class="head">
+        <div class="spark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l1.7 7.2 6.5-3.6-4.8 5.6L23 12l-7.6 1.8 4.8 5.6-6.5-3.6L12 23l-1.7-7.2-6.5 3.6 4.8-5.6L1 12l7.6-1.8-4.8-5.6 6.5 3.6z"/></svg></div>
+        <div class="title" data-slot="title">HANDS OFF</div>
+        <div class="rule"></div>
+      </div>
+
+      <div class="panel">
+        <div class="prompt"><span class="ptext" data-slot="prompt">Apply to the top 100 jobs.</span><span class="caret"></span></div>
+
+        <div class="status"><span class="ok">✓</span><span data-slot="status">Opening browser</span></div>
+
+        <div class="rows">
+          <div class="row">
+            <span class="label" data-slot="row1">Interaction Designer</span>
+            <span class="badge" data-badge="1"><span class="base" data-slot="row1badge">92% MATCH</span><span class="alt">✓ APPLIED</span></span>
+          </div>
+          <div class="row">
+            <span class="label" data-slot="row2">Design Manager</span>
+            <span class="badge" data-badge="2"><span class="base" data-slot="row2badge">85% MATCH</span><span class="alt">✓ APPLIED</span></span>
+          </div>
+        </div>
+
+        <div class="counter">
+          <span class="clabel" data-slot="counterLabel">APPLIED</span>
+          <span class="val" id="uirun-val">0</span>
+          <span class="total">/ <span data-slot="counterTotal">100</span></span>
+        </div>
+        <div class="bar"><div class="fill"></div></div>
+
+        <div class="composer">
+          <span>How can I help you today?</span>
+          <span class="mode"><span class="tag">Chat</span><span>Opus 5</span></span>
+        </div>
+
+        <!-- slot counterEnd, invisible, lu par le script -->
+        <div style="display:none" data-slot="counterEnd">99</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-ui-run";
+      const $ = (s) => document.querySelector(root + " " + s);
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* 0. le titre, compact */
+      tl.fromTo(root + " .spark", { scale: 0 }, { scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 0.05);
+      tl.fromTo(root + " .title", { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.32, ease: "power3.out" }, 0.15);
+      tl.fromTo(root + " .rule", { scaleX: 0 }, { scaleX: 1, duration: 0.32, ease: "power3.out" }, 0.3);
+
+      /* 1. le panneau arrive */
+      tl.fromTo(root + " .panel", { y: 60, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.42, ease: "power3.out" }, 0.45);
+
+      /* 2. la requête se tape — 45ms/caractère, machine.
+         Des set() par caractère, pas d'onUpdate : le seek du moteur de rendu
+         supprime les callbacks, seuls les set() sont déterministes. */
+      const ptext = $(".ptext");
+      const full = ptext.textContent;
+      tl.set(ptext, { textContent: "" }, 0.85);
+      const chars = full.length;
+      const typeDur = chars * 0.045;
+      for (let i = 1; i <= chars; i++) {
+        tl.set(ptext, { textContent: full.slice(0, i) }, 0.9 + i * 0.045);
+      }
+      const t2 = 0.9 + typeDur;
+      tl.set($(".caret"), { display: "none" }, t2 + 0.3);
+
+      /* 3. le statut */
+      tl.fromTo(root + " .status", { y: 14, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.32, ease: "back.out(1.8)" }, t2 + 0.35);
+
+      /* 4. les lignes tombent, une par une */
+      tl.fromTo(root + " .row", { y: 26, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.34, ease: "power3.out", stagger: 0.18 }, t2 + 0.75);
+
+      /* 5. les badges basculent au vert — set(className), pas de callback */
+      tl.set($('[data-badge="1"]'), { className: "badge done" }, t2 + 1.7);
+      tl.fromTo('[data-badge="1"]', { scale: 0.9 }, { scale: 1, duration: 0.25, ease: "back.out(2)" }, t2 + 1.7);
+      tl.set($('[data-badge="2"]'), { className: "badge done" }, t2 + 2.1);
+      tl.fromTo('[data-badge="2"]', { scale: 0.9 }, { scale: 1, duration: 0.25, ease: "back.out(2)" }, t2 + 2.1);
+
+      /* 6. le compteur + la jauge courent — linéaire, en set() par pas */
+      const valEl = document.getElementById("uirun-val");
+      const end = parseInt($('[data-slot="counterEnd"]')?.textContent || "99", 10) || 99;
+      const steps = Math.min(end, 48);
+      for (let s = 1; s <= steps; s++) {
+        tl.set(valEl, { textContent: Math.round((end * s) / steps) }, t2 + 2.5 + (1.6 * s) / steps);
+      }
+      tl.fromTo(root + " .bar .fill", { scaleX: 0 }, { scaleX: end / 100, duration: 1.6, ease: "none" }, t2 + 2.5);
+
+      tl.set({}, {}, t2 + 5.0);
+      window.__timelines["t1-ui-run"] = tl;
+    </script>
+  </body>
+</html>

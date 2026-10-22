@@ -1,0 +1,66 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · tier2 · label · LOCATION TAGS
+  Three small lime mono tags spaced across the lower frame, appearing one at
+  a time; the "active" tag is full lime, previous ones dim to lime-dim. Stays
+  below y=930 so it never touches the face zone.
+  Slots: tag1, tag2, tag3 (leave tag3 empty for two tags).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-location-tags {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; overflow: hidden; font-family: var(--font-mono);
+      }
+      #t2-location-tags .row {
+        position: absolute; left: 0; right: 0; bottom: 64px; z-index: 3;
+        display: flex; justify-content: center; gap: 260px;
+      }
+      #t2-location-tags .tag {
+        font-weight: var(--wt-bold); font-size: var(--size-label);
+        letter-spacing: var(--track-pill); text-transform: uppercase;
+        color: var(--lime); text-shadow: var(--kinetic-shadow);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-location-tags" data-composition-id="t2-location-tags" data-start="0" data-width="1920" data-height="1080">
+      <div class="row">
+        <div class="tag t1" data-slot="tag1">STORM AT SEA</div>
+        <div class="tag t2" data-slot="tag2">DESERT</div>
+        <div class="tag t3" data-slot="tag3">JUNGLE</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t2-location-tags";
+
+      const tags = gsap.utils.toArray(root + " .tag").filter((el) => {
+        const has = el.textContent.trim().length > 0;
+        if (!has) el.style.display = "none";
+        return has;
+      });
+
+      const tl = gsap.timeline({ paused: true });
+      const beat = 1.1;
+
+      tags.forEach((tag, i) => {
+        const t = 0.15 + i * beat;
+        tl.from(tag, { autoAlpha: 0, y: 18, duration: 0.38, ease: "expo.out" }, t);
+        /* previous tag dims when this one lands */
+        if (i > 0) tl.to(tags[i - 1], { opacity: 0.35, duration: 0.3, ease: "power2.inOut" }, t);
+      });
+
+      tl.set({}, {}, Math.max(6, 0.15 + tags.length * beat + 2));
+
+      window.__timelines["t2-location-tags"] = tl;
+    </script>
+  </body>
+</html>

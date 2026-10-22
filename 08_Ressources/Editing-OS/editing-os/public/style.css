@@ -1,0 +1,1725 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Editing OS — système visuel
+   Charte la marque : violet de marque #8E16FA, navy #02060F, Garet, Instrument Serif italic.
+   Neutres teintés vers le navy (hue 265) — jamais de gris pur.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@font-face { font-family: "Garet"; font-weight: 400; font-display: swap; src: url("fonts/Garet-Regular.woff2") format("woff2"); }
+@font-face { font-family: "Garet"; font-weight: 500; font-display: swap; src: url("fonts/Garet-Medium.woff2") format("woff2"); }
+@font-face { font-family: "Garet"; font-weight: 700; font-display: swap; src: url("fonts/Garet-Bold.woff2") format("woff2"); }
+@font-face { font-family: "Garet"; font-weight: 800; font-display: swap; src: url("fonts/Garet-Heavy.woff2") format("woff2"); }
+@font-face { font-family: "Instrument Serif"; font-style: italic; font-display: swap; src: url("fonts/instrument-serif-italic.woff2") format("woff2"); }
+
+:root {
+  /* — surfaces ————————————————————————————————————————————————
+     Sombre parce que le contenu est du média : on regarde des rendus vidéo et
+     des cartes animées, et un fond clair autour d'un lecteur fausse la
+     perception des couleurs du montage. */
+  --bg:            oklch(0.145 0.012 265);
+  --bg-raise:      oklch(0.181 0.014 265);
+  --bg-card:       oklch(0.196 0.015 265);
+  --bg-card-hover: oklch(0.232 0.017 265);
+  --bg-inset:      oklch(0.128 0.011 265);
+
+  --line:      oklch(0.276 0.018 265);
+  --line-soft: oklch(0.228 0.015 265);
+
+  --text:       oklch(0.945 0.006 265);
+  --text-dim:   oklch(0.715 0.014 265);
+  --text-faint: oklch(0.545 0.016 265);
+
+  /* — accent ————————————————————————————————————————————————
+     Le violet de la marque, et lui seul. Actions primaires, sélection courante,
+     indicateurs d'état. Jamais en décoration : il reste sous 10% de la surface.
+     La teinte est celle du violet de marque #8E16FA (h 299). La clarté, elle,
+     reste haute : cet accent est à la fois fond de bouton (texte sombre par
+     dessus) et couleur de texte sur fond sombre, et seul un ton clair tient
+     les deux. Le violet de marque plein, plus sombre, porte --accent-dim. */
+  --accent:       oklch(0.72 0.19 299);    /* ≈ #B684FF */
+  --accent-hover: oklch(0.79 0.16 299);    /* ≈ #C9A1FF */
+  --accent-dim:   oklch(0.55 0.22 299);    /* ≈ #8744DD, le violet de marque */
+  --accent-weak:  oklch(0.72 0.19 299 / 0.13);
+  --accent-glow:  oklch(0.72 0.19 299 / 0.28);
+  --on-accent:    oklch(0.16 0.03 290);    /* nuit profond de la charte */
+
+  /* — états ———————————————————————————————————————————————— */
+  --ok:    oklch(0.78 0.14 155);
+  --warn:  oklch(0.82 0.14 75);
+  --err:   oklch(0.68 0.19 25);
+  --info:  oklch(0.75 0.11 235);
+  --ok-weak:   oklch(0.78 0.14 155 / 0.14);
+  --warn-weak: oklch(0.82 0.14 75 / 0.14);
+  --err-weak:  oklch(0.68 0.19 25 / 0.14);
+
+  /* alias hérités du thème précédent */
+  --amber: var(--warn);
+  --grey:  var(--text-faint);
+  --red:   var(--err);
+  --na:    oklch(0.24 0.013 265);
+
+  /* — forme ———————————————————————————————————————————————— */
+  --radius:    12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --shadow-card: 0 1px 0 oklch(1 0 0 / 0.03) inset, 0 10px 34px oklch(0.08 0.01 265 / 0.5);
+  --shadow-pop:  0 24px 60px oklch(0.06 0.01 265 / 0.66);
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+
+  /* — typo ————————————————————————————————————————————————
+     Garet porte l'interface : c'est sa police de marque, et c'est une
+     grotesque, donc lisible en labels et en données. Instrument Serif italique
+     est réservé aux titres de vue — le seul moment éditorial. */
+  --font:  "Garet", -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif;
+  --serif: "Instrument Serif", Georgia, serif;
+  --mono:  "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+
+  --step--1: 12px;
+  --step-0:  13.5px;
+  --step-1:  16px;
+  --step-2:  20px;
+  --step-3:  25px;
+  --step-4:  32px;
+  --track-tight: -0.02em;
+  --track-wide:   0.14em;
+
+  /* — mouvement ————————————————————————————————————————————
+     150–220 ms, ease-out exponentiel. Le mouvement dit un changement d'état,
+     rien d'autre. */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --fast: 150ms var(--ease);
+  --med:  220ms var(--ease);
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 600px at 78% -10%, oklch(0.72 0.19 299 / 0.07), transparent 60%),
+    radial-gradient(900px 500px at 10% 110%, oklch(0.72 0.19 299 / 0.04), transparent 55%),
+    linear-gradient(180deg, #0A0C10 0%, #090B0F 100%);
+  background-attachment: fixed;
+}
+
+/* subtle grid + grain overlays */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(circle at 50% 30%, #000 0%, transparent 85%);
+}
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.tnum { font-variant-numeric: tabular-nums; letter-spacing: 0.01em; }
+
+a { color: inherit; text-decoration: none; }
+
+button { font-family: inherit; }
+
+/* ---------- Top bar ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 14px 28px;
+  background: rgba(9,11,15,0.78);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: baseline; gap: 14px; min-width: 0; }
+.brand-mark { display: inline-flex; align-items: center; gap: 10px; }
+.brand-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-weak), 0 0 14px var(--accent-glow);
+}
+.brand-name {
+  font-size: 16px; font-weight: 700; letter-spacing: 0.2px;
+}
+.brand-accent { color: var(--accent); }
+.brand-sub {
+  font-size: 11.5px; color: var(--text-faint); letter-spacing: 0.02em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.nav { display: flex; gap: 4px; margin-left: auto; }
+.nav-link {
+  padding: 7px 14px;
+  border-radius: 999px;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color .15s ease, background .15s ease;
+}
+.nav-link:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-link.active {
+  color: var(--accent);
+  background: var(--accent-weak);
+  box-shadow: inset 0 0 0 1px var(--accent-glow);
+}
+.nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.nav-link { position: relative; }
+.nav-dot {
+  position: absolute; top: 3px; right: 4px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px rgba(9,11,15,0.9), 0 0 10px var(--accent-glow);
+  animation: navdot-pulse 1.6s ease-in-out infinite;
+}
+@keyframes navdot-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.35); opacity: 0.65; }
+}
+
+/* ---------- Studio (8-bit office) ---------- */
+.studio-wrap { display: flex; flex-direction: column; gap: 16px; }
+.studio-stage {
+  display: flex; justify-content: center;
+  padding: 20px;
+  background:
+    radial-gradient(700px 300px at 50% 0%, oklch(0.72 0.19 299 / 0.06), transparent 65%),
+    var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  overflow: auto;
+}
+.studio-canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 60px rgba(0,0,0,0.5);
+  background: #05070c;
+}
+.studio-caption { font-size: 12px; color: var(--text-faint); text-align: center; }
+
+.studio-status {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius);
+}
+.sd-summary { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.sd-light {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
+  padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line);
+  color: var(--text-dim); text-transform: uppercase;
+}
+.sd-light .sd-bulb { width: 8px; height: 8px; border-radius: 50%; background: var(--text-faint); }
+.sd-light.on { color: var(--amber); border-color: rgba(245,185,66,0.35); }
+.sd-light.on .sd-bulb { background: var(--amber); box-shadow: 0 0 10px rgba(245,185,66,0.6); }
+.sd-count { font-size: 12px; color: var(--text-faint); }
+.sd-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.sd-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 12px; color: var(--text-dim);
+  padding: 5px 11px; border-radius: 999px;
+  background: var(--bg); border: 1px solid var(--line-soft);
+}
+.sd-chip b { color: var(--text); font-weight: 650; }
+.sd-chip .sd-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.sd-chip.sd-working { border-color: rgba(55,189,248,0.28); }
+.sd-chip.sd-winding-down { border-color: rgba(245,185,66,0.22); }
+
+.topbar-actions { display: flex; align-items: center; gap: 12px; }
+.fixture-flag {
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--amber); border: 1px solid rgba(245,185,66,0.35);
+  padding: 4px 9px; border-radius: 999px; font-weight: 600;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 15px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--bg-raise);
+  color: var(--text);
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .05s;
+}
+.btn:hover { border-color: var(--accent-dim); background: var(--bg-card-hover); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn-refresh .btn-spin {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid var(--text-faint); border-top-color: var(--accent);
+  display: none;
+}
+.btn-refresh.loading .btn-spin { display: inline-block; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- Summary strip ---------- */
+.summary-strip {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin: 0;
+  background: var(--line-soft);
+  border-bottom: 1px solid var(--line);
+}
+.summary-cell {
+  background: linear-gradient(180deg, rgba(18,22,30,0.7), rgba(12,15,20,0.7));
+  padding: 16px 28px;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.summary-cell .val {
+  font-size: 26px; font-weight: 700; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.summary-cell .lbl {
+  font-size: 11px; color: var(--text-faint);
+  text-transform: uppercase; letter-spacing: 0.07em;
+}
+.summary-cell .sub { font-size: 11.5px; color: var(--text-dim); }
+/* Le geste vit dans la tuile qui annonce le volume, pas trois écrans plus loin. */
+.summary-cell .cell-act {
+  align-self: flex-start;
+  margin-top: 1px;
+  padding: 3px 9px;
+  font: inherit; font-size: 11.5px; line-height: 1.4;
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: color .12s, border-color .12s, background .12s;
+}
+.summary-cell .cell-act:hover:not(:disabled) {
+  color: var(--accent); border-color: var(--accent); background: rgba(255,255,255,0.07);
+}
+.summary-cell .cell-act:disabled { opacity: 0.5; cursor: default; }
+.summary-cell.warn .val { color: var(--red); }
+.summary-cell.accent .val { color: var(--accent); }
+
+/* ---------- View shell ---------- */
+.view {
+  position: relative; z-index: 1;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 26px 28px 80px;
+  outline: none;
+  animation: fade .25s ease;
+}
+@keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+.view-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+.view-title { font-size: 22px; font-weight: 700; letter-spacing: 0.2px; }
+.view-title .count { color: var(--text-faint); font-weight: 500; margin-left: 8px; font-size: 15px; }
+.view-sub { color: var(--text-dim); font-size: 13px; margin-top: 2px; }
+
+/* ---------- Filter bar ---------- */
+.filters {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 12px 14px; margin-bottom: 22px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.search {
+  flex: 1 1 240px; min-width: 200px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.search:focus-within { border-color: var(--accent-dim); box-shadow: 0 0 0 3px var(--accent-weak); }
+.search input {
+  flex: 1; background: transparent; border: none; color: var(--text);
+  font-size: 13px; outline: none;
+}
+.search input::placeholder { color: var(--text-faint); }
+.search .icon { color: var(--text-faint); font-size: 13px; }
+
+.select {
+  appearance: none;
+  padding: 8px 30px 8px 12px;
+  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%235A6472' stroke-width='1.6'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 11px center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--text); font-size: 13px; cursor: pointer;
+}
+.select:hover { border-color: var(--accent-dim); }
+.select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: 13px; color: var(--text-dim); cursor: pointer;
+  user-select: none;
+}
+.toggle:hover { border-color: var(--accent-dim); }
+.toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.toggle .box {
+  width: 15px; height: 15px; border-radius: 4px;
+  border: 1px solid var(--line); background: var(--bg-raise);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background .12s, border-color .12s;
+}
+.toggle input:checked + .box { background: var(--accent); border-color: var(--accent); }
+.toggle input:checked + .box::after { content: ""; width: 4px; height: 8px; border: solid #06131c; border-width: 0 2px 2px 0; transform: rotate(45deg) translateY(-1px); }
+.toggle input:focus-visible + .box { outline: 2px solid var(--accent); outline-offset: 2px; }
+.toggle.on { color: var(--text); }
+
+/* ---------- Card grid ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+  gap: 16px;
+}
+.card {
+  position: relative;
+  display: flex; flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 16px 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: border-color .16s ease, transform .16s ease, background .16s ease;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+  color: inherit;
+}
+.card:hover { border-color: var(--accent-dim); transform: translateY(-2px); background: var(--bg-card-hover); }
+.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.card.stale { }
+.card.stale::after {
+  content: ""; position: absolute; inset: 0; border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px rgba(240,86,74,0.4); pointer-events: none;
+}
+
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.card-name { font-size: 15.5px; font-weight: 650; line-height: 1.25; }
+/* La date du tournage, à la place du slug : le titre EST le slug embelli, les
+   afficher tous les deux revenait à écrire deux fois la même chose. */
+.card-date { font-size: 11.5px; color: var(--text-faint); margin-top: 3px; }
+.card-badges { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+
+.badge {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.02em;
+  padding: 3px 8px; border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+/* Family badge palette. Families are user-defined (the leading token of a project slug),
+   so app.js hashes the family name into one of these six swatches. */
+.badge.fam-c0 { color: #7fd6ff; border-color: rgba(55,189,248,0.30); background: rgba(55,189,248,0.07); }
+.badge.fam-c1 { color: #c8a6ff; border-color: rgba(168,130,255,0.28); background: rgba(140,110,220,0.08); }
+.badge.fam-c2 { color: #6ee7c4; border-color: rgba(110,231,196,0.26); background: rgba(80,200,170,0.07); }
+.badge.fam-c3 { color: #ffd9a0; border-color: rgba(245,185,66,0.28); background: rgba(245,185,66,0.07); }
+.badge.fam-c4 { color: #ff9fb0; border-color: rgba(255,120,145,0.26); background: rgba(255,120,145,0.07); }
+.badge.fam-c5 { color: #a9c8ff; border-color: rgba(120,160,255,0.26); background: rgba(120,160,255,0.07); }
+.badge.fam-misc { color: var(--text-dim); }
+.badge.arch { text-transform: none; }
+.badge.arch-talking-head { color: #ffd9a0; border-color: rgba(245,185,66,0.28); }
+.badge.arch-graphics-only { color: #a9c8ff; border-color: rgba(120,160,255,0.24); }
+.badge.arch-unknown { color: var(--text-faint); }
+.badge.util { color: var(--text-faint); border-style: dashed; }
+
+/* ---------- Pipeline rail ---------- */
+.rail {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 4px;
+  margin: 16px 0 12px;
+}
+.seg {
+  position: relative;
+  height: 26px;
+  border-radius: 5px;
+  background: var(--na);
+  border: 1px solid transparent;
+  overflow: hidden;
+}
+.seg .seg-fill { position: absolute; inset: 0; }
+.seg .seg-code {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.03em;
+  color: rgba(255,255,255,0.55); text-transform: uppercase;
+}
+/* done = filled accent */
+.seg.done { background: var(--accent); border-color: rgba(255,255,255,0.15); box-shadow: 0 0 10px var(--accent-glow); }
+.seg.done .seg-code { color: #06131c; }
+/* proxy = hollow accent (distinct from direct/filled) */
+.seg.proxy { background: transparent; border: 1.5px dashed var(--accent); }
+.seg.proxy .seg-fill {
+  background: repeating-linear-gradient(45deg, rgba(55,189,248,0.16) 0 5px, transparent 5px 10px);
+}
+.seg.proxy .seg-code { color: var(--accent); }
+/* partial = amber, half fill */
+.seg.partial { background: rgba(245,185,66,0.14); border-color: rgba(245,185,66,0.5); }
+.seg.partial .seg-fill { background: linear-gradient(90deg, var(--amber) 0 55%, transparent 55%); opacity: 0.85; }
+.seg.partial .seg-code { color: #17130a; mix-blend-mode: normal; }
+/* unknown = grey outline */
+.seg.unknown { background: var(--bg-raise); border-color: var(--line); }
+.seg.unknown .seg-code { color: var(--text-faint); }
+/* n-a = near invisible */
+.seg['data-x'] {}
+.seg.na { background: rgba(35,42,52,0.35); border: 1px dashed rgba(90,100,114,0.18); }
+.seg.na .seg-code { color: rgba(90,100,114,0.35); }
+
+.chip {
+  width: 22px; height: 12px; border-radius: 3px; display: inline-block;
+  background: var(--na);
+}
+.chip.done { background: var(--accent); }
+.chip.proxy { background: transparent; border: 1.5px dashed var(--accent); }
+.chip.partial { background: linear-gradient(90deg, var(--amber) 0 55%, rgba(245,185,66,0.14) 55%); }
+.chip.unknown { background: var(--bg-raise); border: 1px solid var(--line); }
+.chip.na { background: rgba(35,42,52,0.5); border: 1px dashed rgba(90,100,114,0.3); }
+
+/* ---------- Card meta row ---------- */
+.card-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding-top: 10px; border-top: 1px solid var(--line-soft);
+  font-size: 12px;
+}
+.meta-left { display: flex; align-items: center; gap: 12px; color: var(--text-dim); min-width: 0; }
+.meta-item { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); flex-shrink: 0; }
+.dot.ok { background: var(--accent); }
+.dot.none { background: var(--text-faint); }
+.meta-right { color: var(--text-faint); white-space: nowrap; }
+.flag-stale {
+  color: var(--red); font-size: 11px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.flag-stale .dot { background: var(--red); box-shadow: 0 0 8px rgba(240,86,74,0.5); }
+
+/* ---------- Empty / loading ---------- */
+.empty {
+  text-align: center; padding: 70px 20px; color: var(--text-faint);
+  border: 1px dashed var(--line); border-radius: var(--radius);
+}
+.empty h3 { color: var(--text-dim); font-weight: 600; margin: 0 0 6px; }
+.loading { padding: 60px; text-align: center; color: var(--text-faint); }
+.skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(370px, 1fr)); gap: 16px; }
+.skel {
+  height: 176px; border-radius: var(--radius);
+  background: linear-gradient(100deg, var(--bg-card) 30%, var(--bg-card-hover) 50%, var(--bg-card) 70%);
+  background-size: 300% 100%;
+  animation: shimmer 1.3s ease infinite;
+  border: 1px solid var(--line);
+}
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+.error-box {
+  padding: 24px; border-radius: var(--radius);
+  border: 1px solid rgba(240,86,74,0.4); background: rgba(240,86,74,0.06);
+  color: #ffb4ad;
+}
+.error-box code { font-family: var(--mono); color: #ffd9d5; }
+
+/* ---------- Project detail ---------- */
+.detail-head {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 22px; margin-bottom: 20px;
+  background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius);
+}
+.back-link { color: var(--text-dim); font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 2px; width: fit-content; }
+.back-link:hover { color: var(--accent); }
+.detail-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.detail-title { font-size: 24px; font-weight: 700; }
+.detail-slug { font-family: var(--mono); font-size: 13px; color: var(--text-faint); margin-top: 3px; }
+.detail-path {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-family: var(--mono); font-size: 12px; color: var(--text-dim);
+  background: var(--bg); padding: 8px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--line-soft); word-break: break-all;
+}
+.detail-path .p { flex: 1; min-width: 0; }
+.btn-sm { padding: 6px 11px; font-size: 12px; }
+
+.panel {
+  background: var(--bg-card); border: 1px solid var(--line);
+  border-radius: var(--radius); margin-bottom: 20px; overflow: hidden;
+}
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 14px 18px; border-bottom: 1px solid var(--line);
+}
+.panel-head h2 { font-size: 14px; font-weight: 650; margin: 0; letter-spacing: 0.02em; }
+.panel-head .hint { font-size: 11.5px; color: var(--text-faint); }
+.panel-body { padding: 6px 0; }
+
+/* stage rows */
+.stage-row {
+  display: grid;
+  grid-template-columns: 150px 96px 1fr;
+  gap: 14px; align-items: start;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.stage-row:last-child { border-bottom: none; }
+.stage-name { display: flex; align-items: center; gap: 10px; font-weight: 550; font-size: 13.5px; }
+.stage-idx {
+  font-family: var(--mono); font-size: 10px; color: var(--text-faint);
+  border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; min-width: 20px; text-align: center;
+}
+.status-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.status-pill .d { width: 7px; height: 7px; border-radius: 50%; }
+.status-done { color: var(--accent); background: var(--accent-weak); }
+.status-done .d { background: var(--accent); }
+.status-partial { color: var(--amber); background: rgba(245,185,66,0.10); }
+.status-partial .d { background: var(--amber); }
+.status-unknown { color: var(--text-faint); background: rgba(90,100,114,0.10); }
+.status-unknown .d { background: var(--text-faint); }
+.status-na { color: var(--text-faint); background: transparent; opacity: 0.6; }
+.status-na .d { background: var(--na); }
+
+.evidence { display: flex; flex-direction: column; gap: 6px; }
+.ev {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: var(--text-dim);
+}
+.ev .kind {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 4px; flex-shrink: 0;
+}
+.ev .kind.direct { color: #06131c; background: var(--accent); }
+.ev .kind.proxy { color: var(--accent); border: 1px dashed var(--accent); background: transparent; }
+.ev .file { font-family: var(--mono); font-size: 11.5px; color: var(--text); word-break: break-all; }
+.ev .mt { color: var(--text-faint); margin-left: auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ev-none { font-size: 12px; color: var(--text-faint); font-style: italic; }
+
+/* renders table */
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th {
+  text-align: left; font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--text-faint);
+  padding: 10px 18px; border-bottom: 1px solid var(--line);
+}
+.tbl td { padding: 11px 18px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl .fname { font-family: var(--mono); font-size: 12px; word-break: break-all; }
+.tbl .tnum { color: var(--text-dim); }
+.rk {
+  font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--line); color: var(--text-dim); text-transform: capitalize;
+}
+.rk.final { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-weak); }
+.rk.delivery { color: #6ee7c4; border-color: rgba(110,231,196,0.35); background: rgba(80,200,170,0.08); }
+.rk.timestamped { color: #ffd9a0; }
+.rk.draft { color: var(--text-faint); border-style: dashed; }
+.stale-tag { color: var(--red); font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+.stale-tag .d { width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+.fresh-tag { color: var(--text-faint); font-size: 11px; }
+
+/* notes markdown-lite */
+.notes-body { padding: 18px; }
+.md-h1 { font-size: 18px; font-weight: 700; margin: 18px 0 8px; }
+.md-h1:first-child { margin-top: 0; }
+.md-h2 { font-size: 15px; font-weight: 650; margin: 16px 0 6px; color: var(--text); }
+.md-h3 { font-size: 13.5px; font-weight: 600; margin: 14px 0 5px; color: var(--text-dim); }
+.md-p { white-space: pre-wrap; color: var(--text-dim); font-size: 13px; margin: 6px 0; }
+.md-p strong { color: var(--text); font-weight: 650; }
+.md-table { font-family: var(--mono); font-size: 12px; white-space: pre; overflow-x: auto; background: var(--bg); border: 1px solid var(--line-soft); border-radius: var(--radius-sm); padding: 12px 14px; margin: 10px 0; color: var(--text-dim); }
+.md-li { color: var(--text-dim); font-size: 13px; margin: 3px 0 3px 4px; display: flex; gap: 8px; }
+.md-li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-top: 8px; flex-shrink: 0; }
+
+/* size bars */
+.size-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line-soft); }
+.size-cell { background: var(--bg-card); padding: 14px 18px; }
+.size-cell .lbl { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); }
+.size-cell .val { font-size: 18px; font-weight: 650; margin-top: 3px; font-variant-numeric: tabular-nums; }
+
+/* ---------- Libraries ---------- */
+.lib-banner {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; margin-bottom: 18px;
+  border-radius: var(--radius); font-size: 13px;
+  border: 1px solid rgba(240,86,74,0.4); background: rgba(240,86,74,0.06); color: #ffb4ad;
+}
+.style-row {
+  display: grid;
+  grid-template-columns: 42px 1.4fr 90px 70px 1fr 1.2fr;
+  gap: 14px; align-items: center;
+  padding: 13px 18px; border-bottom: 1px solid var(--line-soft);
+}
+.style-row.head { border-bottom: 1px solid var(--line); }
+.style-row.head span { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); font-weight: 600; }
+.style-num { font-family: var(--mono); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.style-name { font-weight: 600; font-size: 13.5px; }
+.style-id { font-family: var(--mono); font-size: 11px; color: var(--text-faint); }
+.style-status {
+  font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 999px; width: fit-content;
+  text-transform: capitalize; border: 1px solid var(--line); color: var(--text-dim);
+}
+.style-status.published { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-weak); }
+.style-status.draft { color: var(--amber); border-color: rgba(245,185,66,0.3); }
+.swatches { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.sw {
+  flex: 0 0 auto; box-sizing: border-box;
+  width: 20px; height: 20px; min-width: 20px; min-height: 20px;
+  border-radius: 5px; border: 1px solid rgba(255,255,255,0.12);
+}
+/* Scope the generic empty-state rule off palette swatches, which also carry .empty. */
+.sw.empty {
+  padding: 0; border: 1px solid rgba(255,255,255,0.12); border-radius: 5px; text-align: left;
+  background: repeating-linear-gradient(45deg, var(--line) 0 3px, transparent 3px 6px);
+}
+.fonts { display: flex; flex-direction: column; gap: 1px; font-size: 11.5px; color: var(--text-dim); }
+.fonts .f-lbl { color: var(--text-faint); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+.asset-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.asset-card { background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; }
+.asset-card .n { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.asset-card .t { font-size: 12px; color: var(--text-dim); text-transform: capitalize; margin-top: 2px; }
+
+/* ---------- Activity ---------- */
+.activity-cols { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; align-items: start; }
+.commit {
+  display: flex; gap: 12px; align-items: baseline;
+  padding: 11px 18px; border-bottom: 1px solid var(--line-soft);
+}
+.commit:last-child { border-bottom: none; }
+.commit .hash { font-family: var(--mono); font-size: 11.5px; color: var(--accent); flex-shrink: 0; }
+.commit .subj { font-size: 13px; color: var(--text); flex: 1; min-width: 0; }
+.commit .date { font-size: 11px; color: var(--text-faint); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rfile {
+  display: flex; gap: 10px; align-items: baseline; justify-content: space-between;
+  padding: 9px 18px; border-bottom: 1px solid var(--line-soft);
+}
+.rfile:last-child { border-bottom: none; }
+.rfile .rp { font-family: var(--mono); font-size: 12px; color: var(--text-dim); word-break: break-all; }
+.rfile .rm { font-size: 11px; color: var(--text-faint); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.branch-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 12px; color: var(--accent);
+  padding: 6px 12px; border-radius: 999px; background: var(--accent-weak);
+  border: 1px solid rgba(55,189,248,0.25);
+}
+.dirty-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 12px; color: var(--amber);
+  padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(245,185,66,0.3);
+}
+.dirty-pill.clean { color: var(--text-dim); border-color: var(--line); }
+.activity-topline { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(10px);
+  z-index: 100;
+  background: var(--bg-raise); border: 1px solid var(--accent-dim);
+  color: var(--text); padding: 11px 18px; border-radius: var(--radius-sm);
+  font-size: 13px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  opacity: 0; transition: opacity .2s, transform .2s;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 1280px) {
+  .activity-cols { grid-template-columns: 1fr; }
+  .stage-row { grid-template-columns: 130px 90px 1fr; }
+}
+
+/* ── Review ────────────────────────────────────────────────────────────────
+   La vue qui liste les projets relisibles et monte leur interface de review.
+   review.html vit dans le projet (servi via /workspace/), pas dans public/. */
+.rev-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+.rev-card {
+  background: var(--panel, #0c121b);
+  border: 1px solid var(--line, #1b2634);
+  border-radius: 12px;
+  padding: 16px 18px 18px;
+  position: relative;
+}
+.rev-top { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+.rev-name { font-size: 16px; font-weight: 600; }
+.rev-slug { font-family: var(--mono, ui-monospace, monospace); font-size: 11.5px; color: var(--dim, #7d93a8); margin-top: 2px; }
+.rev-meta { font-size: 12px; color: var(--muted, #9db2c6); margin-top: 10px; }
+.rev-count { position: absolute; right: 18px; bottom: 16px; font-size: 11px; color: var(--dim, #7d93a8); }
+.rev-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.rev-btn {
+  display: inline-block; padding: 6px 12px; border-radius: 999px;
+  border: 1px solid var(--line, #2a3a4d);
+  color: var(--link, #4db4f0); text-decoration: none;
+  font-size: 12px; font-weight: 600;
+}
+.rev-btn:hover { border-color: var(--link, #4db4f0); }
+.rev-btn.primary { background: var(--link, #4db4f0); color: #05080f; border-color: transparent; }
+
+/* la review montée dans le hub : elle occupe ce qui reste de la fenêtre */
+/* La review EST la page : elle prend ce qui reste de la fenêtre. 190px de
+   marge, c'était l'ancien en-tête ; il a maigri, et sur un portable la vidéo
+   se retrouvait à 230px de haut pour rien. */
+.rev-frame {
+  height: calc(100vh - 132px);
+  min-height: 380px;
+  border: 1px solid var(--line, #1b2634);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+.rev-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+.head-actions { display: flex; gap: 8px; align-items: center; }
+
+/* ── Lecteur ───────────────────────────────────────────────────────────────
+   Lightbox pour regarder un rendu sans quitter le hub. */
+.player-back {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(3, 6, 11, 0.86);
+  display: flex; align-items: center; justify-content: center;
+  padding: 32px;
+}
+.player-box {
+  background: var(--panel, #0c121b);
+  border: 1px solid var(--line, #1b2634);
+  border-radius: 14px;
+  overflow: hidden;
+  max-width: min(1280px, 92vw);
+  display: flex; flex-direction: column;
+}
+.player-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line, #1b2634);
+}
+.player-title { font-size: 13px; font-weight: 600; }
+.player-acts { display: flex; gap: 8px; }
+.player-box video {
+  display: block; background: #000;
+  max-height: calc(100vh - 190px);
+  max-width: min(1280px, 92vw);
+}
+/* une ligne de rendu qui se lit */
+tr.playable { cursor: pointer; }
+tr.playable:hover td { background: rgba(77, 180, 240, 0.07); }
+.play-dot { color: var(--link, #4db4f0); font-size: 10px; margin-right: 8px; }
+
+/* ── Un style : ses cartes en preview live ─────────────────────────────────
+   La vignette a une largeur FIXE (320px) et l'échelle en découle (320/1920).
+   Une grille fluide donnerait une largeur variable donc une échelle fausse :
+   l'iframe déborderait et la carte serait recadrée au lieu d'être réduite. */
+.style-row.link { text-decoration: none; color: inherit; cursor: pointer; }
+.style-row.link:hover { background: var(--bg-card-hover); }
+.style-row.link:focus-visible { outline: none; box-shadow: var(--focus); border-radius: var(--radius-sm); }
+
+.cardp-sec {
+  margin: 30px 0 14px; font-size: var(--step--1); letter-spacing: var(--track-wide);
+  text-transform: uppercase; color: var(--text-faint); font-weight: 700;
+}
+.cardp-sec .tnum { color: var(--text-dim); margin-left: 8px; }
+
+/* flex plutôt que grid : un style peut mélanger des cartes 16:9 (320px) et
+   des cartes 9:16 (180px), le flux s'adapte aux deux largeurs */
+.cardp-grid {
+  display: flex; flex-wrap: wrap;
+  gap: 18px; justify-content: flex-start; align-items: flex-start;
+}
+.cardp {
+  width: 320px; background: var(--bg-card); border: 1px solid var(--line-soft);
+  border-radius: var(--radius); overflow: hidden;
+  transition: border-color var(--fast), transform var(--fast);
+}
+.cardp:hover { border-color: var(--line); transform: translateY(-2px); }
+
+.cardp-thumb {
+  position: relative; width: 320px; height: 180px;   /* 320 / 1920 = 0.1666667 */
+  background: var(--bg-inset); overflow: hidden;
+}
+.cardp-thumb iframe {
+  position: absolute; top: 0; left: 0;
+  width: 1920px; height: 1080px; border: 0;
+  transform: scale(0.1666667); transform-origin: top left;
+  pointer-events: none;
+}
+/* les cartes reels 9:16 (1080x1920) : vignette verticale, même échelle */
+.cardp.vert { width: 180px; }
+.cardp-thumb.vert { width: 180px; height: 320px; }
+.cardp-thumb.vert iframe { width: 1080px; height: 1920px; }
+/* tant que la preview n'est pas montée, une ardoise plutôt qu'un trou noir */
+.cardp-thumb::after {
+  content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(115deg,
+    var(--bg-inset) 0 14px, var(--bg-raise) 14px 28px);
+  opacity: 0.55; transition: opacity var(--med);
+}
+.cardp-thumb.live::after { opacity: 0; }
+
+.cardp-meta { padding: 13px 15px 15px; }
+.cardp-id { font-family: var(--mono); font-size: var(--step--1); color: var(--accent); word-break: break-all; }
+.cardp-tr { font-size: var(--step-0); margin-top: 5px; }
+.cardp-slots { font-size: var(--step--1); color: var(--text-faint); margin-top: 5px; }
+.cardp-meta .rev-btn { margin-top: 12px; }
+.swatches.big { margin: 6px 0 10px; }
+
+
+/* ═══ Finition ══════════════════════════════════════════════════════════════
+   Ce hub n'est pas un panneau SaaS générique : c'est l'atelier de l'utilisateur.
+   Il porte sa charte — Garet pour l'interface, Instrument Serif italique pour
+   les titres de vue (le seul moment éditorial), son jaune comme unique accent. */
+
+body { font-family: var(--font); font-size: var(--step-0); letter-spacing: -0.005em; }
+
+/* — la barre : posée sur le fond, pas flottante — */
+.topbar {
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line-soft);
+}
+.nav-link {
+  border-radius: 999px; padding: 7px 14px;
+  color: var(--text-dim); font-weight: 500; font-size: var(--step-0);
+  transition: color var(--fast), background var(--fast);
+}
+.nav-link:hover { color: var(--text); background: var(--bg-card); }
+.nav-link.active { color: var(--on-accent); background: var(--accent); font-weight: 700; }
+.nav-link:focus-visible { outline: none; box-shadow: var(--focus); }
+
+/* — le titre de vue : le moment éditorial — */
+.view-title {
+  font-family: var(--serif); font-style: italic; font-weight: 400;
+  font-size: var(--step-4); line-height: 1.05; letter-spacing: 0;
+  color: var(--text);
+}
+.view-sub { color: var(--text-dim); font-size: var(--step-0); margin-top: 4px; max-width: 68ch; }
+.view-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+
+/* — les libellés de section : le contrepoint, en capitales espacées — */
+.panel-head h2, .cardp-sec {
+  font-family: var(--font); font-weight: 700;
+  letter-spacing: var(--track-wide); text-transform: uppercase;
+  font-size: var(--step--1); color: var(--text-faint);
+}
+
+/* — un accent, et une seule règle : il marque, il ne décore pas — */
+a { color: var(--accent); }
+.rev-btn {
+  border-color: var(--line); color: var(--text);
+  background: var(--bg-card);
+  transition: border-color var(--fast), background var(--fast), color var(--fast);
+}
+.rev-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--bg-card-hover); }
+.rev-btn:focus-visible { outline: none; box-shadow: var(--focus); }
+.rev-btn.primary { background: var(--accent); color: var(--on-accent); border-color: transparent; font-weight: 700; }
+.rev-btn.primary:hover { background: var(--accent-hover); color: var(--on-accent); }
+.rev-btn:disabled, .rev-btn[aria-disabled="true"] { opacity: 0.45; pointer-events: none; }
+
+/* — cartes : une élévation, pas trois — */
+.card, .rev-card, .cardp, .panel {
+  background: var(--bg-card); border-color: var(--line-soft);
+}
+.card:hover, .rev-card:hover { border-color: var(--line); background: var(--bg-card-hover); }
+.rev-card { transition: border-color var(--fast), background var(--fast); }
+
+/* — chiffres alignés partout où on compare — */
+.tnum { font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: var(--step--1); }
+
+/* — le lecteur — */
+.player-box { box-shadow: var(--shadow-pop); border-color: var(--line); }
+.player-back { backdrop-filter: blur(3px); }
+
+/* — accessibilité : un focus visible partout, et le mouvement se coupe — */
+:focus-visible { outline: none; box-shadow: var(--focus); }
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+
+/* ═══ Discipline de l'accent ═════════════════════════════════════════════════
+   L'accent marque, il ne tapisse pas. Une étape terminée est un fait acquis,
+   pas une alerte : elle se lit en neutre clair. Le jaune reste pour ce qui
+   demande une décision ou signale où on est — nav active, action primaire,
+   étape en cours, sélection. Sans ça, dix pastilles jaunes par carte et plus
+   rien ne ressort. */
+.seg.done {
+  background: color-mix(in oklab, var(--text) 82%, var(--accent) 18%);
+  border-color: oklch(1 0 0 / 0.14);
+  box-shadow: none;
+}
+.seg.done .seg-code { color: var(--bg); }
+.chip.done { background: color-mix(in oklab, var(--text) 82%, var(--accent) 18%); }
+.dot.ok { background: var(--ok); }
+
+/* l'étape en cours, elle, mérite le jaune plein */
+.seg.current, .chip.current {
+  background: var(--accent); border-color: transparent;
+  box-shadow: 0 0 0 3px var(--accent-weak);
+}
+.seg.current .seg-code { color: var(--on-accent); }
+
+/* le proxy reste en pointillés, mais en neutre : c'est une nuance, pas un cap */
+.seg.proxy { border-color: var(--text-faint); }
+.seg.proxy .seg-code { color: var(--text-dim); }
+
+/* les focus héritent du token, plus d'outline cyan codé en dur */
+.nav-link:focus-visible, .btn:focus-visible, .select:focus-visible,
+.toggle input:focus-visible + .box, .card:focus-visible {
+  outline: none; box-shadow: var(--focus);
+}
+
+/* ── Une carte en grand ─────────────────────────────────────────────────────
+   L'overlay rejoue l'animation depuis le début : on vient la regarder, pas
+   tomber au milieu. La scène est dimensionnée en JS (la carte fait 1920x1080,
+   on la met à l'échelle de la fenêtre), le CSS ne fait que la contenir. */
+.card-box { max-width: none; }
+/* centrée : une carte 9:16 est plus étroite que l'en-tête de la modale */
+.card-stage { position: relative; overflow: hidden; background: var(--bg-inset); margin: 0 auto; }
+.card-stage iframe {
+  position: absolute; top: 0; left: 0;
+  width: 1920px; height: 1080px; border: 0;
+  transform-origin: top left;
+}
+
+/* la vignette est un bouton : elle doit se comporter comme tel */
+button.cardp-thumb {
+  display: block; padding: 0; border: 0; cursor: pointer;
+  font: inherit; color: inherit; text-align: left;
+}
+button.cardp-thumb:focus-visible { box-shadow: var(--focus); }
+.cardp:hover .cardp-thumb::before {
+  content: "Voir en grand";
+  position: absolute; z-index: 2; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--accent); color: var(--on-accent);
+  font-size: var(--step--1); font-weight: 700;
+  padding: 7px 14px; border-radius: 999px;
+  pointer-events: none;
+}
+
+/* ── Ta charte vs les références ────────────────────────────────────────────
+   Le style maison n'est pas une référence parmi d'autres : c'est celui avec
+   lequel on monte. Il a son propre panneau, une surface plus claire et une
+   étiquette. Pas de filet coloré sur le bord : le contraste de surface suffit
+   et se lit mieux. */
+.house-panel {
+  background: color-mix(in oklab, var(--bg-card) 88%, var(--accent) 12%);
+  border-color: color-mix(in oklab, var(--line) 60%, var(--accent) 40%);
+}
+.house-panel .panel-head { border-bottom-color: color-mix(in oklab, var(--line) 70%, var(--accent) 30%); }
+.house-panel .panel-head h2 { color: var(--accent); }
+.house-panel .style-row.head { color: var(--text-dim); }
+.style-row.house:hover { background: color-mix(in oklab, var(--bg-card-hover) 84%, var(--accent) 16%); }
+
+.house-tag {
+  display: inline-block; vertical-align: 2px; margin-left: 9px;
+  padding: 2px 9px 3px; border-radius: 999px;
+  background: var(--accent); color: var(--on-accent);
+  font-size: 10.5px; font-weight: 800;
+  letter-spacing: var(--track-wide); text-transform: uppercase;
+}
+
+
+/* ── Groupes repliables ────────────────────────────────────────────────────
+   <details> natif : l'affordance est connue, elle marche au clavier et sans
+   JS. Pas de faux accordéon maison. */
+details.grp { border-top: 1px solid var(--line-soft); }
+details.grp:first-of-type { border-top: 0; }
+
+.grp-head {
+  display: flex; align-items: baseline; gap: 12px;
+  padding: 16px 4px; cursor: pointer;
+  list-style: none;
+  transition: color var(--fast);
+}
+.grp-head::-webkit-details-marker { display: none; }
+/* le chevron, tourné à l'ouverture */
+.grp-head::before {
+  content: ""; flex: none;
+  width: 7px; height: 7px; margin-right: 2px;
+  border-right: 1.5px solid var(--text-faint);
+  border-bottom: 1.5px solid var(--text-faint);
+  transform: rotate(-45deg); transform-origin: 60% 60%;
+  transition: transform var(--fast), border-color var(--fast);
+}
+details.grp[open] .grp-head::before { transform: rotate(45deg); }
+.grp-head:hover::before { border-color: var(--accent); }
+.grp-head:focus-visible { outline: none; box-shadow: var(--focus); border-radius: var(--radius-sm); }
+
+.grp-name {
+  font-weight: 700; font-size: var(--step-1);
+  letter-spacing: var(--track-tight); color: var(--text);
+}
+.grp-head:hover .grp-name { color: var(--accent); }
+.grp-count {
+  color: var(--on-accent); background: var(--accent);
+  padding: 1px 8px 2px; border-radius: 999px; font-weight: 700;
+}
+.grp-note { color: var(--text-faint); font-size: var(--step--1); margin-left: auto; }
+
+details.grp .cardp-grid { padding: 4px 0 24px; }
+
+/* ── Variantes ─────────────────────────────────────────────────────────────
+   Une variante est une déclinaison générée d'une carte de base : elles font la
+   moitié de la bibliothèque et se ressemblent par construction. Un liseré
+   discret les signale, un interrupteur les écarte du regard. Rien n'est
+   supprimé : c'est un filtre d'affichage. */
+.cardp.variant .cardp-id::before {
+  content: "variante";
+  display: inline-block; margin-right: 7px;
+  padding: 1px 7px 2px; border-radius: 999px;
+  background: var(--bg-raise); color: var(--text-faint);
+  font-family: var(--font); font-size: 10px; font-weight: 700;
+  letter-spacing: var(--track-wide); text-transform: uppercase;
+}
+body.hide-variants .cardp.variant { display: none; }
+
+/* ── Vignette de carte ─────────────────────────────────────────────────────
+   Le dernier rendu, en image. Les reels sont verticaux et les tutos 16:9 :
+   on ne recadre donc pas (object-fit: contain), et on remplit le vide avec la
+   même image, floutée — ça donne un bloc de hauteur constante sans jamais
+   couper un visage. */
+.card-thumb {
+  position: relative;
+  margin: 14px -16px 0;
+  height: 168px;
+  overflow: hidden;
+  background: #000;
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+  display: flex; align-items: center; justify-content: center;
+}
+.card-thumb .th-bg {
+  position: absolute; inset: -12%;
+  width: 124%; height: 124%;
+  object-fit: cover;
+  filter: blur(22px) saturate(1.15) brightness(0.5);
+  transform: scale(1.05);
+}
+.card-thumb .th-img {
+  position: relative;
+  max-width: 100%; max-height: 100%;
+  object-fit: contain;
+  transition: transform .2s ease;
+}
+.card:hover .card-thumb .th-img { transform: scale(1.02); }
+.card-thumb .th-tag {
+  position: absolute; left: 10px; bottom: 9px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  padding: 3px 7px; border-radius: 999px;
+  background: rgba(2, 6, 15, 0.72);
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(6px);
+}
+.card-thumb.live .th-tag { color: var(--accent); border-color: var(--accent-dim); }
+.card-thumb.none, .card-thumb.broken {
+  color: var(--text-faint); font-size: 12px;
+  background: repeating-linear-gradient(135deg, var(--bg-inset) 0 10px, transparent 10px 20px);
+}
+.card-thumb.broken img { display: none; }
+.card-thumb.broken::after { content: "aperçu indisponible"; color: var(--text-faint); font-size: 12px; }
+
+/* ── Tête de la page projet : le rendu, puis la review ─────────────────────
+   Avant, il fallait passer par une entrée de menu séparée pour relire une
+   vidéo. Le rendu vit ici, avec le bouton qui mène à la review. */
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(260px, 0.9fr); gap: 0; overflow: hidden; }
+.hero-video { background: #000; display: flex; align-items: center; justify-content: center; min-height: 320px; }
+.hero-video video { width: 100%; max-height: 420px; display: block; object-fit: contain; background: #000; }
+/* Un reel vertical fait une colonne vidéo très haute : on centre le bloc
+   d'infos en face plutôt que de le coller en haut avec 300 px de vide. */
+.hero-side { padding: 20px 22px; display: flex; flex-direction: column; justify-content: center; gap: 10px; border-left: 1px solid var(--line-soft); }
+.hero-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--text-faint); display: flex; align-items: center; gap: 8px;
+}
+.hero-file { font-family: var(--mono); font-size: 13px; color: var(--text); word-break: break-all; }
+.hero-meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--text-dim); }
+.hero-flag {
+  font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 8px;
+  background: var(--bg-inset); border: 1px solid var(--line-soft); border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+.hero-flag code { font-family: var(--mono); font-size: 11px; color: var(--text); }
+.hero-flag .dot { background: var(--info); }
+.hero-flag.warn { color: var(--red); border-color: rgba(240,86,74,0.3); }
+.hero-flag.warn .dot { background: var(--red); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.btn-primary {
+  background: var(--accent); color: var(--on-accent);
+  border-color: transparent; font-weight: 650; text-decoration: none;
+}
+.btn-primary:hover { background: var(--accent-hover); border-color: transparent; }
+.hero.none { padding: 0; }
+.hero-none-in { padding: 40px 22px; text-align: center; color: var(--text-faint); }
+.hero-none-in h3 { margin: 0 0 6px; font-size: 15px; color: var(--text-dim); }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-side { border-left: 0; border-top: 1px solid var(--line-soft); }
+}
+.card-thumb .th-tag.ratio { left: auto; right: 10px; font-family: var(--mono); letter-spacing: 0.02em; }
+
+/* ── Confirmation ──────────────────────────────────────────────────────────
+   Pour les gestes qui touchent aux fichiers. On nomme toujours ce qui bouge. */
+.confirm-box {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  width: min(560px, 92vw);
+  max-height: 80vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.confirm-head { padding: 18px 22px 12px; font-size: 15px; font-weight: 650; }
+.confirm-body { padding: 0 22px; overflow: auto; color: var(--text-dim); font-size: 13px; line-height: 1.55; }
+.confirm-body p { margin: 0 0 12px; }
+.confirm-list {
+  border-top: 1px solid var(--line-soft);
+  padding-top: 8px; margin-bottom: 8px;
+  font-size: 12px;
+}
+.confirm-list .file { font-family: var(--mono); color: var(--text); }
+.confirm-list .ev { display: flex; justify-content: space-between; gap: 16px; }
+.confirm-list .mt { color: var(--text-faint); }
+.confirm-acts { display: flex; justify-content: flex-end; gap: 8px; padding: 16px 22px 18px; }
+.panel-head #prune-btn { margin-left: auto; }
+
+/* ── État d'un projet ──────────────────────────────────────────────────────
+   Remplace le rail des 9 étapes sur la grille : sur la page d'accueil on
+   cherche « où en est cette vidéo », pas quel agent a écrit quel fichier. Le
+   rail détaillé reste sur la page projet, avec ses preuves sur disque. */
+.state {
+  font-size: 11px; font-weight: 650; letter-spacing: 0.01em;
+  padding: 3px 9px; border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.state.st-pret { color: var(--ok); border-color: color-mix(in oklch, var(--ok) 40%, transparent); background: var(--ok-weak); }
+.state.st-livre { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-weak); }
+.state.st-a-re-rendre { color: var(--err); border-color: color-mix(in oklch, var(--err) 40%, transparent); background: var(--err-weak); }
+.state.st-en-montage { color: var(--warn); border-color: color-mix(in oklch, var(--warn) 35%, transparent); background: var(--warn-weak); }
+.state.st-a-demarrer { color: var(--text-faint); border-style: dashed; }
+
+/* ── Actions du pipeline ───────────────────────────────────────────────────
+   Le hub lance les commandes et montre leur sortie. Le log est monospace et
+   borné en hauteur : on veut voir défiler, pas relire un terminal entier. */
+.act-groups { padding: 4px 0 6px; }
+.act-group { padding: 12px 18px 14px; }
+.act-group + .act-group { border-top: 1px solid var(--line-soft); }
+.act-group-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.act-group-name {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--text-dim); font-weight: 650;
+}
+.act-group-sub { font-size: 11.5px; color: var(--text-faint); }
+/* bouton à gauche, ce qu'il fait à droite : on lit la ligne, pas l'étiquette */
+.act-item {
+  display: grid; grid-template-columns: 190px minmax(0, 1fr);
+  gap: 14px; align-items: start; padding: 5px 0;
+}
+.act-item .btn { width: 100%; justify-content: center; }
+.act-desc { font-size: 12.5px; line-height: 1.5; color: var(--text-dim); padding-top: 6px; }
+.act-item.primary .act-desc { color: var(--text); }
+@media (max-width: 720px) {
+  .act-item { grid-template-columns: 1fr; gap: 4px; }
+  .act-desc { padding-top: 0; }
+}
+.act-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 18px; }
+.act[disabled] { opacity: .45; cursor: default; }
+.job { border-top: 1px solid var(--line-soft); }
+.job-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 18px; font-size: 12.5px;
+}
+.job-label { font-weight: 650; }
+.job-step { color: var(--text-dim); }
+.job-head .btn { margin-left: auto; }
+.job.running .job-label::before {
+  content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent); margin-right: 8px; vertical-align: middle;
+  animation: pulse 1.1s ease-in-out infinite;
+}
+.job.done .job-step { color: var(--ok); }
+.job.failed .job-step { color: var(--err); }
+.job.canceled .job-step { color: var(--warn); }
+@keyframes pulse { 0%, 100% { opacity: 1 } 50% { opacity: .25 } }
+.job-log {
+  margin: 0; padding: 12px 18px 16px;
+  font-family: var(--mono); font-size: 11.5px; line-height: 1.5;
+  color: var(--text-dim); background: var(--bg-inset);
+  max-height: 320px; overflow: auto; white-space: pre-wrap; word-break: break-word;
+}
+
+/* ── Retours de review ─────────────────────────────────────────────────────
+   Ils vivent dans le projet (review/*.json), plus dans le navigateur. */
+.fb-body { padding: 6px 0 10px; }
+.fb-file { border-top: 1px solid var(--line-soft); padding: 12px 18px; }
+.fb-file:first-child { border-top: 0; }
+.fb-file.done { opacity: .55; }
+.fb-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.fb-render { font-family: var(--mono); font-size: 12px; color: var(--text); }
+.fb-count { font-size: 11.5px; color: var(--text-faint); }
+.fb-head .btn { margin-left: auto; }
+.fb-note { display: flex; gap: 12px; padding: 4px 0; font-size: 12.5px; }
+.fb-t { color: var(--accent); flex-shrink: 0; }
+.fb-txt { color: var(--text-dim); }
+.fb-chip {
+  color: var(--accent); border: 1px solid var(--accent-dim);
+  border-radius: 999px; padding: 1px 8px; font-size: 11px; font-weight: 650;
+}
+
+/* ── Livrables ─────────────────────────────────────────────────────────────
+   Un projet est un tournage, pas une vidéo : d'un rush sortent quatre
+   publicités, d'une vidéo longue plusieurs verticaux. Chacun a son historique
+   de versions, et le rangement des rendus se fait livrable par livrable. */
+.dlv-row { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 18px; }
+.dlv {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px 8px 8px;
+  background: var(--bg-raise); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); cursor: pointer;
+  font-family: inherit; color: inherit; text-align: left;
+  transition: border-color .15s, background .15s;
+}
+.dlv:hover { border-color: var(--accent-dim); background: var(--bg-card-hover); }
+.dlv.on { border-color: var(--accent); background: var(--accent-weak); }
+.dlv-thumb {
+  width: 62px; height: 44px; border-radius: 5px; overflow: hidden;
+  background: #000; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.dlv-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.dlv-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dlv-id { font-family: var(--mono); font-size: 12px; color: var(--text); }
+.dlv-sub { font-size: 11px; color: var(--text-faint); }
+.dlv-chip {
+  color: var(--text-dim); border: 1px solid var(--line);
+  border-radius: 999px; padding: 1px 8px; font-size: 11px;
+}
+.hero-vers { font-size: 11px; color: var(--text-faint); text-transform: none; letter-spacing: 0; }
+.view-head.compact { margin-bottom: 10px; }
+.view-head.compact .view-title { font-size: 22px; }
+
+/* ── Review plein cadre ────────────────────────────────────────────────────
+   La review occupe tout ce que la fenêtre laisse sous la barre du haut. Elle
+   n'a pas de titre à elle : le projet est déjà écrit à l'intérieur, et chaque
+   ligne posée au-dessus était prise sur la hauteur de la vidéo. Les deux liens
+   flottent par-dessus le cadre plutôt que de lui voler une bande. */
+.view.review-page { padding-bottom: 0; }
+.rev-full {
+  position: relative;
+  height: calc(100vh - 92px);
+  min-height: 360px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+.rev-full iframe { width: 100%; height: 100%; border: 0; display: block; }
+.rev-float {
+  position: absolute; top: 10px; right: 12px; z-index: 2;
+  display: flex; gap: 8px;
+}
+.rev-float .rev-btn {
+  background: rgba(6, 8, 14, 0.82);
+  backdrop-filter: blur(8px);
+  border-color: var(--line);
+}
+.rev-float .rev-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Studio HyperFrames embarqué ───────────────────────────────────────────
+   Le hub n'a pas d'éditeur à lui : il ouvre le Studio du projet et le monte en
+   plein cadre. Les liens de retour flottent par-dessus plutôt que de lui voler
+   une bande — la place, ici, appartient à l'outil. */
+.std-root {
+  position: relative;
+  height: calc(100vh - 92px);
+  min-height: 420px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0b0e14;
+}
+.std-root { display: flex; flex-direction: column; }
+.std-bar {
+  flex: none; display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; background: var(--bg-raise); border-bottom: 1px solid var(--line);
+}
+.std-bar .rev-btn { cursor: pointer; font-family: inherit; }
+.std-bar .rev-btn:hover { border-color: var(--accent); color: var(--accent); }
+.std-name { font-size: 13px; color: var(--text); }
+.std-port {
+  font-family: var(--mono); font-size: 11px; color: var(--text-faint);
+  margin-right: auto; padding-left: 2px;
+}
+.std-frame { flex: 1; min-height: 0; width: 100%; border: 0; display: block; }
+.std-boot {
+  height: 100%; display: flex; flex-direction: column; gap: 12px;
+  align-items: center; justify-content: center;
+  color: var(--text-dim); font-size: 14px;
+}
+.std-sub { font-size: 12px; color: var(--text-faint); }
+.std-spin {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 2px solid var(--line); border-top-color: var(--accent);
+  animation: spin .8s linear infinite;
+}
+
+/* ── Confirmation ──────────────────────────────────────────────────────────
+   Pour les gestes qui touchent aux fichiers. On nomme toujours ce qui bouge. */
+.confirm-box {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  width: min(560px, 92vw);
+  max-height: 80vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.confirm-head { padding: 18px 22px 12px; font-size: 15px; font-weight: 650; }
+.confirm-body { padding: 0 22px; overflow: auto; color: var(--text-dim); font-size: 13px; line-height: 1.55; }
+.confirm-body p { margin: 0 0 12px; }
+.confirm-list {
+  border-top: 1px solid var(--line-soft);
+  padding-top: 8px; margin-bottom: 8px;
+  font-size: 12px;
+}
+.confirm-list .file { font-family: var(--mono); color: var(--text); }
+.confirm-list .ev { display: flex; justify-content: space-between; gap: 16px; }
+.confirm-list .mt { color: var(--text-faint); }
+.confirm-acts { display: flex; justify-content: flex-end; gap: 8px; padding: 16px 22px 18px; }
+.panel-head #prune-btn { margin-left: auto; }
+
+/* ── État d'un projet ──────────────────────────────────────────────────────
+   Remplace le rail des 9 étapes sur la grille : sur la page d'accueil on
+   cherche « où en est cette vidéo », pas quel agent a écrit quel fichier. Le
+   rail détaillé reste sur la page projet, avec ses preuves sur disque. */
+.state {
+  font-size: 11px; font-weight: 650; letter-spacing: 0.01em;
+  padding: 3px 9px; border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.state.st-pret { color: var(--ok); border-color: color-mix(in oklch, var(--ok) 40%, transparent); background: var(--ok-weak); }
+.state.st-livre { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-weak); }
+.state.st-a-re-rendre { color: var(--err); border-color: color-mix(in oklch, var(--err) 40%, transparent); background: var(--err-weak); }
+.state.st-en-montage { color: var(--warn); border-color: color-mix(in oklch, var(--warn) 35%, transparent); background: var(--warn-weak); }
+.state.st-a-demarrer { color: var(--text-faint); border-style: dashed; }
+
+/* ── Actions du pipeline ───────────────────────────────────────────────────
+   Le hub lance les commandes et montre leur sortie. Le log est monospace et
+   borné en hauteur : on veut voir défiler, pas relire un terminal entier. */
+.act-groups { padding: 4px 0 6px; }
+.act-group { padding: 12px 18px 14px; }
+.act-group + .act-group { border-top: 1px solid var(--line-soft); }
+.act-group-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.act-group-name {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--text-dim); font-weight: 650;
+}
+.act-group-sub { font-size: 11.5px; color: var(--text-faint); }
+/* bouton à gauche, ce qu'il fait à droite : on lit la ligne, pas l'étiquette */
+.act-item {
+  display: grid; grid-template-columns: 190px minmax(0, 1fr);
+  gap: 14px; align-items: start; padding: 5px 0;
+}
+.act-item .btn { width: 100%; justify-content: center; }
+.act-desc { font-size: 12.5px; line-height: 1.5; color: var(--text-dim); padding-top: 6px; }
+.act-item.primary .act-desc { color: var(--text); }
+@media (max-width: 720px) {
+  .act-item { grid-template-columns: 1fr; gap: 4px; }
+  .act-desc { padding-top: 0; }
+}
+.act-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 18px; }
+.act[disabled] { opacity: .45; cursor: default; }
+.job { border-top: 1px solid var(--line-soft); }
+.job-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 18px; font-size: 12.5px;
+}
+.job-label { font-weight: 650; }
+.job-step { color: var(--text-dim); }
+.job-head .btn { margin-left: auto; }
+.job.running .job-label::before {
+  content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent); margin-right: 8px; vertical-align: middle;
+  animation: pulse 1.1s ease-in-out infinite;
+}
+.job.done .job-step { color: var(--ok); }
+.job.failed .job-step { color: var(--err); }
+.job.canceled .job-step { color: var(--warn); }
+@keyframes pulse { 0%, 100% { opacity: 1 } 50% { opacity: .25 } }
+.job-log {
+  margin: 0; padding: 12px 18px 16px;
+  font-family: var(--mono); font-size: 11.5px; line-height: 1.5;
+  color: var(--text-dim); background: var(--bg-inset);
+  max-height: 320px; overflow: auto; white-space: pre-wrap; word-break: break-word;
+}
+
+/* ── Retours de review ─────────────────────────────────────────────────────
+   Ils vivent dans le projet (review/*.json), plus dans le navigateur. */
+.fb-body { padding: 6px 0 10px; }
+.fb-file { border-top: 1px solid var(--line-soft); padding: 12px 18px; }
+.fb-file:first-child { border-top: 0; }
+.fb-file.done { opacity: .55; }
+.fb-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.fb-render { font-family: var(--mono); font-size: 12px; color: var(--text); }
+.fb-count { font-size: 11.5px; color: var(--text-faint); }
+.fb-head .btn { margin-left: auto; }
+.fb-note { display: flex; gap: 12px; padding: 4px 0; font-size: 12.5px; }
+.fb-t { color: var(--accent); flex-shrink: 0; }
+.fb-txt { color: var(--text-dim); }
+.fb-chip {
+  color: var(--accent); border: 1px solid var(--accent-dim);
+  border-radius: 999px; padding: 1px 8px; font-size: 11px; font-weight: 650;
+}
+
+/* ── Livrables ─────────────────────────────────────────────────────────────
+   Un projet est un tournage, pas une vidéo : d'un rush sortent quatre
+   publicités, d'une vidéo longue plusieurs verticaux. Chacun a son historique
+   de versions, et le rangement des rendus se fait livrable par livrable. */
+.dlv-row { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 18px; }
+.dlv {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px 8px 8px;
+  background: var(--bg-raise); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); cursor: pointer;
+  font-family: inherit; color: inherit; text-align: left;
+  transition: border-color .15s, background .15s;
+}
+.dlv:hover { border-color: var(--accent-dim); background: var(--bg-card-hover); }
+.dlv.on { border-color: var(--accent); background: var(--accent-weak); }
+.dlv-thumb {
+  width: 62px; height: 44px; border-radius: 5px; overflow: hidden;
+  background: #000; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.dlv-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.dlv-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dlv-id { font-family: var(--mono); font-size: 12px; color: var(--text); }
+.dlv-sub { font-size: 11px; color: var(--text-faint); }
+.dlv-chip {
+  color: var(--text-dim); border: 1px solid var(--line);
+  border-radius: 999px; padding: 1px 8px; font-size: 11px;
+}
+.hero-vers { font-size: 11px; color: var(--text-faint); text-transform: none; letter-spacing: 0; }
+.view-head.compact { margin-bottom: 10px; }
+.view-head.compact .view-title { font-size: 22px; }
+
+/* ── Review plein cadre ────────────────────────────────────────────────────
+   La review occupe tout ce que la fenêtre laisse sous la barre du haut. Elle
+   n'a pas de titre à elle : le projet est déjà écrit à l'intérieur, et chaque
+   ligne posée au-dessus était prise sur la hauteur de la vidéo. Les deux liens
+   flottent par-dessus le cadre plutôt que de lui voler une bande. */
+.view.review-page { padding-bottom: 0; }
+.rev-full {
+  position: relative;
+  height: calc(100vh - 92px);
+  min-height: 360px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+.rev-full iframe { width: 100%; height: 100%; border: 0; display: block; }
+.rev-float {
+  position: absolute; top: 10px; right: 12px; z-index: 2;
+  display: flex; gap: 8px;
+}
+.rev-float .rev-btn {
+  background: rgba(6, 8, 14, 0.82);
+  backdrop-filter: blur(8px);
+  border-color: var(--line);
+}
+.rev-float .rev-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Retouche visuelle ─────────────────────────────────────────────────────
+   Trois colonnes : la scène (étroite, le format est vertical), la timeline (qui
+   récupère la largeur perdue) et l'inspecteur. Copier la proportion CapCut —
+   scène géante, timeline en bandeau — n'aurait aucun sens ici : en 9:16 c'est la
+   LARGEUR qui est gaspillée, pas la hauteur. */
+.ed-root { display: flex; flex-direction: column; height: calc(100vh - 92px); min-height: 460px; }
+.ed-head {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 9px 12px; background: var(--bg-raise);
+  border: 1px solid var(--line); border-radius: 12px 12px 0 0; border-bottom: 0;
+}
+.ed-head .select { max-width: 240px; }
+.ed-dirty { font-size: 12px; color: var(--warn); margin-left: auto; white-space: nowrap; }
+
+.ed-body {
+  flex: 1; min-height: 0;
+  display: grid; grid-template-columns: minmax(240px, 380px) minmax(0, 1fr) 300px;
+  border: 1px solid var(--line); border-radius: 0 0 12px 12px; overflow: hidden;
+}
+.ed-left { display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--line); }
+.ed-stage {
+  flex: 1; min-height: 0; position: relative; background: #05070c; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background-image: linear-gradient(45deg, #0a0d14 25%, transparent 25%, transparent 75%, #0a0d14 75%),
+                    linear-gradient(45deg, #0a0d14 25%, transparent 25%, transparent 75%, #0a0d14 75%);
+  background-size: 24px 24px; background-position: 0 0, 12px 12px;
+}
+/* l'iframe garde sa taille réelle et c'est le conteneur qui la met à
+   l'échelle : les coordonnées restent celles de la composition */
+.ed-scaler { position: relative; }
+.ed-scaler iframe { border: 0; display: block; background: #000; transform: scale(var(--s, 1)); transform-origin: top left; }
+.ed-box {
+  position: absolute; border: 1.5px solid var(--accent);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.6), 0 0 18px var(--accent-glow);
+  pointer-events: auto; cursor: grab;
+}
+.ed-box.dragging { cursor: grabbing; background: var(--accent-weak); }
+
+/* le transport est collé sous l'image, pas dans la barre du haut : on regarde
+   l'image, la main reste au même endroit */
+.ed-transport {
+  display: flex; align-items: center; gap: 6px; padding: 8px 10px;
+  background: var(--bg-raise); border-top: 1px solid var(--line);
+}
+.tbtn {
+  background: var(--bg-inset); color: var(--text); border: 1px solid var(--line);
+  border-radius: 7px; padding: 5px 9px; font-size: 12px; cursor: pointer; line-height: 1;
+}
+.tbtn:hover { border-color: var(--accent-dim); }
+.tbtn.play { background: var(--accent); color: var(--on-accent); border-color: transparent; padding: 6px 13px; }
+.tbtn.off { color: var(--text-faint); }
+.ed-time { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--accent); white-space: nowrap; }
+
+/* ── Timeline ─────────────────────────────────────────────────────────────── */
+.ed-tl { display: flex; flex-direction: column; min-width: 0; background: var(--bg); }
+.tl-scroll { flex: 1; min-height: 0; overflow: auto; position: relative; }
+.tl-inner { position: relative; min-width: 100%; }
+.tl-ruler {
+  position: sticky; top: 0; z-index: 3; height: 26px; margin-left: 150px;
+  background: var(--bg-raise); border-bottom: 1px solid var(--line); cursor: ew-resize;
+}
+.tl-tick {
+  position: absolute; top: 0; height: 26px; padding-left: 5px;
+  border-left: 1px solid var(--line); color: var(--text-faint);
+  font-family: var(--mono); font-size: 10.5px; line-height: 26px; white-space: nowrap;
+}
+.tl-lane { display: flex; align-items: stretch; border-bottom: 1px solid var(--line-soft); min-height: 30px; }
+.tl-gutter {
+  position: sticky; left: 0; z-index: 2; width: 150px; flex: none;
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  padding: 0 10px; background: var(--bg-raise); border-right: 1px solid var(--line);
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-faint);
+}
+.tl-gutter em { font-style: normal; font-family: var(--mono); font-size: 10px; opacity: .7; }
+.tl-track { position: relative; flex: 1; }
+.tl-block {
+  position: absolute; overflow: hidden;
+  border-radius: 5px; background: var(--bg-card-hover); border: 1px solid var(--line);
+  cursor: pointer; display: flex; align-items: center;
+}
+.tl-block:hover { border-color: var(--accent-dim); }
+.tl-block.is-sel { border-color: var(--accent); background: var(--accent-weak); box-shadow: 0 0 12px var(--accent-glow); }
+/* fantôme = animation GSAP, sans data-start : on la montre, on ne la déplace pas */
+.tl-block.is-ghost { border-style: dashed; background: transparent; }
+.tl-block.is-shot { border-radius: 3px; background: var(--text-faint); border-color: transparent; }
+.tl-lb {
+  padding: 0 5px; font-family: var(--mono); font-size: 10px; color: var(--text-dim);
+  white-space: nowrap; pointer-events: none;
+}
+.lane-video .tl-block { background: rgba(55,189,248,.14); border-color: rgba(55,189,248,.32); }
+.lane-gfx   .tl-block { background: var(--accent-weak); border-color: rgba(255,217,53,.3); }
+.lane-audio .tl-block { background: rgba(110,231,196,.12); border-color: rgba(110,231,196,.3); }
+.lane-audio .tl-block.is-shot { background: rgba(110,231,196,.5); }
+.tl-playhead {
+  position: absolute; top: 0; bottom: 0; width: 1px; background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow); pointer-events: none; z-index: 4;
+}
+.tl-playhead::before {
+  content: ""; position: absolute; top: 0; left: -4px;
+  border-left: 4px solid transparent; border-right: 4px solid transparent;
+  border-top: 7px solid var(--accent);
+}
+.tl-foot {
+  display: flex; align-items: center; gap: 12px; padding: 7px 10px;
+  border-top: 1px solid var(--line); background: var(--bg-raise);
+}
+.tl-hint { font-size: 11px; color: var(--text-faint); }
+.tl-zoom { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-faint); }
+.tl-zoom input { width: 110px; accent-color: var(--accent); }
+
+/* ── Inspecteur ───────────────────────────────────────────────────────────── */
+.ed-panel { background: var(--bg-card); border-left: 1px solid var(--line); overflow-y: auto; padding: 13px; }
+.ed-empty { color: var(--text-faint); font-size: 13px; line-height: 1.55; }
+.ed-empty code { font-family: var(--mono); color: var(--text-dim); }
+.ed-sel { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.ed-tag { font-family: var(--mono); font-size: 12px; color: var(--text-faint); }
+.ed-id { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+.ed-ghost-tag {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .06em;
+  border: 1px dashed var(--line); border-radius: 999px; padding: 1px 7px; color: var(--text-faint);
+}
+.ed-group { border-top: 1px solid var(--line-soft); padding: 11px 0; }
+.ed-group-h {
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--text-faint); margin-bottom: 8px;
+}
+.ed-row { display: grid; grid-template-columns: 66px 1fr 22px; align-items: center; gap: 7px; margin-bottom: 6px; font-size: 12.5px; }
+.ed-row span { color: var(--text-dim); }
+.ed-row em { font-style: normal; font-size: 11px; color: var(--text-faint); }
+.ed-row input {
+  background: var(--bg-inset); border: 1px solid var(--line); color: var(--text);
+  border-radius: 7px; padding: 5px 8px; font: inherit; font-size: 12.5px; width: 100%;
+}
+.ed-row input:disabled { color: var(--text-faint); }
+.ed-row.warn input { border-style: dashed; }
+.ed-note { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px; }
+.ed-note.warn {
+  color: var(--warn); background: var(--warn-weak);
+  border: 1px solid rgba(245,185,66,.25); border-radius: 8px; padding: 8px 10px;
+}
+.ed-note code { font-family: var(--mono); font-size: 11px; }
+.ed-check { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-dim); }
+/* la pile : ce qui est à l'écran à cet instant, du dessus vers le dessous */
+.ed-pile { display: flex; flex-direction: column; gap: 3px; }
+.ed-pile-row {
+  display: flex; gap: 8px; align-items: baseline; text-align: left;
+  background: var(--bg-inset); border: 1px solid var(--line-soft); border-radius: 6px;
+  padding: 5px 8px; cursor: pointer; font: inherit; font-size: 11.5px; color: var(--text-dim);
+}
+.ed-pile-row:hover { border-color: var(--accent-dim); }
+.ed-pile-row.on { border-color: var(--accent); color: var(--text); }
+.ed-pile-lane { font-size: 9.5px; text-transform: uppercase; letter-spacing: .07em; color: var(--text-faint); min-width: 56px; }
+
+@media (max-width: 1100px) { .ed-body { grid-template-columns: minmax(200px, 300px) minmax(0, 1fr); } .ed-panel { display: none; } }
+
+/* le repère devient une poignée : on attrape l'élément et on le déplace */
+.ed-box { pointer-events: auto; cursor: grab; }
+.ed-box.dragging { cursor: grabbing; background: var(--accent-weak); }
+.lane-grp .tl-block { background: transparent; border-color: var(--line); border-style: dotted; }
+.lane-grp .tl-lb { color: var(--text-faint); }

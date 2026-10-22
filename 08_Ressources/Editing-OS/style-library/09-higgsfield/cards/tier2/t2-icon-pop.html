@@ -1,0 +1,68 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · tier2 · label · ICON POP
+  A 3D-squircle icon chip pops in beside the speaker's head with a bounce,
+  then bobs gently while alive. Holds an emoji (or Agent 3 swaps in a logo
+  <img>). Optional second chip staggers in under it.
+  Slots: icon1 (emoji text), icon2 (emoji text, optional).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-icon-pop {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; overflow: hidden;
+      }
+      #t2-icon-pop .stack {
+        position: absolute; top: 250px; right: 210px; z-index: 3;
+        display: flex; flex-direction: column; gap: 34px;
+      }
+      #t2-icon-pop .chip {
+        width: 128px; height: 128px; border-radius: 34px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 64px; line-height: 1;
+        background: linear-gradient(160deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 100%),
+                    var(--den);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        box-shadow: var(--glass-shadow), inset 0 2px 6px rgba(255, 255, 255, 0.25);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-icon-pop" data-composition-id="t2-icon-pop" data-start="0" data-width="1920" data-height="1080">
+      <div class="stack">
+        <div class="chip c1"><span data-slot="icon1">🎬</span></div>
+        <div class="chip c2"><span data-slot="icon2">&#128176;</span></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t2-icon-pop";
+
+      const chips = gsap.utils.toArray(root + " .chip").filter((el) => {
+        const has = el.querySelector("[data-slot]").textContent.trim().length > 0;
+        if (!has) el.style.display = "none";
+        return has;
+      });
+
+      const tl = gsap.timeline({ paused: true });
+
+      chips.forEach((chip, i) => {
+        const t = 0.15 + i * 0.28;
+        tl.from(chip, { autoAlpha: 0, scale: 0.4, y: 26, duration: 0.5, ease: "back.out(1.9)" }, t);
+        /* bob while alive, slightly out of phase per chip */
+        tl.to(chip, { y: i % 2 ? 9 : -9, duration: 2.6, ease: "sine.inOut", yoyo: true, repeat: 1 }, t + 0.5);
+      });
+
+      tl.set({}, {}, 6);
+
+      window.__timelines["t2-icon-pop"] = tl;
+    </script>
+  </body>
+</html>

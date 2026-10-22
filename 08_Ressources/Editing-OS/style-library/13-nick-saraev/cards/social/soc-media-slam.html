@@ -1,0 +1,115 @@
+<!doctype html>
+<!--
+  NICK SARAEV · social · media · LE MEDIA-SLAM
+  La carte-atelier du style — celle qui fait que "chaque élément est montré
+  avec une animation". Elle prend N'IMPORTE QUEL asset (screenshot d'un site,
+  logo, capture GitHub, photo produit, frame vidéo) et le claque à l'écran
+  avec une des cinq entrées, puis un mouvement CONTINU jusqu'à la coupe.
+  Jamais un asset posé statique : c'est cette carte qu'on utilise par défaut
+  pour tout ce que insert-broll rapporte du web.
+
+  slot variant :
+    whip     — arrive fort 1.14→1.0, puis dérive zoom-in lente (défaut)
+    zoomin   — part large 1.0, zoom continu vers 1.18 (montrer puis serrer)
+    zoomout  — part serré 1.25, ressort vers 1.02 (détail puis contexte)
+    pan      — léger zoom + translation latérale (les pages hautes)
+    pop      — scale 0.6→1.0 back.out, pour les LOGOS et petites cartes,
+               posés sur la scène (pas plein cadre), avec ombre portée
+  slot theme  : white | black  (la scène derrière)
+  slot fit    : cover | contain  (contain = logos, cover = screenshots)
+  Slots: media, variant, theme, fit.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-media-slam {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden; background: var(--white);
+      }
+      #soc-media-slam.black { background: var(--black); }
+
+      /* plein cadre (whip / zoomin / zoomout / pan) */
+      #soc-media-slam .full {
+        position: absolute; inset: 0;
+        will-change: transform;
+      }
+      #soc-media-slam .full img, #soc-media-slam .full video {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+      #soc-media-slam.contain .full img, #soc-media-slam.contain .full video {
+        object-fit: contain;
+      }
+
+      /* posé sur la scène (pop) : une carte avec ombre, pas plein cadre */
+      #soc-media-slam.pop .full {
+        inset: auto; left: 90px; right: 90px; top: 26%; height: 44%;
+        border-radius: var(--r-prop); overflow: hidden;
+        box-shadow: var(--shadow-prop);
+        background: #fff;
+      }
+      #soc-media-slam.pop.black .full { background: var(--black-panel); }
+    </style>
+  </head>
+  <body>
+    <div id="soc-media-slam" data-composition-id="soc-media-slam" data-start="0" data-width="1080" data-height="1920">
+      <div class="full">
+        <img data-slot="media" src="../../references/galerie-cartes-flottantes.png" alt="" />
+      </div>
+      <div style="display:none" data-slot="variant">whip</div>
+      <div style="display:none" data-slot="theme">white</div>
+      <div style="display:none" data-slot="fit">cover</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-media-slam";
+      const el = document.querySelector(root);
+      const slot = (n) => el.querySelector(`[data-slot="${n}"]`).textContent.trim();
+
+      const variant = slot("variant") || "whip";
+      if (slot("theme") === "black") el.classList.add("black");
+      if (slot("fit") === "contain") el.classList.add("contain");
+      if (variant === "pop") el.classList.add("pop");
+
+      const full = root + " .full";
+      const tl = gsap.timeline({ paused: true });
+
+      /* Chaque variante = une ENTRÉE (0.22-0.30s) + un MOUVEMENT CONTINU.
+         Le mouvement ne se résout jamais : la coupe tombe pendant. */
+      switch (variant) {
+        case "zoomin":
+          tl.fromTo(full, { scale: 1.0, autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.18, ease: "power2.out" }, 0);
+          tl.to(full, { scale: 1.18, duration: 4.5, ease: "none" }, 0.1);
+          break;
+        case "zoomout":
+          tl.fromTo(full, { scale: 1.25, autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.18, ease: "power2.out" }, 0);
+          tl.to(full, { scale: 1.02, duration: 4.5, ease: "power1.out" }, 0.1);
+          break;
+        case "pan":
+          tl.fromTo(full, { scale: 1.12, xPercent: 3, autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.18, ease: "power2.out" }, 0);
+          tl.to(full, { xPercent: -3, scale: 1.14, duration: 4.5, ease: "none" }, 0.1);
+          break;
+        case "pop":
+          tl.fromTo(full, { scale: 0.6, autoAlpha: 0, y: 40 },
+            { scale: 1, autoAlpha: 1, y: 0, duration: 0.3, ease: "back.out(1.9)" }, 0.02);
+          tl.to(full, { y: -12, scale: 1.03, duration: 4.2, ease: "none" }, 0.35);
+          break;
+        default: /* whip */
+          tl.fromTo(full, { scale: 1.14, autoAlpha: 0.4 },
+            { scale: 1.0, autoAlpha: 1, duration: 0.26, ease: "power4.out" }, 0);
+          tl.to(full, { scale: 1.08, duration: 4.5, ease: "none" }, 0.3);
+      }
+
+      tl.set({}, {}, 4.8);
+      window.__timelines["soc-media-slam"] = tl;
+    </script>
+  </body>
+</html>

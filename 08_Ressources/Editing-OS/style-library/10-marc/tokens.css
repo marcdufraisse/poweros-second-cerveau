@@ -1,0 +1,216 @@
+/* ============================================================================
+   HOUSE — style tokens (charte de marque, 2026-10-01)
+   Single source of palette / type / motion / texture for every card in this
+   style. Cards reference these vars and never hardcode colors, fonts,
+   easings, or textures. Tweak here, all cards update. See DESIGN.md.
+   Source de la charte : 03_Branding/charte-visuelle.md (V2, univers
+   Astral) — noir violet #06060C, grille fine a 60 px, aurores et orbes
+   violets flous, violet lavande #A78BFA sur les mots qui portent l'idee,
+   degrade lavande #A78BFA -> #C4B5FD a 135deg, Outfit + JetBrains Mono.
+   Remplace la V1 (nuit #0A0718, violet #8E16FA, magenta, Poppins).
+   Les noms de variables restent ceux du style d'origine (--jaune = accent
+   de marque) : les cartes les referencent, seules les VALEURS changent.
+   ============================================================================ */
+
+/* Polices de marque V2 — Outfit (titres et texte) + JetBrains Mono (labels,
+   commandes, compteurs), embarquees localement (voir fonts/). Aucune
+   dependance reseau. Poppins reste dans fonts/ pour les anciens projets. */
+@font-face { font-family: "Outfit"; font-weight: 400; font-display: block; src: url("fonts/Outfit-400.woff2") format("woff2"); }
+@font-face { font-family: "Outfit"; font-weight: 500; font-display: block; src: url("fonts/Outfit-500.woff2") format("woff2"); }
+@font-face { font-family: "Outfit"; font-weight: 600; font-display: block; src: url("fonts/Outfit-600.woff2") format("woff2"); }
+@font-face { font-family: "Outfit"; font-weight: 700; font-display: block; src: url("fonts/Outfit-700.woff2") format("woff2"); }
+@font-face { font-family: "Outfit"; font-weight: 800; font-display: block; src: url("fonts/Outfit-800.woff2") format("woff2"); }
+@font-face { font-family: "Outfit"; font-weight: 900; font-display: block; src: url("fonts/Outfit-900.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: block; src: url("fonts/JetBrainsMono-Regular.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 700; font-display: block; src: url("fonts/JetBrainsMono-700.woff2") format("woff2"); }
+
+:root {
+  /* --- palette V2 (mirror style.json + DESIGN.md) -------------------------- */
+  --jaune:        #A78BFA;   /* violet lavande — LA couleur signature. Porte la fin des titres, le mot-cle du CTA. */
+  --jaune-soft:   #C4B5FD;   /* lilas — fin du degrade de texte, halos, contours */
+  --jaune-dim:    rgba(167, 139, 250, 0.32);
+
+  --navy:        #06060C;   /* noir violet — fond de base de tous les visuels, toujours */
+  --navy-2:      #0E0B1A;   /* noir violet releve — partenaire de degrade, socles de cartes */
+  --olive:       #0E0B1A;   /* canvas des cartes stage/boot */
+  --olive-2:     #1E1638;   /* violet nuit — nappe bokeh de la carte stage */
+  --cream:       #EDE9FE;   /* lavande tres pale — seul canvas clair tolere (cartes money / kinetic) */
+  --cream-2:     #F5F3FF;   /* partenaire de degrade du lavande pale */
+
+  --white:       #F0F0F8;   /* texte principal V2 */
+  --grey-pre:    rgba(240, 240, 248, 0.38); /* "pre-reveal" text state before the white/jaune flip */
+  --charcoal:    #0E0B1A;   /* noir violet — texte sur lavande pale */
+  --charcoal-soft: rgba(14, 11, 26, 0.62);
+
+  --den:         #1E1638;   /* violet nuit — pastilles tier2, chrome du PIP */
+  --warm-glow:   #1E1638;   /* lueur rasante en bas des cartes (plus de magenta en V2) */
+
+  --money-deep:  #A78BFA;   /* depart du degrade des chiffres cles (lavande) */
+  --money-lite:  #C4B5FD;   /* arrivee du degrade des chiffres cles (lilas) */
+
+  --jaune-rgb:    167, 139, 250;
+  --navy-rgb:    6, 6, 12;
+
+  /* --- violets V2 nommes, pour les nouvelles cartes ------------------------- */
+  --text2:    #B0A8C8;   /* paragraphes, descriptions */
+  --dim:      #8B82AC;   /* labels, notes — jamais un paragraphe entier */
+  --purple2:  #8B5CF6;   /* violet vif — depart du bouton principal, halos */
+  --purple3:  #7C3AED;   /* violet profond — tuiles d'icone, badges pleins */
+  --purple4:  #6D28D9;   /* violet encre — arrivee du bouton principal */
+  --ok:       #5CEBAD;   /* point "en ligne", validation */
+  --surface:  rgba(120, 80, 200, 0.06);
+  --surface2: rgba(120, 80, 200, 0.10);
+  --border:   rgba(140, 100, 220, 0.15);
+  --border2:  rgba(167, 139, 250, 0.40);   /* carte mise en avant */
+  --grad-text:  linear-gradient(135deg, #A78BFA 0%, #C4B5FD 100%);
+  --grad-title: linear-gradient(135deg, #FFFFFF 0%, #C4B5FD 100%);
+  --grad-btn:   linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+  --grad-icon:  linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  --btn-shadow: 0 8px 32px rgba(139, 92, 246, 0.35);
+
+  /* --- le fond V2 : aplat + grille + aurore --------------------------------- */
+  --grid: linear-gradient(rgba(139, 92, 246, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(139, 92, 246, 0.08) 1px, transparent 1px);
+  --grid-size: 60px 60px;
+  --aurora: radial-gradient(42% 34% at 30% 30%, rgba(139, 92, 246, 0.20) 0%, transparent 70%),
+            radial-gradient(38% 30% at 72% 40%, rgba(124, 58, 237, 0.16) 0%, transparent 70%),
+            radial-gradient(46% 36% at 50% 70%, rgba(167, 139, 250, 0.13) 0%, transparent 70%);
+
+  /* semantic aliases the blueprint contract expects */
+  --bg:     var(--navy);
+  --fg:     var(--white);
+  --accent: var(--jaune);
+  --muted:  var(--grey-pre);
+
+  /* --- typography ----------------------------------------------------------
+     Inter Tight 800/900 ALL CAPS = the display voice (step titles, kinetic
+     floats). Inter = supporting copy. JetBrains Mono = pills, eyebrows,
+     UI-ish labels. */
+  /* Système typographique : une sans condensée (display + texte) et une
+     serif italique pour les accents, espacement resserré ≈ -0.05em.
+     Dépose tes propres .woff2 dans fonts/ ; sans eux, les polices système
+     prennent le relais via les fallbacks ci-dessous. */
+  --font-display: "Outfit", "Helvetica Neue", system-ui, sans-serif;
+  --font-body:    "Outfit", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+  --font-label:   var(--font-mono);
+  --font-serif:   "Outfit", system-ui, sans-serif; /* charte de marque : Outfit partout, pas de serif */
+
+  --wt-reg: 400; --wt-med: 500; --wt-semi: 600; --wt-bold: 700; --wt-heavy: 800; --wt-black: 900;
+
+  /* sizes for 1920x1080 */
+  --size-mega:     220px;   /* single-word step title ("SETUP") */
+  --size-display:  132px;   /* takeover headline / stat number */
+  --size-title:    84px;    /* multi-line thesis, overview rows */
+  --size-headline: 54px;    /* glass-panel titles, kinetic float lines */
+  --size-body:     32px;    /* supporting copy, script body */
+  --size-label:    24px;    /* eyebrows, pills, tags */
+  --size-tiny:     19px;
+
+  --track-eyebrow: 0.34em;  /* "STEP 1:" wide-tracked caps */
+  --track-caps:   -0.03em;  /* charte de marque : approche -0,03 em sur les titres */
+  --track-pill:    0.18em;
+
+  /* --- signature: the grey-to-jaune (or grey-to-white) flip ------------------
+     Text enters at --grey-pre, then snaps to its final color when the next
+     element arrives. Stagger the flips, never simultaneous. */
+
+  /* kinetic float text — jaune caps with a dark rim so it reads on any set */
+  --kinetic-shadow: 0 3px 0 rgba(0, 0, 0, 0.55), 0 12px 26px rgba(0, 0, 0, 0.45);
+  --kinetic-tilt:   perspective(900px) rotateY(-7deg) rotateX(2deg);
+  --kinetic-tilt-l: perspective(900px) rotateY(7deg) rotateX(2deg);
+
+  /* --- frosted glass panels ------------------------------------------------- */
+  --glass-bg:     rgba(14, 11, 26, 0.55);     /* verre V2 : noir violet, flou 18 px */
+  --glass-bg-lit: rgba(255, 255, 255, 0.55);  /* media/paper glass on light sets */
+  --glass-edge:   1px solid rgba(167, 139, 250, 0.25);
+  --glass-blur:   blur(18px);
+  --glass-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+  --glass-tilt:   perspective(1400px) rotateY(-10deg);
+  --glass-tilt-l: perspective(1400px) rotateY(10deg);
+
+  /* --- textures -------------------------------------------------------------
+     navy streaks: faint diagonal light streaks on tier1 navy cards.
+     dot-matrix: the stage-card LED grid (repeating radial-gradient).
+     warm creep: warm gradient entering a bottom corner of navy cards. */
+  --streaks: repeating-linear-gradient(100deg,
+      transparent 0 150px, rgba(255, 255, 255, 0.006) 150px 210px);
+  --dot-grid: radial-gradient(rgba(167, 139, 250, 0.07) 1.4px, transparent 1.6px);
+  --dot-grid-size: 14px 14px;
+  --warm-creep: radial-gradient(60% 55% at 92% 100%,
+      rgba(139, 92, 246, 0.22) 0%, transparent 70%);
+  --olive-bokeh: radial-gradient(34% 42% at 18% 72%, rgba(139, 92, 246, 0.34) 0%, transparent 100%),
+                 radial-gradient(28% 36% at 82% 24%, rgba(167, 139, 250, 0.22) 0%, transparent 100%),
+                 radial-gradient(46% 52% at 60% 88%, rgba(109, 40, 217, 0.40) 0%, transparent 100%);
+  --vignette: radial-gradient(130% 130% at 50% 42%, transparent 52%, rgba(0, 0, 0, 0.42) 100%);
+
+  /* --- glare sweep — RETIRÉ (l'utilisateur, 18/08) : ne plus utiliser ---------------
+     The specular streak that sweeps across every media/UI card as it lands.
+     Overlay div: background var(--glare); transform var(--glare-skew);
+     tween xPercent -160 → 500, 0.6-0.7s, power2.inOut, at/after entrance. */
+  --glare: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.10) 45%,
+      rgba(255, 255, 255, 0.24) 50%, rgba(255, 255, 255, 0.10) 55%, transparent 100%);
+  --glare-skew: skewX(-12deg);
+
+  /* --- shape ---------------------------------------------------------------- */
+  --radius:     18px;       /* glass panels, media cards */
+  --radius-sm:  10px;       /* pills, tags, chips */
+  --radius-pip: 22px;       /* speaker PIP */
+  --pad:        96px;
+
+  /* --- motion ----------------------------------------------------------------
+     Two speeds: SNAP (reveals, flips — fast, expo) and DRIFT (glass panels
+     float slowly while alive). Text = snap. Panels = snap in, then drift. */
+  --ease-in:     cubic-bezier(0.4, 0, 1, 1);
+  --ease-out:    cubic-bezier(0, 0, 0.2, 1);
+  --ease-snap:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-pop:    cubic-bezier(0.34, 1.45, 0.5, 1);
+  --ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  /* GSAP string eases */
+  --gsap-snap:   expo.out;         /* text reveals, panel entrances */
+  --gsap-pop:    back.out(1.9);    /* icon props, pills */
+  --gsap-flip:   power2.inOut;     /* the grey-to-jaune color flip */
+  --gsap-drift:  sine.inOut;       /* glass panel float */
+  --dur-in:   0.45s;
+  --dur-flip: 0.22s;
+  --dur-out:  0.3s;
+  --drift-dur: 6s;                 /* full drift cycle while a panel is alive */
+
+  /* --- espace 3D -------------------------------------------------------------
+     Ajouté le 18/08, dérivé de la chaîne Dan Kieft (style 11-dankieft).
+     Un écran n'est pas un rectangle collé sur un fond : c'est un panneau qui
+     se tient dans une pièce, et la caméra marche vers lui. Poser
+     --perspective sur la scène, puis animer translateZ de --z-far à --z-near
+     en laissant le lacet revenir vers --yaw-near.
+
+     LE point : c'est le REDRESSEMENT qui fait l'effet, pas le zoom. Un
+     scale() plat ne le reproduit pas. Et le mouvement ne se résout jamais —
+     il bouge encore au moment de la coupe. */
+  --perspective:        2200px;
+  --perspective-origin: 50% 44%;
+  --z-far:              -560px;   /* plus loin, on ne lit plus l'écran au départ */
+  --z-near:              110px;
+  --yaw-far:            -11deg;
+  --pitch-far:            4deg;
+  --yaw-near:           -2.5deg;  /* jamais 0 : un résidu de lacet garde le volume */
+  --pitch-near:           1deg;
+
+  --dur-drift:  11s;      /* un push-in complet */
+  --dur-punch:  0.85s;    /* le plongeon sur une zone */
+  --gsap-drift-cam: power1.inOut;   /* jamais d'ease-out sur une dérive */
+  --gsap-punch:     power3.inOut;
+
+  --screen-shadow: 0 60px 140px rgba(0, 0, 0, 0.75);
+  --room-key:  radial-gradient(74% 58% at 50% 8%, var(--navy-2) 0%, transparent 66%);
+  --room-warm: radial-gradient(46% 40% at 8% 104%, rgba(109, 40, 217, 0.35) 0%, transparent 70%);
+
+  /* --- le marqueur -----------------------------------------------------------
+     Le surligneur qui balaye un texte de gauche à droite au rythme de la
+     parole. C'est background-size qui bouge, JAMAIS un fond qu'on insère :
+     aucun reflow, le bloc ne se décale pas d'un pixel pendant qu'il s'allume.
+     Un seul item allumé à la fois — le précédent s'éteint quand le suivant
+     arrive. */
+  --marker-dur:     0.32s;
+  --marker-stagger: 0.12s;
+  --marker-ink:     #0E0B1A;   /* noir violet — la couleur du texte SOUS le marqueur */
+}

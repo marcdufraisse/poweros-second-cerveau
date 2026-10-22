@@ -1,0 +1,88 @@
+<!doctype html>
+<!--
+  KEYNOTE MINIMAL · tier1 · thesis · MEGA
+  Full-screen takeover. True-black stage, one soft glow low in frame, a tiny
+  uppercase kicker, then a one-sentence claim set at --size-display (2 lines
+  max) that blur-resolves up out of black. Key word carries the single accent
+  via <em>. Silk motion, no bounce.
+  Slots: kicker (text), headline (richtext).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-thesis-mega {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      /* one light source, low in frame */
+      #t1-thesis-mega .stage-glow {
+        position: absolute; inset: 0; background: var(--glow-stage); z-index: 1;
+      }
+      #t1-thesis-mega .edge {
+        position: absolute; inset: 0; background: var(--edge-falloff); z-index: 5; pointer-events: none;
+      }
+
+      #t1-thesis-mega .center {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        text-align: center; padding: 0 var(--pad);
+      }
+
+      #t1-thesis-mega .kicker {
+        font-family: var(--font-body); font-weight: var(--wt-med);
+        font-size: var(--size-label); letter-spacing: var(--track-wide);
+        text-transform: uppercase; color: var(--text-dim);
+        margin-bottom: 26px;
+      }
+
+      /* the one-sentence claim — huge, tight, blur-resolves from black */
+      #t1-thesis-mega .headline {
+        font-weight: var(--wt-black); font-size: var(--size-display);
+        line-height: 1.06; letter-spacing: var(--track-display);
+        max-width: 1560px; padding: 0 24px; color: var(--text);
+      }
+      #t1-thesis-mega .headline em {
+        font-style: normal; color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-thesis-mega" data-composition-id="t1-thesis-mega" data-start="0" data-width="1920" data-height="1080">
+      <div class="stage-glow"></div>
+
+      <div class="center">
+        <div class="kicker" data-slot="kicker">The Acme thesis</div>
+        <div class="headline" data-slot="headline">Certification isn't the finish line. <em>Shipping</em> is.</div>
+      </div>
+
+      <div class="edge"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t1-thesis-mega";
+
+      tl.from(root + " .stage-glow", { autoAlpha: 0, scale: 0.9, transformOrigin: "50% 82%", duration: 1.6, ease: "expo.out" }, 0)
+
+        .from(root + " .kicker", { autoAlpha: 0, y: 20, filter: "blur(8px)", duration: 1.0, ease: "expo.out" }, 0.3)
+
+        /* signature blur-resolve entrance for the claim */
+        .from(root + " .headline", { autoAlpha: 0, y: 40, filter: "blur(14px)", duration: 1.3, ease: "expo.out" }, 0.6)
+
+        /* glow breathes, finite */
+        .to(root + " .stage-glow", { scale: 1.06, transformOrigin: "50% 82%", duration: 2.6, ease: "sine.inOut", repeat: 1, yoyo: true }, 2.4)
+
+        .set({}, {}, 7);
+
+      window.__timelines["t1-thesis-mega"] = tl;
+    </script>
+  </body>
+</html>

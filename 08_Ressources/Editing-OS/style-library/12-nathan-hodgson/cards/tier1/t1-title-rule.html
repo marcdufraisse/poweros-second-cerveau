@@ -1,0 +1,107 @@
+<!doctype html>
+<!--
+  NATHAN HODGSON · tier1 · section · TITRE AU FILET DÉGRADÉ
+  Le tampon du style : astérisque orange, titre en caps serrées, filet 7px
+  en dégradé orange qui se dessine de gauche à droite. Si le titre contient
+  un nombre (slot number), il est orange et il COMPTE de 0 à sa valeur.
+  Fond = la scène crème qui dérive (dégradé + blocs flous).
+  Slots: title, number (optionnel, "" pour aucun).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t1-title-rule {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden;
+        background: linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%);
+        font-family: var(--font-display);
+      }
+
+      /* les blocs flous qui dérivent — ce qui empêche la slide */
+      #t1-title-rule .blob {
+        position: absolute; border-radius: 48px;
+        background: rgba(255, 255, 255, 0.35);
+        filter: blur(38px);
+      }
+      #t1-title-rule .blob.b1 { width: 380px; height: 260px; left: 60%; top: 46%; }
+      #t1-title-rule .blob.b2 { width: 300px; height: 220px; left: 8%;  top: 64%; }
+      #t1-title-rule .blob.b3 { width: 340px; height: 240px; left: 30%; top: 22%; opacity: .6; }
+
+      #t1-title-rule .head {
+        position: absolute; left: 0; right: 0; top: 200px;
+        display: flex; flex-direction: column; align-items: center; gap: 34px;
+      }
+      /* l'astérisque Claude, petit et orange */
+      #t1-title-rule .spark { width: 56px; height: 56px; color: var(--orange); }
+      #t1-title-rule .spark svg { width: 100%; height: 100%; display: block; }
+
+      #t1-title-rule .title {
+        font-size: var(--fs-title); font-weight: 900;
+        letter-spacing: var(--tracking-title);
+        color: var(--ink); text-align: center; line-height: 0.98;
+        text-transform: uppercase; white-space: nowrap;
+      }
+      #t1-title-rule .title .num { color: var(--orange); font-variant-numeric: tabular-nums; }
+
+      #t1-title-rule .rule {
+        width: var(--rule-w); height: var(--rule-h); border-radius: 99px;
+        background: var(--orange-rule);
+        transform-origin: 0% 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-title-rule" data-composition-id="t1-title-rule" data-start="0" data-width="1080" data-height="1920">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+      <div class="blob b3"></div>
+      <div class="head">
+        <div class="spark">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l1.7 7.2 6.5-3.6-4.8 5.6L23 12l-7.6 1.8 4.8 5.6-6.5-3.6L12 23l-1.7-7.2-6.5 3.6 4.8-5.6L1 12l7.6-1.8-4.8-5.6 6.5 3.6z"/></svg>
+        </div>
+        <div class="title"><span class="num" data-slot="number">10</span>&nbsp;<span data-slot="title">INTERVIEWS</span></div>
+        <div class="rule"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-title-rule";
+      const tl = gsap.timeline({ paused: true });
+
+      /* la scène dérive, jamais résolue */
+      tl.fromTo(root + " .blob.b1", { x: 0, y: 0 }, { x: -60, y: 40, duration: 9, ease: "none" }, 0);
+      tl.fromTo(root + " .blob.b2", { x: 0, y: 0 }, { x: 50, y: -30, duration: 9, ease: "none" }, 0);
+      tl.fromTo(root + " .blob.b3", { x: 0, y: 0 }, { x: -35, y: -45, duration: 9, ease: "none" }, 0);
+
+      /* l'arrivée : sparkle, titre, filet — dans cet ordre, vite */
+      tl.fromTo(root + " .spark", { scale: 0, rotation: -90 },
+        { scale: 1, rotation: 0, duration: 0.32, ease: "back.out(1.8)" }, 0.05);
+      tl.fromTo(root + " .title", { y: 26, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.32, ease: "power3.out" }, 0.18);
+      tl.fromTo(root + " .rule", { scaleX: 0 },
+        { scaleX: 1, duration: 0.32, ease: "power3.out" }, 0.34);
+
+      /* le nombre compte — linéaire, en set() par pas (le seek du moteur
+         supprime les callbacks onUpdate, seuls les set() sont sûrs) */
+      const numEl = document.querySelector(root + " .num");
+      const target = parseInt(numEl.textContent.trim(), 10);
+      if (!isNaN(target)) {
+        tl.set(numEl, { textContent: 0 }, 0);
+        const cdur = Math.min(1.2, 0.12 * target + 0.3);
+        const steps = Math.min(target, 24);
+        for (let s = 1; s <= steps; s++) {
+          tl.set(numEl, { textContent: Math.round((target * s) / steps) }, 0.5 + (cdur * s) / steps);
+        }
+      }
+
+      tl.set({}, {}, 3.2);
+      window.__timelines["t1-title-rule"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,121 @@
+<!doctype html>
+<!--
+  HOUSE · custom · screen · PUSH-IN 3D
+  Un écran (screencast, doc, UI) se tient dans une pièce en perspective et la
+  caméra marche vers lui pendant tout le plan. Il part petit, loin et fuyant ;
+  il finit grand, presque de face, débordant du cadre.
+
+  Ce qui fait l'effet n'est pas le zoom, c'est le REDRESSEMENT : le lacet
+  passe de --yaw-far à --yaw-near pendant l'approche, donc la perspective se
+  déforme en continu. Un scale() plat ne produit rien de comparable — c'est
+  l'erreur numéro un quand on essaie de copier ce mouvement.
+
+  Le plan ne se résout jamais : il bouge encore au moment de la coupe.
+
+  tier1 par nature (il remplace l'image), mais rangé en custom : ce n'est pas
+  un takeover de texte, c'est un porteur de média.
+
+  Slots: chapter (titre serif au-dessus, optionnel), screen (l'image ou la
+  vidéo posée dans le panneau).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #cx-screen-push3d {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        overflow: hidden; background: var(--navy);
+        font-family: var(--font-display);
+      }
+
+      /* la pièce : une clé froide en haut, une fuite chaude dans UN coin */
+      #cx-screen-push3d .room {
+        position: absolute; inset: 0;
+        background: var(--room-key), var(--room-warm), var(--navy);
+      }
+      /* le halo décolle le panneau du fond */
+      #cx-screen-push3d .halo {
+        position: absolute; left: 50%; top: 46%;
+        width: 1500px; height: 900px; margin: -450px 0 0 -750px;
+        background: radial-gradient(50% 50% at 50% 50%, rgba(18,32,58,0.9) 0%, transparent 72%);
+      }
+
+      /* la scène porte la perspective, le panneau est ce qui bouge */
+      #cx-screen-push3d .stage {
+        position: absolute; inset: 0;
+        perspective: var(--perspective);
+        perspective-origin: var(--perspective-origin);
+        transform-style: preserve-3d;
+      }
+      #cx-screen-push3d .panel {
+        position: absolute; left: 50%; top: 50%;
+        width: 1520px; height: 855px; margin: -427px 0 0 -760px;
+        transform-style: preserve-3d; will-change: transform;
+      }
+
+      #cx-screen-push3d .screen {
+        position: absolute; inset: 0;
+        border-radius: var(--radius); overflow: hidden;
+        background: var(--den); box-shadow: var(--screen-shadow);
+      }
+      #cx-screen-push3d .screen img,
+      #cx-screen-push3d .screen video {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+      /* une lèvre en filet : ça se lit comme un panneau, pas comme une div */
+      #cx-screen-push3d .screen::after {
+        content: ""; position: absolute; inset: 0; border-radius: var(--radius);
+        box-shadow: inset 1px 1px 0 rgba(255,255,255,0.10),
+                    inset -1px -1px 0 rgba(0,0,0,0.5);
+      }
+
+      /* le chapitre est ancré au panneau : il voyage et grossit avec lui */
+      #cx-screen-push3d .chapter {
+        position: absolute; left: 0; right: 0; top: -104px; text-align: center;
+        font-family: var(--font-serif); font-style: italic;
+        font-size: 92px; line-height: 1;
+        color: var(--white); white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cx-screen-push3d" data-composition-id="cx-screen-push3d" data-start="0" data-width="1920" data-height="1080">
+      <div class="room"></div>
+      <div class="halo"></div>
+      <div class="stage">
+        <div class="panel">
+          <div class="chapter" data-slot="chapter">Où en est chaque projet&nbsp;?</div>
+          <div class="screen">
+            <img data-slot="screen" src="../../references/ref-screen-demo.png" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#cx-screen-push3d";
+      const css = getComputedStyle(document.querySelector(root));
+      const num = (n) => parseFloat(css.getPropertyValue(n));
+
+      const tl = gsap.timeline({ paused: true });
+
+      // La marche de la caméra. Une seule tween, tout le plan. translateZ
+      // porte l'approche ; le lacet qui se redresse est ce qui vend le plan.
+      // power1.inOut, jamais un ease-out : ça bouge encore à la coupe.
+      tl.fromTo(root + " .panel",
+        { transform: `translateZ(${num("--z-far")}px) rotateY(${num("--yaw-far")}deg) rotateX(${num("--pitch-far")}deg)` },
+        { transform: `translateZ(${num("--z-near")}px) rotateY(${num("--yaw-near")}deg) rotateX(${num("--pitch-near")}deg)`,
+          duration: num("--dur-drift"), ease: "power1.inOut" }, 0);
+
+      tl.fromTo(root + " .chapter", { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" }, 0.25);
+
+      window.__timelines["cx-screen-push3d"] = tl;
+    </script>
+  </body>
+</html>

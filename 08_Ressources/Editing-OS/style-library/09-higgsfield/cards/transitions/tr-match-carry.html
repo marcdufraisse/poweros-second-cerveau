@@ -1,0 +1,81 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · transition · MATCH CARRY
+  The match-cut bridge (ref: v3 cannon -> cannonball, v2 coin toss). A lime
+  prop tile flies across the frame in one smooth arc; the scene hard-swaps
+  behind it at the exact moment the prop crosses center. The eye follows the
+  object, the cut hides underneath it. Prop enters frame-right, exits
+  frame-left, slight rotation + near-camera scale bump at center.
+  Slots: glyph (prop face).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+      #tr-match-carry {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--navy); overflow: hidden; font-family: var(--font-display);
+      }
+      /* demo scene planes — replaced by real footage in assembly */
+      .sceneA, .sceneB { position: absolute; inset: 0; }
+      .sceneA { background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 46%); }
+      .sceneA::after { content: ""; position: absolute; inset: 0; background: var(--streaks); }
+      .sceneB { background: var(--olive); visibility: hidden; }
+      .sceneB::after { content: ""; position: absolute; inset: 0; background-image: var(--dot-grid); background-size: var(--dot-grid-size); }
+      .tag {
+        position: absolute; left: 64px; bottom: 56px; z-index: 2;
+        font-family: var(--font-mono); font-weight: var(--wt-med); font-size: var(--size-tiny);
+        letter-spacing: var(--track-pill); text-transform: uppercase; color: var(--grey-pre);
+      }
+      .tagB { color: rgba(255, 255, 255, 0.5); visibility: hidden; }
+
+      /* the carried prop: a chunky lime tile, reads like the 3D icons on the desk */
+      .prop {
+        position: absolute; left: 50%; top: 50%; width: 220px; height: 220px;
+        margin: -110px 0 0 -110px; z-index: 5;
+        display: grid; place-items: center;
+        background: linear-gradient(160deg, var(--lime) 0%, #a8ca00 100%);
+        border-radius: 44px;
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.55), inset 0 3px 0 rgba(255, 255, 255, 0.55);
+      }
+      .prop .glyph {
+        font-weight: var(--wt-black); font-size: 110px; color: var(--charcoal);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tr-match-carry" data-composition-id="tr-match-carry" data-start="0" data-width="1920" data-height="1080">
+      <div class="sceneA"></div>
+      <div class="sceneB"></div>
+      <div class="tag tagA">SCENE A · MATCH CARRY</div>
+      <div class="tag tagB">SCENE B · CUT HIDDEN UNDER THE PROP</div>
+      <div class="prop"><div class="glyph" data-slot="glyph">H</div></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#tr-match-carry";
+      const tl = gsap.timeline({ paused: true });
+
+      /* prop waits off-right, flies through in one smooth arc (~0.9s), the
+         world swaps at its center crossing. Slight scale-up at center = the
+         prop passes near camera. */
+      tl.set(root + " .prop", { x: 1180, y: 60, rotation: 14, scale: 0.82 }, 0)
+
+        .to(root + " .prop", { x: 0, y: -30, rotation: 0, scale: 1.18, duration: 0.45, ease: "power2.in" }, 1.2)
+        .to(root + " .prop", { x: -1180, y: 40, rotation: -14, scale: 0.82, duration: 0.45, ease: "power2.out" }, 1.65)
+
+        /* the hard swap, hidden under the prop at center */
+        .set(root + " .sceneB", { visibility: "visible" }, 1.62)
+        .set(root + " .tagA", { visibility: "hidden" }, 1.62)
+        .set(root + " .tagB", { visibility: "visible" }, 1.62)
+
+        .set({}, {}, 4);
+
+      window.__timelines["tr-match-carry"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<!--
+  FIRESHIP TERMINAL · custom · demo · TERMINAL
+  Full-screen takeover. A centered terminal panel (~1350px, chrome titled
+  "zsh — agent-stack") snaps in; "$ <cmd1>" types on character by character,
+  a dim output line fades in beneath it; "$ <cmd2>" types on, then THREE
+  output lines snap in fast back-to-back; a final --syn-green success line
+  STAMPS (scale 1.6→1, back.out) under everything. Finite cursor blink holds
+  the ending. Dead stillness after.
+  Slots: cmd1, out1, cmd2, o1, o2, o3, done.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #c-terminal {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-mono); overflow: hidden;
+      }
+      #c-terminal .vig { position: absolute; inset: 0; background: var(--vignette); z-index: 5; pointer-events: none; }
+
+      #c-terminal .center {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; align-items: center; justify-content: center;
+      }
+
+      #c-terminal .panel {
+        width: 1350px;
+        background: var(--panel); border: 1px solid var(--panel-edge);
+        border-radius: var(--radius);
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+        overflow: hidden;
+      }
+
+      #c-terminal .chrome {
+        height: var(--chrome-h);
+        display: flex; align-items: center; gap: 10px;
+        padding: 0 22px;
+        background: rgba(0, 0, 0, 0.22);
+        border-bottom: 1px solid var(--panel-edge);
+      }
+      #c-terminal .dot { width: var(--dot); height: var(--dot); border-radius: 50%; }
+      #c-terminal .dot.red { background: var(--dot-red); }
+      #c-terminal .dot.yellow { background: var(--dot-yellow); }
+      #c-terminal .dot.green { background: var(--dot-green); }
+      #c-terminal .filename { margin-left: 10px; font-size: var(--size-label); color: var(--text-dim); letter-spacing: 0.04em; }
+
+      #c-terminal .body { padding: 40px 44px 52px; font-size: var(--size-code); line-height: 1.9; }
+      #c-terminal .prompt { color: var(--syn-green); }
+      #c-terminal .cmd { color: var(--text); }
+      #c-terminal .out { color: var(--text-dim); }
+      #c-terminal .ch { opacity: 0; }
+      #c-terminal .row { white-space: pre; }
+      #c-terminal .done { color: var(--syn-green); font-weight: var(--wt-bold); margin-top: 8px; }
+
+      #c-terminal .cursor {
+        display: inline-block; width: 13px; height: 30px;
+        background: var(--accent); margin-left: 2px;
+        vertical-align: -5px; opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="c-terminal" data-composition-id="c-terminal" data-start="0" data-width="1920" data-height="1080">
+      <div class="center">
+        <div class="panel">
+          <div class="chrome">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="filename">zsh — agent-stack</span>
+          </div>
+          <div class="body">
+            <div class="row cmd1"><span class="prompt">$</span> <span data-slot="cmd1">npx aisplus init agent-stack</span></div>
+            <div class="row out out1" data-slot="out1">&gt; scaffolding agent-stack...</div>
+            <div class="row cmd2" style="margin-top: 22px;"><span class="prompt">$</span> <span data-slot="cmd2">npx aisplus deploy --prod</span></div>
+            <div class="row out o1" data-slot="o1">&gt; building automation pipeline</div>
+            <div class="row out o2" data-slot="o2">&gt; running certification checks</div>
+            <div class="row out o3" data-slot="o3">&gt; pushing to production</div>
+            <div class="row done" data-slot="done">✓ done in 0.8s<span class="cursor">&nbsp;</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#c-terminal";
+
+      /* pre-split a line's text into stampable/typeable char spans */
+      function splitChars(node) {
+        [...node.childNodes].forEach((child) => {
+          if (child.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            [...child.textContent].forEach((ch) => {
+              const s = document.createElement("span");
+              s.className = "ch"; s.textContent = ch === " " ? " " : ch;
+              frag.appendChild(s);
+            });
+            node.replaceChild(frag, child);
+          } else if (child.nodeType === 1 && !child.classList.contains("cursor")) {
+            splitChars(child);
+          }
+        });
+      }
+
+      const cmd1 = document.querySelector(root + " .cmd1");
+      const cmd2 = document.querySelector(root + " .cmd2");
+      splitChars(cmd1);
+      splitChars(cmd2);
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* panel snaps in — no float, no drift */
+      tl.from(root + " .panel", { autoAlpha: 0, y: 26, duration: 0.3, ease: "expo.out" }, 0.1)
+        .from(root + " .chrome .dot", { autoAlpha: 0, scale: 0.4, duration: 0.2, ease: "back.out(2)", stagger: 0.05 }, ">-0.1")
+        .from(root + " .filename", { autoAlpha: 0, duration: 0.2, ease: "power2.out" }, "<")
+
+        /* first command types on, char by char, linear */
+        .fromTo(cmd1.querySelectorAll(".ch"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.02, ease: "none", stagger: 0.02 }, ">0.15")
+
+        /* dim output line fades in beneath it */
+        .from(root + " .out1", { autoAlpha: 0, y: -6, duration: 0.2, ease: "power2.out" }, ">0.12")
+
+        /* second command types on */
+        .fromTo(cmd2.querySelectorAll(".ch"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.02, ease: "none", stagger: 0.02 }, ">0.3")
+
+        /* three output lines SNAP in fast, back to back */
+        .from(root + " .o1", { autoAlpha: 0, y: -6, duration: 0.14, ease: "expo.out" }, ">0.16")
+        .from(root + " .o2", { autoAlpha: 0, y: -6, duration: 0.14, ease: "expo.out" }, ">0.1")
+        .from(root + " .o3", { autoAlpha: 0, y: -6, duration: 0.14, ease: "expo.out" }, ">0.1")
+
+        /* success line STAMPS */
+        .from(root + " .done", {
+          autoAlpha: 0, scale: 1.6, transformOrigin: "0% 50%",
+          duration: 0.28, ease: "back.out(2.2)"
+        }, ">0.2")
+
+        /* finite blinking cursor holds the ending */
+        .to(root + " .cursor", { autoAlpha: 1, duration: 0.01 }, ">0.05")
+        .to(root + " .cursor", { autoAlpha: 0, duration: 0.26, repeat: 5, yoyo: true, ease: "steps(1)" }, ">")
+
+        /* dead stillness */
+        .set({}, {}, 8);
+
+      window.__timelines["c-terminal"] = tl;
+    </script>
+  </body>
+</html>

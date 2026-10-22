@@ -1,0 +1,258 @@
+{
+  "$schema": "../registry.schema.json",
+  "id": "nick-saraev",
+  "name": "Nick Saraev",
+  "number": "13",
+  "status": "draft",
+  "inspiration": "instagram.com/nick_saraev — the 'white gallery' reel. Refs pulled from his last 10 reels (Jul 30 - Aug 17 2026: DcJTgNZv3nW, DcEFABnvBuH, Db_H8ScP5y-, Db52rxbPh6i, Db3UttuvfwN, Db0zoZMPMCV, DbyJNRdPyCj, Dbvkxq3SAE0, Dbn6ElTvw_W, DblTPmfPCpB). Hard-white gallery and full-black stages, serif-italic-CAPS shock words stamped full frame, bold lowercase running captions, a coral pixel-art robot mascot that bobs between shots, and THE gesture: a REAL screenshot blurred everywhere except one sharp zone ringed by a thick neon stroke (orange/lime/cyan/red, one at a time). Real captures as evidence — never redrawn. Fastest style in the library. Reference frames in references/.",
+  "summary": "The rapid-fire 'tool news' reel style. Use for 30-57s vertical announcements — someone shipped X, here is the proof, comment the keyword. One idea per shot, ~26 cuts/min, nearly twice Nathan Hodgson's pace. PLAYBOOK.md is the full A-to-Z edit recipe (beat-map table, web asset sourcing via insert-broll, zero-dead-frame QC) with a real reel decomposed shot by shot.",
+  "format": "vertical reels 9:16 (1080x1920). Not built for long-form.",
+  "palette": {
+    "bg": "#FCFCFC",
+    "fg": "#131313",
+    "accent": "#E27D55",
+    "black": "#0A0A0C",
+    "neonOrange": "#FE850D",
+    "neonLime": "#D0FC10",
+    "neonCyan": "#00C8CC",
+    "neonRed": "#FC4C34",
+    "markRed": "#D03C3C",
+    "creamProp": "#E5DFD3",
+    "notes": "White is HARD (#FCFCFC), never cream — warming it slides into Nathan Hodgson. Coral is the only permanent accent (mascot + script voice). Neons are a rotation system for annotation frames: ONE on screen at a time, color may change shot to shot. Sampled per-pixel from the refs. Mirrored in tokens.css."
+  },
+  "fonts": {
+    "display": "Playfair Display",
+    "body": "Poppins",
+    "mono": "JetBrains Mono",
+    "notes": "The clash between voice 1 and 2 IS the style. Voice 1: serif ITALIC CAPS (Playfair 700i) for shock words, 1-3 words max, stamped full frame. Voice 2: bold lowercase geometric (Poppins 700) for running captions, 2-4 words. Voice 3: coral/white italic script for connectives, overlapping the other voice (the outro signature). Mono appears only INSIDE real captures."
+  },
+  "motion": "One speed: FAST. Everything enters in 0.22-0.30s and the cut lands before it settles. WHIP-SCALE for captures (1.12 → 1.0), STAMP for serif words (0.94 → 1.0, dry), BOB for the pixel mascot (±4° sine loop). The neon frame draws its stroke around the perimeter in ~0.4s after a beat on the full sharp page. Zoom is always still moving at the cut. No fades anywhere.",
+  "transitions": "Hard cuts only, ping-ponging between the white gallery and the full-black stage several times per reel. Face returns for 1-2s breaths (cut-out on a rounded plate) between proofs. Outro is typography over the last face shot — no panel, no card.",
+  "pacing": {
+    "cutsPerMinute": 26.5,
+    "medianShotSeconds": 2.1,
+    "durationSeconds": "30-57",
+    "notes": "Measured across the 10 reels (scene>0.25 detection); fastest reel hits 35.5 cpm with a 1.4s median. One idea per shot — if a shot must carry two, split it. If a shot must hold >3s, this is the wrong style."
+  },
+  "cards": [
+    {
+      "id": "nick-saraev.t1.thesis.serifstamp",
+      "tier": "tier1",
+      "purpose": "thesis",
+      "treatment": "serif-stamp",
+      "file": "cards/tier1/t1-serif-stamp.html",
+      "slots": [
+        {
+          "name": "word",
+          "type": "text",
+          "maxChars": 14
+        },
+        {
+          "name": "theme",
+          "type": "text",
+          "maxChars": 5
+        }
+      ],
+      "duration": {
+        "min": 1,
+        "max": 2
+      },
+      "notes": "The shock word, full frame: serif italic CAPS, stamped dry (scale 0.94→1.0, 0.22s), holds 0.8-1.5s. theme slot = 'white' or 'black'. Chain them against captures: A FREE → screenshot → UNCENSORED → screenshot. Never more than 3 words.",
+      "preview": {
+        "mp4": "preview/nick-saraev.t1.thesis.serifstamp.mp4",
+        "poster": "preview/nick-saraev.t1.thesis.serifstamp.png"
+      }
+    },
+    {
+      "id": "nick-saraev.soc.screen.neonspotlight",
+      "tier": "social",
+      "purpose": "screen",
+      "treatment": "neon-spotlight",
+      "file": "cards/social/soc-neon-spotlight.html",
+      "slots": [
+        {
+          "name": "screen",
+          "type": "media"
+        },
+        {
+          "name": "neon",
+          "type": "text",
+          "maxChars": 8
+        }
+      ],
+      "duration": {
+        "min": 3,
+        "max": 6
+      },
+      "notes": "THE gesture. Real screenshot arrives sharp (whip 1.12→1.0), beat ~0.6s, then everything blurs and darkens EXCEPT one zone ringed by an 8px neon stroke (radius 28) that draws around the perimeter. Zone via --rx/--ry/--rw/--rh percents. neon slot picks the color: orange | lime | cyan | red. No label — the frame alone. One neon on screen at a time.",
+      "preview": {
+        "mp4": "preview/nick-saraev.soc.screen.neonspotlight.mp4",
+        "poster": "preview/nick-saraev.soc.screen.neonspotlight.png"
+      }
+    },
+    {
+      "id": "nick-saraev.t1.overview.editorialmarkup",
+      "tier": "tier1",
+      "purpose": "overview",
+      "treatment": "editorial-markup",
+      "file": "cards/tier1/t1-editorial-markup.html",
+      "slots": [
+        {
+          "name": "line1",
+          "type": "text",
+          "maxChars": 44
+        },
+        {
+          "name": "line2",
+          "type": "text",
+          "maxChars": 44
+        },
+        {
+          "name": "line3",
+          "type": "text",
+          "maxChars": 44
+        },
+        {
+          "name": "tag1",
+          "type": "text",
+          "maxChars": 20
+        },
+        {
+          "name": "tag2",
+          "type": "text",
+          "maxChars": 20
+        },
+        {
+          "name": "tag3",
+          "type": "text",
+          "maxChars": 20
+        }
+      ],
+      "duration": {
+        "min": 3,
+        "max": 6
+      },
+      "notes": "For talking about TEXT: three centered roman-serif lines, then editor corrections slam onto them one by one — red wash behind the offending phrase, strikethrough, red pill label at the end of a leader line (UNNECESSARY INTRO / EM DASH / FAKE INSIGHT). The text never moves; only annotations pop.",
+      "preview": {
+        "mp4": "preview/nick-saraev.t1.overview.editorialmarkup.mp4",
+        "poster": "preview/nick-saraev.t1.overview.editorialmarkup.png"
+      }
+    },
+    {
+      "id": "nick-saraev.soc.mascot.pixel",
+      "tier": "social",
+      "purpose": "mascot",
+      "treatment": "pixel-bob",
+      "file": "cards/social/soc-mascot-pixel.html",
+      "slots": [
+        {
+          "name": "theme",
+          "type": "text",
+          "maxChars": 5
+        }
+      ],
+      "duration": {
+        "min": 1,
+        "max": 3
+      },
+      "notes": "The coral pixel robot (crisp cells, never smoothed) bobbing ±4° with a sine hop, alone on white or above a prop. The recurring character that stitches the reel together. theme = 'white' or 'black'.",
+      "preview": {
+        "mp4": "preview/nick-saraev.soc.mascot.pixel.mp4",
+        "poster": "preview/nick-saraev.soc.mascot.pixel.png"
+      }
+    },
+    {
+      "id": "nick-saraev.soc.face.plate",
+      "tier": "social",
+      "purpose": "pip",
+      "treatment": "cutout-plate",
+      "file": "cards/social/soc-face-plate.html",
+      "slots": [
+        {
+          "name": "face",
+          "type": "media"
+        },
+        {
+          "name": "caption",
+          "type": "text",
+          "maxChars": 18
+        }
+      ],
+      "duration": {
+        "min": 1,
+        "max": 3
+      },
+      "notes": "The breath between proofs: cut-out talking head on a rounded plate (radius 64) sliding up from the bottom, bold lowercase caption over the chin. 1-2s max.",
+      "preview": {
+        "mp4": "preview/nick-saraev.soc.face.plate.mp4",
+        "poster": "preview/nick-saraev.soc.face.plate.png"
+      }
+    },
+    {
+      "id": "nick-saraev.soc.media.slam",
+      "tier": "social",
+      "purpose": "media",
+      "treatment": "animated-asset",
+      "file": "cards/social/soc-media-slam.html",
+      "slots": [
+        {
+          "name": "media",
+          "type": "media"
+        },
+        {
+          "name": "variant",
+          "type": "text",
+          "maxChars": 8
+        },
+        {
+          "name": "theme",
+          "type": "text",
+          "maxChars": 5
+        },
+        {
+          "name": "fit",
+          "type": "text",
+          "maxChars": 8
+        }
+      ],
+      "duration": {
+        "min": 1.5,
+        "max": 5
+      },
+      "notes": "The workhorse — makes 'every element shown with an animation' reproducible. Takes ANY fetched asset (site screenshot, GitHub page, logo, product UI from insert-broll) and slams it in with one of five entrances + continuous drift until the cut: whip (default), zoomin, zoomout, pan, pop (logos/cards on stage with shadow, fit=contain). Alternate variants; never show a static asset. See PLAYBOOK.md law 3.",
+      "preview": {
+        "mp4": "preview/nick-saraev.soc.media.slam.mp4",
+        "poster": "preview/nick-saraev.soc.media.slam.png"
+      }
+    },
+    {
+      "id": "nick-saraev.soc.cta.scriptoverlap",
+      "tier": "social",
+      "purpose": "cta",
+      "treatment": "script-overlap",
+      "file": "cards/social/soc-cta-script.html",
+      "slots": [
+        {
+          "name": "keyword",
+          "type": "text",
+          "maxChars": 12
+        }
+      ],
+      "duration": {
+        "min": 1.5,
+        "max": 3
+      },
+      "notes": "The outro: 'comment' in white italic script overlapping the quoted keyword in heavy bold beneath it, soft drop shadow, over the final face shot. No panel, no pill — the exact inverse of Nathan Hodgson's violet card.",
+      "preview": {
+        "mp4": "preview/nick-saraev.soc.cta.scriptoverlap.mp4",
+        "poster": "preview/nick-saraev.soc.cta.scriptoverlap.png"
+      }
+    }
+  ],
+  "backlog": [
+    "soc-prop-installer — the beige installer card prop (app icon + progress bar) under the bobbing mascot",
+    "soc-caption-run — bold lowercase running captions with shadow, timed per phrase",
+    "t2-star-counter — GitHub star count ticking up over a blurred repo capture",
+    "cx-leaderboard-bars — the ranked color-bar leaderboard with row 1 highlighted"
+  ]
+}

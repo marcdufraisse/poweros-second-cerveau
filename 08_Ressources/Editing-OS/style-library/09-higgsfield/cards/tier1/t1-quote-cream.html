@@ -1,0 +1,101 @@
+<!doctype html>
+<!--
+  HIGGSFIELD · tier1 · quote · CREAM
+  Cream canvas quote card: charcoal serif-free quote reveals word by word, a
+  lime highlight pill sweeps behind the key phrase, attribution types on
+  underneath in mono. Calm compared to the money card - one idea, lots of air.
+  Slots: quote (use <em> around the highlighted phrase), attribution.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t1-quote-cream {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream) 60%);
+        overflow: hidden; font-family: var(--font-display);
+      }
+      #t1-quote-cream .wrap {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 48px; z-index: 2;
+        padding: 0 150px; text-align: center;
+      }
+      #t1-quote-cream .quote {
+        font-weight: var(--wt-heavy); font-size: 72px; line-height: 1.22;
+        letter-spacing: 0; color: var(--charcoal); max-width: 1480px;
+      }
+      #t1-quote-cream .quote .w { display: inline-block; white-space: pre; }
+      #t1-quote-cream .quote .em {
+        position: relative; z-index: 1; font-style: normal; padding: 0 6px;
+      }
+      #t1-quote-cream .quote .em::before {
+        content: ""; position: absolute; inset: 4px -4px; z-index: -1;
+        background: var(--lime); border-radius: 6px;
+        transform: scaleX(var(--hl, 0)); transform-origin: 0 50%;
+      }
+      #t1-quote-cream .attribution {
+        font-family: var(--font-mono); font-weight: var(--wt-med);
+        font-size: var(--size-label); letter-spacing: var(--track-pill);
+        text-transform: uppercase; color: var(--charcoal-soft);
+      }
+      #t1-quote-cream .attribution .ch { display: inline-block; }
+    </style>
+  </head>
+  <body>
+    <div id="t1-quote-cream" data-composition-id="t1-quote-cream" data-start="0" data-width="1920" data-height="1080">
+      <div class="wrap">
+        <div class="quote" data-slot="quote">I STOPPED HIRING EDITORS BECAUSE <em>THIS IS FASTER</em></div>
+        <div class="attribution" data-slot="attribution">ACTUAL CLIENT, LAST MONTH</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-quote-cream";
+
+      /* split quote into words, keeping <em> phrase wrapped in .em spans */
+      const q = document.querySelector(root + " .quote");
+      (function splitWords(el) {
+        const parts = [];
+        el.childNodes.forEach((n) => {
+          if (n.nodeType === 3) n.textContent.split(/\s+/).filter(Boolean).forEach((w) => parts.push({ w, em: false }));
+          else if (n.nodeType === 1) n.textContent.split(/\s+/).filter(Boolean).forEach((w) => parts.push({ w, em: true }));
+        });
+        el.textContent = "";
+        parts.forEach(({ w, em }, i) => {
+          const s = document.createElement("span");
+          s.className = "w" + (em ? " em" : "");
+          s.textContent = w + (i < parts.length - 1 ? " " : "");
+          el.appendChild(s);
+        });
+      })(q);
+
+      function splitChars(el) {
+        const text = el.textContent; el.textContent = "";
+        text.split("").forEach((ch) => {
+          const s = document.createElement("span");
+          s.className = "ch"; s.textContent = ch === " " ? "\u00A0" : ch;
+          el.appendChild(s);
+        });
+      }
+      splitChars(document.querySelector(root + " .attribution"));
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .quote .w", {
+          autoAlpha: 0, y: 26, duration: 0.4, ease: "expo.out", stagger: 0.07
+        }, 0.15)
+        /* lime highlight sweeps behind the emphasized phrase */
+        .to(root + " .quote .em", { "--hl": 1, duration: 0.4, ease: "power3.out", stagger: 0.05 }, 1.2)
+        /* attribution types on */
+        .from(root + " .attribution .ch", { autoAlpha: 0, duration: 0.01, stagger: 0.02, ease: "none" }, 1.7)
+        .set({}, {}, 5.5);
+
+      window.__timelines["t1-quote-cream"] = tl;
+    </script>
+  </body>
+</html>

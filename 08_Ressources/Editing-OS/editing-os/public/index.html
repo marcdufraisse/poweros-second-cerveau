@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editing OS</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="topbar">
+    <div class="brand">
+      <a class="brand-mark" href="#/" aria-label="Editing OS home">
+        <span class="brand-dot"></span>
+        <span class="brand-name">Editing<span class="brand-accent">OS</span></span>
+      </a>
+      <span class="brand-sub" id="scan-status">atelier de montage</span>
+    </div>
+
+    <nav class="nav" aria-label="Primary">
+      <a class="nav-link" href="#/" data-route="mission">Projets</a>
+      <a class="nav-link" href="#/studio" data-route="studio">Studio<span class="nav-dot" id="studio-dot" hidden></span></a>
+      <a class="nav-link" href="#/libraries" data-route="libraries">Bibliothèques</a>
+      <a class="nav-link" href="#/activity" data-route="activity">Activité</a>
+    </nav>
+
+    <div class="topbar-actions">
+      <span class="fixture-flag" id="fixture-flag" hidden>fixture mode</span>
+      <button type="button" class="btn btn-refresh" id="refresh-btn">
+        <span class="btn-spin" aria-hidden="true"></span>
+        <span class="btn-label">Actualiser</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="summary-strip" id="summary-strip" hidden></div>
+
+  <main id="view" class="view" tabindex="-1"></main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="studio.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

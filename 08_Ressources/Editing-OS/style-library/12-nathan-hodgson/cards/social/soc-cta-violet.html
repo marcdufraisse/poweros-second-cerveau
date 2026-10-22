@@ -1,0 +1,85 @@
+<!doctype html>
+<!--
+  NATHAN HODGSON · social · cta · LA CARTE VIOLETTE « COMMENT »
+  La fin obligatoire, présente dans 10 reels sur 10 du corpus. Un panneau
+  violet occupe ~25% du haut du cadre (le visage reste dessous), « Comment »
+  en géométrique blanche, et une pastille blanche qui imite un vrai champ
+  de commentaire Instagram : glyphe IG, mot-clé en poids NORMAL (la seule
+  typo non grasse du style), glyphe partage à droite.
+  Overlay : transparent sous le panneau.
+  Slots: keyword.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-cta-violet {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden; background: transparent;
+        font-family: var(--font-body);
+      }
+      #soc-cta-violet .plate {
+        position: absolute; left: 0; right: 0; top: 0; height: 500px;
+        background: var(--violet-cta);
+      }
+      #soc-cta-violet .word {
+        position: absolute; left: 0; right: 0; top: 118px;
+        text-align: center; font-size: 92px; font-weight: 700;
+        color: var(--white); letter-spacing: 0.01em;
+      }
+      #soc-cta-violet .pill {
+        position: absolute; left: 130px; right: 130px; top: 268px; height: 96px;
+        background: var(--card-white); border-radius: 52px;
+        display: flex; align-items: center; gap: 24px; padding: 0 30px;
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+      }
+      #soc-cta-violet .ig {
+        width: 56px; height: 56px; border-radius: 16px; flex: 0 0 56px;
+        background: radial-gradient(120% 120% at 25% 110%, #FDD262, #F0335B 55%, #7A38B4 100%);
+        display: grid; place-items: center;
+      }
+      #soc-cta-violet .ig svg { width: 34px; height: 34px; }
+      #soc-cta-violet .keyword {
+        flex: 1; font-size: 44px; font-weight: 400; color: #131313;
+      }
+      #soc-cta-violet .share { width: 44px; height: 44px; color: #131313; }
+      #soc-cta-violet .share svg { width: 100%; height: 100%; display: block; }
+    </style>
+  </head>
+  <body>
+    <div id="soc-cta-violet" data-composition-id="soc-cta-violet" data-start="0" data-width="1080" data-height="1920">
+      <div class="plate"></div>
+      <div class="word">Comment</div>
+      <div class="pill">
+        <div class="ig">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.2" fill="#fff" stroke="none"/></svg>
+        </div>
+        <div class="keyword" data-slot="keyword">Claude</div>
+        <div class="share">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M9 13 21 3l-6.5 18-3-7L3 10.5 21 3"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-cta-violet";
+      const tl = gsap.timeline({ paused: true });
+
+      /* le panneau glisse du haut, la pastille pope après */
+      tl.fromTo(root + " .plate", { yPercent: -100 },
+        { yPercent: 0, duration: 0.42, ease: "power3.out" }, 0);
+      tl.fromTo(root + " .word", { y: -26, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.32, ease: "power3.out" }, 0.22);
+      tl.fromTo(root + " .pill", { scale: 0.88, autoAlpha: 0 },
+        { scale: 1, autoAlpha: 1, duration: 0.32, ease: "back.out(1.8)" }, 0.38);
+
+      tl.set({}, {}, 3.0);
+      window.__timelines["soc-cta-violet"] = tl;
+    </script>
+  </body>
+</html>

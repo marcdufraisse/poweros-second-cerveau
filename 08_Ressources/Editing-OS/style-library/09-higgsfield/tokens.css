@@ -1,0 +1,129 @@
+/* ============================================================================
+   HIGGSFIELD — style tokens
+   Single source of palette / type / motion / texture for every card in this
+   style. Cards reference these vars and never hardcode colors, fonts,
+   easings, or textures. Tweak here, all cards update. See DESIGN.md.
+   Aesthetic: Higgsfield creator-tutorial — neon-lime accent on near-black
+   navy, dark-olive dot-matrix "boot" cards, butter-cream kinetic typography
+   montages, frosted-glass floating panels, staged grey-to-lime text reveals.
+   Modern AI-tool energy: crisp, techy, a little playful.
+   ============================================================================ */
+
+/* The HyperFrames compiler embeds supported fonts by name at render time;
+   this @import makes standalone / browser preview show the right faces. */
+@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,600;0,700;0,800;0,900;1,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+:root {
+  /* --- palette (mirror style.json + DESIGN.md) ----------------------------- */
+  --lime:        #D6FD03;   /* THE accent — sampled from refs. Emphasis, active states, kinetic type */
+  --lime-soft:   #D6FF60;   /* lime on frosted glass (lower saturation reads better on light) */
+  --lime-dim:    rgba(214, 253, 3, 0.32);
+
+  --navy:        #02060F;   /* tier1 step/thesis/stat canvas — near-black blue */
+  --navy-2:      #0A1626;   /* navy gradient partner (top-light) */
+  --olive:       #0A1400;   /* stage/boot card canvas — very dark green */
+  --olive-2:     #16240A;   /* olive bokeh blob tone */
+  --cream:       #F7F5C9;   /* money/kinetic card canvas — pale butter */
+  --cream-2:     #FFFDE4;   /* cream gradient partner */
+
+  --white:       #FFFFFF;
+  --grey-pre:    rgba(255, 255, 255, 0.38); /* "pre-reveal" text state before the white/lime flip */
+  --charcoal:    #17191C;   /* text on cream */
+  --charcoal-soft: rgba(23, 25, 28, 0.62);
+
+  --den:         #19232A;   /* dark-den set tone — tier2 pills, PIP chrome */
+  --warm-glow:   #3A1E08;   /* warm practical-light creep (bottom corners of navy cards) */
+
+  --money-deep:  #3F6212;   /* stat-number gradient start (dark green) */
+  --money-lite:  #A3CC1A;   /* stat-number gradient end (toward lime) */
+
+  --lime-rgb:    214, 253, 3;
+  --navy-rgb:    2, 6, 15;
+
+  /* semantic aliases the blueprint contract expects */
+  --bg:     var(--navy);
+  --fg:     var(--white);
+  --accent: var(--lime);
+  --muted:  var(--grey-pre);
+
+  /* --- typography ----------------------------------------------------------
+     Inter Tight 800/900 ALL CAPS = the display voice (step titles, kinetic
+     floats). Inter = supporting copy. JetBrains Mono = pills, eyebrows,
+     UI-ish labels. */
+  --font-display: "Inter Tight", "Helvetica Neue", system-ui, sans-serif;
+  --font-body:    "Inter", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+  --font-label:   var(--font-mono);
+
+  --wt-reg: 400; --wt-med: 500; --wt-semi: 600; --wt-bold: 700; --wt-heavy: 800; --wt-black: 900;
+
+  /* sizes for 1920x1080 */
+  --size-mega:     220px;   /* single-word step title ("SETUP") */
+  --size-display:  132px;   /* takeover headline / stat number */
+  --size-title:    84px;    /* multi-line thesis, overview rows */
+  --size-headline: 54px;    /* glass-panel titles, kinetic float lines */
+  --size-body:     32px;    /* supporting copy, script body */
+  --size-label:    24px;    /* eyebrows, pills, tags */
+  --size-tiny:     19px;
+
+  --track-eyebrow: 0.34em;  /* "STEP 1:" wide-tracked caps */
+  --track-caps:    0.01em;  /* display caps run tight */
+  --track-pill:    0.18em;
+
+  /* --- signature: the grey-to-lime (or grey-to-white) flip ------------------
+     Text enters at --grey-pre, then snaps to its final color when the next
+     element arrives. Stagger the flips, never simultaneous. */
+
+  /* kinetic float text — lime caps with a dark rim so it reads on any set */
+  --kinetic-shadow: 0 3px 0 rgba(0, 0, 0, 0.55), 0 12px 26px rgba(0, 0, 0, 0.45);
+  --kinetic-tilt:   perspective(900px) rotateY(-7deg) rotateX(2deg);
+  --kinetic-tilt-l: perspective(900px) rotateY(7deg) rotateX(2deg);
+
+  /* --- frosted glass panels ------------------------------------------------- */
+  --glass-bg:     rgba(255, 255, 255, 0.14);
+  --glass-bg-lit: rgba(255, 255, 255, 0.55);  /* media/paper glass on light sets */
+  --glass-edge:   1px solid rgba(255, 255, 255, 0.35);
+  --glass-blur:   blur(18px);
+  --glass-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+  --glass-tilt:   perspective(1400px) rotateY(-10deg);
+  --glass-tilt-l: perspective(1400px) rotateY(10deg);
+
+  /* --- textures -------------------------------------------------------------
+     navy streaks: faint diagonal light streaks on tier1 navy cards.
+     dot-matrix: the stage-card LED grid (repeating radial-gradient).
+     warm creep: warm gradient entering a bottom corner of navy cards. */
+  --streaks: repeating-linear-gradient(100deg,
+      transparent 0 150px, rgba(255, 255, 255, 0.006) 150px 210px);
+  --dot-grid: radial-gradient(rgba(255, 255, 255, 0.05) 1.4px, transparent 1.6px);
+  --dot-grid-size: 14px 14px;
+  --warm-creep: radial-gradient(60% 55% at 92% 100%,
+      rgba(120, 62, 18, 0.5) 0%, transparent 70%);
+  --olive-bokeh: radial-gradient(34% 42% at 18% 72%, rgba(60, 92, 18, 0.5) 0%, transparent 100%),
+                 radial-gradient(28% 36% at 82% 24%, rgba(48, 76, 14, 0.42) 0%, transparent 100%),
+                 radial-gradient(46% 52% at 60% 88%, rgba(34, 56, 8, 0.55) 0%, transparent 100%);
+  --vignette: radial-gradient(130% 130% at 50% 42%, transparent 52%, rgba(0, 0, 0, 0.42) 100%);
+
+  /* --- shape ---------------------------------------------------------------- */
+  --radius:     18px;       /* glass panels, media cards */
+  --radius-sm:  10px;       /* pills, tags, chips */
+  --radius-pip: 22px;       /* speaker PIP */
+  --pad:        96px;
+
+  /* --- motion ----------------------------------------------------------------
+     Two speeds: SNAP (reveals, flips — fast, expo) and DRIFT (glass panels
+     float slowly while alive). Text = snap. Panels = snap in, then drift. */
+  --ease-in:     cubic-bezier(0.4, 0, 1, 1);
+  --ease-out:    cubic-bezier(0, 0, 0.2, 1);
+  --ease-snap:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-pop:    cubic-bezier(0.34, 1.45, 0.5, 1);
+  --ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  /* GSAP string eases */
+  --gsap-snap:   expo.out;         /* text reveals, panel entrances */
+  --gsap-pop:    back.out(1.9);    /* icon props, pills */
+  --gsap-flip:   power2.inOut;     /* the grey-to-lime color flip */
+  --gsap-drift:  sine.inOut;       /* glass panel float */
+  --dur-in:   0.45s;
+  --dur-flip: 0.22s;
+  --dur-out:  0.3s;
+  --drift-dur: 6s;                 /* full drift cycle while a panel is alive */
+}

@@ -1,0 +1,156 @@
+<!doctype html>
+<!--
+  HARRIS ATLAS · tier1 · overview · ITINERARY
+  Full-screen atlas plate. Parchment ground with a quiet abstract coastline
+  behind a printed journey list: plate frame, corner coordinates, Oswald
+  title, then a vertical dashed SVG line drawing downward on the left with
+  four stop dots. Each stop is a boxed slate label (Oswald caps) with a
+  serif note to its right. The line draws first; the four stops stamp in
+  top to bottom after it. Slow push-in on the map ground only.
+  Slots: title, s1, m1, s2, m2, s3, m3, s4, m4.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-overview-itinerary {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--sage); color: var(--ink);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      #t1-overview-itinerary .ground { position: absolute; inset: -60px; z-index: 1; }
+      #t1-overview-itinerary .ground svg { width: 100%; height: 100%; }
+
+      #t1-overview-itinerary .paper {
+        position: absolute; inset: 0; z-index: 2; pointer-events: none;
+        background-image: var(--tex-paper); background-size: 240px 240px;
+        mix-blend-mode: multiply; opacity: 0.16;
+      }
+      #t1-overview-itinerary .age { position: absolute; inset: 0; z-index: 2; background: var(--paper-edge); pointer-events: none; }
+      #t1-overview-itinerary .vig { position: absolute; inset: 0; z-index: 6; background: var(--vignette); pointer-events: none; }
+
+      #t1-overview-itinerary .plate {
+        position: absolute; inset: 40px; z-index: 4;
+        border: var(--frame); border-radius: var(--radius-sm);
+        pointer-events: none;
+      }
+      #t1-overview-itinerary .coord {
+        position: absolute; z-index: 5;
+        font-family: var(--font-mono); font-size: var(--size-tiny);
+        color: rgba(var(--ink-rgb), 0.65); letter-spacing: 0.06em;
+      }
+      #t1-overview-itinerary .coord.tl { top: 54px; left: 62px; }
+      #t1-overview-itinerary .coord.br { bottom: 54px; right: 62px; }
+
+      #t1-overview-itinerary .title {
+        position: absolute; top: 112px; left: 178px; z-index: 5;
+        font-weight: var(--wt-semi); font-size: var(--size-title);
+        letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--ink);
+      }
+
+      #t1-overview-itinerary .route { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+
+      #t1-overview-itinerary .stops {
+        position: absolute; inset: 0; z-index: 5; pointer-events: none;
+      }
+      #t1-overview-itinerary .stop {
+        position: absolute; left: 268px; width: 1500px;
+        display: flex; align-items: center; gap: 26px;
+        transform: translateY(-50%);
+      }
+      #t1-overview-itinerary .stop.s1 { top: 320px; }
+      #t1-overview-itinerary .stop.s2 { top: 490px; }
+      #t1-overview-itinerary .stop.s3 { top: 660px; }
+      #t1-overview-itinerary .stop.s4 { top: 830px; }
+
+      #t1-overview-itinerary .boxed {
+        flex: 0 0 auto; background: var(--label-bg); color: var(--white);
+        padding: var(--label-pad); border-radius: var(--radius-sm);
+        font-weight: var(--wt-med); font-size: var(--size-label);
+        letter-spacing: var(--track-caps); text-transform: uppercase;
+      }
+      #t1-overview-itinerary .note {
+        flex: 1 1 auto; font-family: var(--font-body); font-style: italic;
+        font-size: var(--size-body); color: rgba(var(--ink-rgb), 0.82); line-height: 1.35;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-overview-itinerary" data-composition-id="t1-overview-itinerary" data-start="0" data-width="1920" data-height="1080">
+
+      <div class="ground">
+        <svg viewBox="0 0 2040 1200" preserveAspectRatio="xMidYMid slice">
+          <rect x="0" y="0" width="2040" height="1200" fill="var(--sage)"/>
+          <path d="M -80 1300 L -80 620 C 120 560, 200 700, 380 660 C 600 610, 640 460, 860 500 C 1120 550, 1180 380, 1420 420 C 1660 460, 1780 320, 2120 380 L 2120 1300 Z"
+                fill="var(--parchment)"/>
+        </svg>
+      </div>
+
+      <div class="paper"></div>
+      <div class="age"></div>
+      <div class="plate"></div>
+      <div class="coord tl">PLATE 05 · ROUTE OF RECORD</div>
+      <div class="coord br">ACME ARCHIVE · SHEET 09</div>
+
+      <div class="title" data-slot="title">The Route So Far</div>
+
+      <svg class="route" viewBox="0 0 1920 1080">
+        <path class="line" d="M 210 300 L 210 850" fill="none" stroke="var(--slate)" stroke-width="4" stroke-dasharray="14 10"/>
+        <circle class="dot dot1" cx="210" cy="320" r="11" fill="var(--accent)"/>
+        <circle class="dot dot2" cx="210" cy="490" r="11" fill="var(--accent)"/>
+        <circle class="dot dot3" cx="210" cy="660" r="11" fill="var(--accent)"/>
+        <circle class="dot dot4" cx="210" cy="830" r="11" fill="var(--accent)"/>
+      </svg>
+
+      <div class="stops">
+        <div class="stop s1"><div class="boxed" data-slot="s1">Discover</div><div class="note" data-slot="m1">A member hears an agent already handles someone else's onboarding.</div></div>
+        <div class="stop s2"><div class="boxed" data-slot="s2">Enroll</div><div class="note" data-slot="m2">They start the Acme certification path, one module at a time.</div></div>
+        <div class="stop s3"><div class="boxed" data-slot="s3">Build</div><div class="note" data-slot="m3">Their first automation ships small, ugly, and working.</div></div>
+        <div class="stop s4"><div class="boxed" data-slot="s4">Certify</div><div class="note" data-slot="m4">The exam is passed. The agent runs unattended in production.</div></div>
+      </div>
+
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t1-overview-itinerary";
+
+      /* slow documentary push-in — GROUND ONLY */
+      tl.fromTo(root + " .ground", { scale: 1.0 }, { scale: 1.06, transformOrigin: "38% 55%", duration: 7, ease: "power2.inOut" }, 0)
+
+        .from(root + " .plate", { opacity: 0, duration: 0.7, ease: "power2.out" }, 0.15)
+        .from(root + " .coord.tl", { opacity: 0, y: -8, duration: 0.5, ease: "expo.out" }, 0.55)
+        .from(root + " .coord.br", { opacity: 0, y: 8, duration: 0.5, ease: "expo.out" }, 0.7)
+        .from(root + " .title", { autoAlpha: 0, y: -14, duration: 0.55, ease: "expo.out" }, 0.9)
+
+        /* the line draws downward first */
+        .fromTo(root + " .line",
+          { strokeDashoffset: 900, autoAlpha: 0 },
+          { strokeDashoffset: 0, autoAlpha: 1, duration: 1.6, ease: "power1.inOut" }, 1.3)
+
+        /* four stops stamp in sequence, top to bottom, dot then boxed row */
+        .from(root + " .dot1", { autoAlpha: 0, scale: 0, duration: 0.35, ease: "expo.out", transformOrigin: "50% 50%" }, 1.5)
+        .from(root + " .stop.s1", { autoAlpha: 0, scale: 1.1, x: -14, duration: 0.5, ease: "expo.out" }, 1.6)
+
+        .from(root + " .dot2", { autoAlpha: 0, scale: 0, duration: 0.35, ease: "expo.out", transformOrigin: "50% 50%" }, 1.95)
+        .from(root + " .stop.s2", { autoAlpha: 0, scale: 1.1, x: -14, duration: 0.5, ease: "expo.out" }, 2.05)
+
+        .from(root + " .dot3", { autoAlpha: 0, scale: 0, duration: 0.35, ease: "expo.out", transformOrigin: "50% 50%" }, 2.4)
+        .from(root + " .stop.s3", { autoAlpha: 0, scale: 1.1, x: -14, duration: 0.5, ease: "expo.out" }, 2.5)
+
+        .from(root + " .dot4", { autoAlpha: 0, scale: 0, duration: 0.35, ease: "expo.out", transformOrigin: "50% 50%" }, 2.85)
+        .from(root + " .stop.s4", { autoAlpha: 0, scale: 1.1, x: -14, duration: 0.5, ease: "expo.out" }, 2.95)
+
+        .set({}, {}, 7);
+
+      window.__timelines["t1-overview-itinerary"] = tl;
+    </script>
+  </body>
+</html>

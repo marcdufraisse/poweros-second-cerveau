@@ -1,0 +1,151 @@
+<!doctype html>
+<!--
+  FIRESHIP TERMINAL · tier1 · overview · EDITOR
+  Full-screen takeover. A centered code-editor panel (~1300px, filename
+  "roadmap.js") snaps in with expo.out, then six lines of syntax-colored
+  pseudo-code type themselves on one at a time (pre-split char spans,
+  stagger 0.02, linear) — line numbers dim in the gutter, a finite blinking
+  cursor lands after the last line. Dead stillness after.
+  Slots: f1, f2, f3 (the three string literals inside lines 1, 3, 5).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #t1-overview-editor {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--text);
+        font-family: var(--font-mono); overflow: hidden;
+      }
+      #t1-overview-editor .vig { position: absolute; inset: 0; background: var(--vignette); z-index: 5; pointer-events: none; }
+
+      #t1-overview-editor .center {
+        position: absolute; inset: 0; z-index: 3;
+        display: flex; align-items: center; justify-content: center;
+      }
+
+      /* editor panel */
+      #t1-overview-editor .panel {
+        width: 1300px;
+        background: var(--panel); border: 1px solid var(--panel-edge);
+        border-radius: var(--radius);
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+        overflow: hidden;
+      }
+
+      /* window chrome — three traffic dots + mono filename */
+      #t1-overview-editor .chrome {
+        height: var(--chrome-h);
+        display: flex; align-items: center; gap: 10px;
+        padding: 0 22px;
+        background: rgba(0, 0, 0, 0.22);
+        border-bottom: 1px solid var(--panel-edge);
+      }
+      #t1-overview-editor .dot { width: var(--dot); height: var(--dot); border-radius: 50%; }
+      #t1-overview-editor .dot.red { background: var(--dot-red); }
+      #t1-overview-editor .dot.yellow { background: var(--dot-yellow); }
+      #t1-overview-editor .dot.green { background: var(--dot-green); }
+      #t1-overview-editor .filename {
+        margin-left: 10px; font-size: var(--size-label); color: var(--text-dim);
+        letter-spacing: 0.04em;
+      }
+
+      /* code body */
+      #t1-overview-editor .code {
+        padding: 34px 40px 44px;
+        font-size: var(--size-code); line-height: 1.7;
+      }
+      #t1-overview-editor .line { display: flex; }
+      #t1-overview-editor .ln {
+        width: 44px; flex: none; text-align: right; margin-right: 30px;
+        color: var(--text-dim); opacity: 0.55;
+      }
+      #t1-overview-editor .src { white-space: pre; }
+      #t1-overview-editor .kw { color: var(--syn-pink); }
+      #t1-overview-editor .str { color: var(--syn-green); }
+      #t1-overview-editor .cm { color: var(--text-dim); }
+      #t1-overview-editor .ch { opacity: 0; }
+
+      /* finite blinking cursor */
+      #t1-overview-editor .cursor {
+        display: inline-block; width: 13px; height: 30px;
+        background: var(--accent); margin-left: 2px;
+        vertical-align: -5px; opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-overview-editor" data-composition-id="t1-overview-editor" data-start="0" data-width="1920" data-height="1080">
+      <div class="center">
+        <div class="panel">
+          <div class="chrome">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="filename">roadmap.js</span>
+          </div>
+          <div class="code">
+            <div class="line"><span class="ln">1</span><span class="src l1"><span class="kw">const</span> foundations = <span class="str">"<span data-slot="f1">week 1</span>"</span>;</span></div>
+            <div class="line"><span class="ln">2</span><span class="src l2 cm">// prompt engineering + tool use</span></div>
+            <div class="line"><span class="ln">3</span><span class="src l3"><span class="kw">const</span> stack = <span class="str">"<span data-slot="f2">week 3</span>"</span>;</span></div>
+            <div class="line"><span class="ln">4</span><span class="src l4 cm">// agent memory + automation pipelines</span></div>
+            <div class="line"><span class="ln">5</span><span class="src l5"><span class="kw">const</span> certification = <span class="str">"<span data-slot="f3">week 6</span>"</span>;</span></div>
+            <div class="line"><span class="ln">6</span><span class="src l6 cm">// ship it. get paid.<span class="cursor">&nbsp;</span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="vig"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-overview-editor";
+
+      /* pre-split each code line into stampable char spans (keeps child element coloring) */
+      function splitChars(node) {
+        [...node.childNodes].forEach((child) => {
+          if (child.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            [...child.textContent].forEach((ch) => {
+              const s = document.createElement("span");
+              s.className = "ch"; s.textContent = ch === " " ? " " : ch;
+              frag.appendChild(s);
+            });
+            node.replaceChild(frag, child);
+          } else if (child.nodeType === 1 && !child.classList.contains("cursor")) {
+            splitChars(child);
+          }
+        });
+      }
+      const lines = ["l1", "l2", "l3", "l4", "l5", "l6"].map((c) =>
+        document.querySelector(root + " ." + c)
+      );
+      lines.forEach(splitChars);
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* panel snaps in — no float, no drift */
+      tl.from(root + " .panel", { autoAlpha: 0, y: 26, duration: 0.3, ease: "expo.out" }, 0.1)
+        .from(root + " .chrome .dot", { autoAlpha: 0, scale: 0.4, duration: 0.2, ease: "back.out(2)", stagger: 0.05 }, ">-0.1")
+        .from(root + " .filename", { autoAlpha: 0, duration: 0.2, ease: "power2.out" }, "<");
+
+      /* typewriter — each line types on in sequence, char by char, linear */
+      let cursor = ">0.15";
+      lines.forEach((line) => {
+        tl.fromTo(line.querySelectorAll(".ch"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.02, ease: "none", stagger: 0.02 }, cursor);
+        cursor = ">0.1";
+      });
+
+      /* finite blinking cursor lands after the last line */
+      tl.to(root + " .cursor", { autoAlpha: 1, duration: 0.01 }, ">0.05")
+        .to(root + " .cursor", { autoAlpha: 0, duration: 0.28, repeat: 5, yoyo: true, ease: "steps(1)" }, ">");
+
+      /* dead stillness */
+      tl.set({}, {}, 8);
+
+      window.__timelines["t1-overview-editor"] = tl;
+    </script>
+  </body>
+</html>

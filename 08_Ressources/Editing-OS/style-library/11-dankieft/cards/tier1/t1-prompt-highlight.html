@@ -1,0 +1,179 @@
+<!doctype html>
+<!--
+  DAN KIEFT · tier1 · overview · MUR DE PROMPT SURLIGNÉ
+  Le geste pédagogique central de la chaîne, et le plus facile à sous-estimer.
+
+  Un pavé de texte arrive ENTIER et non surligné, sur une carte noire posée
+  au milieu du bleu roi. Puis, au fil de la parole, chaque bloc s'allume :
+  un balayage de marqueur de gauche à droite. Jaune pour une catégorie, bleu
+  électrique pour l'autre — c'est ce qui permet d'opposer deux natures de
+  contenu dans un même pavé (ici : le contexte vs les plans).
+
+  Le pavé ne bouge pas. Rien n'apparaît, rien ne disparaît. Seuls les
+  marqueurs avancent. C'est ce qui permet de tenir 40 secondes sur un mur de
+  texte sans perdre le spectateur : il voit toujours où on en est.
+
+  Le corps est petit (--size-doc, 24px) EXPRÈS : c'est un document qu'on lit,
+  pas un titre qu'on admire. Ne jamais le grossir pour « aider » — c'est le
+  zoom sur zone (custom/screen-zoom-region) qui aide.
+
+  Slots: heading, line1..line6, plus le PIP en médaillon.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t1-prompt-highlight {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        overflow: hidden; background: var(--royal);
+        font-family: var(--font-body);
+      }
+      /* la scène bleu roi : centre éclairé, vignette profonde, grille technique */
+      #t1-prompt-highlight .stage {
+        position: absolute; inset: 0; background: var(--stage-gradient);
+      }
+      #t1-prompt-highlight .grid {
+        position: absolute; inset: 0;
+        background-image: var(--stage-grid);
+        background-size: var(--stage-grid-size) var(--stage-grid-size);
+      }
+
+      /* la carte noire — noir pur, sur le bleu. C'est le contraste signature. */
+      #t1-prompt-highlight .card {
+        position: absolute;
+        left: var(--card-inset-x); right: var(--card-inset-x);
+        top: var(--card-inset-y); bottom: var(--card-inset-y);
+        background: var(--ink); border-radius: var(--card-radius);
+        box-shadow: var(--card-shadow);
+        padding: 74px 92px;
+      }
+
+      #t1-prompt-highlight .heading {
+        font-weight: var(--wt-bold); font-size: var(--size-doc-head);
+        color: var(--white); margin-bottom: 34px;
+      }
+      #t1-prompt-highlight .row { min-height: 1.5em; margin-bottom: 20px; }
+
+      /* le marqueur : background-size animé DERRIÈRE le texte. Aucun reflow,
+         le pavé ne se décale pas d'un pixel pendant qu'un bloc s'allume. */
+      #t1-prompt-highlight .mark {
+        display: inline-block;
+        font-size: var(--size-doc); line-height: var(--lh-doc);
+        color: var(--white-soft);
+        background-repeat: no-repeat; background-size: 0% 100%;
+        padding: 3px 8px; margin-left: -8px; border-radius: 4px;
+      }
+      #t1-prompt-highlight .mark.y {
+        background-image: linear-gradient(var(--yellow), var(--yellow));
+      }
+      #t1-prompt-highlight .mark.b {
+        background-image: linear-gradient(var(--electric), var(--electric));
+      }
+      #t1-prompt-highlight .mark b { color: var(--white); font-weight: var(--wt-bold); }
+
+      /* le médaillon, permanent dès qu'un écran est à l'image */
+      #t1-prompt-highlight .pip {
+        position: absolute; right: 62px; top: 44px;
+        width: 210px; height: 210px; border-radius: 50%;
+        overflow: hidden; border: 4px solid var(--periwinkle);
+        box-shadow: var(--ring-glow); background: var(--ink-soft);
+      }
+      #t1-prompt-highlight .pip video,
+      #t1-prompt-highlight .pip img {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t1-prompt-highlight" data-composition-id="t1-prompt-highlight" data-start="0" data-width="1920" data-height="1080">
+      <div class="stage"></div>
+      <div class="grid"></div>
+
+      <div class="card">
+        <div class="heading" data-slot="heading">Prompt template 1 — laisse le modèle remplir les détails</div>
+
+        <div class="row"><span class="mark y" data-slot="line1"><b>Scene context:</b> où on est, qui est là, est-ce un long plan continu ?</span></div>
+        <div class="row"><span class="mark y" data-slot="line2"><b>Technical:</b> focale, profondeur de champ, grain, format.</span></div>
+        <div class="row"><span class="mark b" data-slot="line3"><b>CUT 1</b> — cadre et angle — ce qui se passe</span></div>
+        <div class="row"><span class="mark b" data-slot="line4"><b>CUT 2</b> — cadre et angle — ce qui se passe</span></div>
+        <div class="row"><span class="mark b" data-slot="line5"><b>CUT 3</b> — …</span></div>
+        <div class="row"><span class="mark y" data-slot="line6"><b>Keep consistent:</b> identités, vêtements, qui tient quoi, sens des choses.</span></div>
+      </div>
+
+      <div class="pip"><img data-slot="pip" src="../../references/talking-head.png" alt="" /></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#t1-prompt-highlight";
+      const css = getComputedStyle(document.querySelector(root));
+      const num = (n) => parseFloat(css.getPropertyValue(n));
+
+      // Une ligne vidée par Agent 3 disparaît, elle ne laisse pas de trou.
+      const rows = Array.from(document.querySelectorAll(root + " .row"))
+        .filter((r) => {
+          const on = r.querySelector(".mark").textContent.trim().length > 0;
+          if (!on) r.style.display = "none";
+          return on;
+        });
+
+      // Les instants où chaque bloc s'allume. Agent 3 remplace ce tableau par
+      // les timecodes des mots du transcript, un par bloc, dans l'ordre.
+      const BEATS = [1.4, 3.2, 5.0, 6.4, 7.6, 9.2];
+
+      const OFF = "rgba(255, 255, 255, 0.72)";
+      // La couleur du texte sous le marqueur dépend du marqueur : encre sur le
+      // jaune, blanc sur le bleu électrique. Du noir sur #0200FF serait
+      // illisible — c'est blanc dans les références.
+      const onColor = (mark) => mark.classList.contains("b") ? "#FFFFFF" : "#0A0A0C";
+      const tl = gsap.timeline({ paused: true });
+
+      // le pavé arrive entier et éteint : le marqueur n'a rien à révéler sinon
+      tl.fromTo(root + " .card", { opacity: 0, scale: 0.985 },
+        { opacity: 1, scale: 1, duration: parseFloat(css.getPropertyValue("--dur-settle")),
+          ease: "power3.out" }, 0);
+      tl.fromTo(root + " .pip", { opacity: 0, scale: 0.88 },
+        { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.6)" }, 0.2);
+
+      rows.forEach((row, i) => {
+        const mark = row.querySelector(".mark");
+        const t = BEATS[i];
+        if (t == null) return;
+
+        // le balayage part avant le mot : il doit être POSÉ quand le mot tombe
+        tl.fromTo(mark, { backgroundSize: "0% 100%" },
+          { backgroundSize: "100% 100%", duration: num("--dur-marker"),
+            ease: "power2.inOut" }, t - 0.14);
+        // bascule du texte par tween, pas par classe : GSAP n'exécute pas ses
+        // callbacks au seek, et le moteur rend image par image en seekant
+        const on = onColor(mark);
+        tl.to(mark, { color: on, duration: 0.10, ease: "none" }, t - 0.02);
+        tl.to(mark.querySelectorAll("b"), { color: on, duration: 0.10, ease: "none" }, t - 0.02);
+
+        // un seul bloc allumé à la fois
+        if (i > 0) {
+          const prev = rows[i - 1].querySelector(".mark");
+          tl.to(prev, { backgroundSize: "0% 100%", duration: 0.26, ease: "power2.in" }, t - 0.30);
+          tl.to(prev, { color: OFF, duration: 0.10, ease: "none" }, t - 0.26);
+          tl.to(prev.querySelectorAll("b"), { color: "#FFFFFF", duration: 0.10, ease: "none" }, t - 0.26);
+        }
+      });
+
+      // le dernier s'éteint : la carte ne se fige jamais allumée
+      const last = rows[rows.length - 1];
+      if (last) {
+        const lastMark = last.querySelector(".mark");
+        const end = BEATS[rows.length - 1] + 1.8;
+        tl.to(lastMark, { backgroundSize: "0% 100%", duration: 0.26, ease: "power2.in" }, end);
+        tl.to(lastMark, { color: OFF, duration: 0.10, ease: "none" }, end + 0.04);
+        tl.to(lastMark.querySelectorAll("b"), { color: "#FFFFFF", duration: 0.10, ease: "none" }, end + 0.04);
+      }
+
+      window.__timelines["t1-prompt-highlight"] = tl;
+    </script>
+  </body>
+</html>

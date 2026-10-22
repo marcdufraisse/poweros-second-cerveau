@@ -1,0 +1,147 @@
+<!doctype html>
+<!--
+  HOUSE · social 9:16 · MEDIA-SLAM
+  La carte-atelier importée de la grammaire Nick Saraev (13), portée à la
+  charte l'utilisateur : n'importe quel asset rapporté du web par insert-broll
+  (screenshot de site, page GitHub, logo, UI d'outil) est montré avec une
+  entrée animée + une dérive continue jusqu'à la coupe. Un asset statique
+  n'existe pas. Voir 10-marc/PLAYBOOK.md, loi 3.
+
+  slot variant : whip (défaut) | zoomin | zoomout | pan | pop | demo
+    pop  = posé sur la scène en carte verre ombrée (logos, fit contain)
+    demo = enchaîne whip → zoomout → pop en coupes franches (pour la preview
+           et pour juger les variantes ; en prod, toujours une variante explicite)
+  slot theme   : navy | cream   (les deux scènes l'utilisateur, jamais de blanc pur)
+  slot fit     : cover | contain
+  Slots: media, variant, theme, fit.
+
+  Chaque entrée = 0.25-0.35s AVEC du jus (blur de mouvement, rotation, tilt),
+  puis un mouvement continu jamais résolu : la coupe tombe pendant.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-media-slam {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden;
+        background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 70%);
+      }
+      #soc-media-slam::before {
+        content: ""; position: absolute; inset: 0;
+        background: var(--streaks);
+        pointer-events: none;
+      }
+      #soc-media-slam.cream {
+        background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream) 100%);
+      }
+      #soc-media-slam.cream::before { display: none; }
+
+      /* plein cadre (whip / zoomin / zoomout / pan) */
+      #soc-media-slam .full {
+        position: absolute; inset: 0;
+        will-change: transform;
+      }
+      #soc-media-slam .full img, #soc-media-slam .full video {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+      }
+      #soc-media-slam.contain .full img, #soc-media-slam.contain .full video {
+        object-fit: contain;
+      }
+
+      /* posé sur la scène (pop) : la carte verre dépoli de la maison */
+      #soc-media-slam.pop .full {
+        inset: auto; left: 90px; right: 90px; top: 26%; height: 44%;
+        border-radius: 36px; overflow: hidden;
+        background: var(--glass-bg);
+        border: var(--glass-edge);
+        backdrop-filter: var(--glass-blur);
+        box-shadow: var(--glass-shadow);
+      }
+      #soc-media-slam.pop.cream .full { background: var(--glass-bg-lit); }
+    </style>
+  </head>
+  <body>
+    <div id="soc-media-slam" data-composition-id="soc-media-slam" data-start="0" data-width="1080" data-height="1920">
+      <div class="full">
+        <img data-slot="media" src="../../references/ref-screen-demo.png" alt="" />
+      </div>
+      <div style="display:none" data-slot="variant">demo</div>
+      <div style="display:none" data-slot="theme">navy</div>
+      <div style="display:none" data-slot="fit">cover</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-media-slam";
+      const el = document.querySelector(root);
+      const slot = (n) => el.querySelector(`[data-slot="${n}"]`).textContent.trim();
+
+      const variant = slot("variant") || "whip";
+      if (slot("theme") === "cream") el.classList.add("cream");
+      if (slot("fit") === "contain") el.classList.add("contain");
+      if (variant === "pop") el.classList.add("pop");
+
+      const full = root + " .full";
+      const tl = gsap.timeline({ paused: true });
+
+      /* Chaque entrée a du JUS (blur de mouvement, rotation, tilt) puis un
+         mouvement continu jamais résolu : la coupe tombe pendant.
+         `at` permet au mode demo d'enchaîner les variantes. */
+      function play(v, at, hold) {
+        switch (v) {
+          case "zoomin":
+            /* on voit la page entière, puis on serre — départ net, accélération sensible */
+            tl.fromTo(full, { scale: 1.0, autoAlpha: 0, filter: "blur(0px)" },
+              { autoAlpha: 1, duration: 0.15, ease: "power2.out" }, at);
+            tl.to(full, { scale: 1.28, duration: hold, ease: "power1.in" }, at + 0.1);
+            break;
+          case "zoomout":
+            /* on part DANS le détail, flou de près, et on révèle le contexte */
+            tl.fromTo(full, { scale: 1.55, autoAlpha: 0, filter: "blur(10px)" },
+              { scale: 1.04, autoAlpha: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, at);
+            tl.to(full, { scale: 0.995, duration: hold - 0.4, ease: "none" }, at + 0.5);
+            break;
+          case "pan":
+            tl.fromTo(full, { scale: 1.16, xPercent: 4.5, autoAlpha: 0, filter: "blur(8px)" },
+              { autoAlpha: 1, filter: "blur(0px)", duration: 0.22, ease: "power2.out" }, at);
+            tl.to(full, { xPercent: -4.5, scale: 1.18, duration: hold, ease: "none" }, at + 0.1);
+            break;
+          case "pop":
+            /* la carte verre claque avec une rotation qui se pose */
+            tl.fromTo(full, { scale: 0.5, autoAlpha: 0, y: 90, rotation: -6 },
+              { scale: 1, autoAlpha: 1, y: 0, rotation: 0, duration: 0.38, ease: "back.out(2.2)" }, at);
+            tl.to(full, { y: -16, scale: 1.045, rotation: 1.2, duration: hold, ease: "sine.inOut" }, at + 0.44);
+            break;
+          default: /* whip : l'asset fouette en entrant, flou de mouvement */
+            tl.fromTo(full, { scale: 1.35, autoAlpha: 0.25, rotation: 1.6, filter: "blur(14px)" },
+              { scale: 1.0, autoAlpha: 1, rotation: 0, filter: "blur(0px)", duration: 0.3, ease: "power4.out" }, at);
+            tl.to(full, { scale: 1.12, duration: hold, ease: "none" }, at + 0.32);
+        }
+      }
+
+      if (variant === "demo") {
+        /* la vitrine : trois variantes en coupes franches.
+           Le passage en carte posée (pop) se fait par set(className) — un
+           classList.add au build s'appliquerait dès la première frame. */
+        const base = el.className;
+        play("whip", 0, 1.3);
+        tl.set(full, { clearProps: "all" }, 1.7);
+        play("zoomout", 1.72, 1.3);
+        tl.set(full, { clearProps: "all" }, 3.4);
+        tl.set(el, { className: base + " pop" }, 3.41);
+        play("pop", 3.42, 1.6);
+        tl.set({}, {}, 5.4);
+      } else {
+        play(variant, 0, 4.3);
+        tl.set({}, {}, 4.8);
+      }
+
+      window.__timelines["soc-media-slam"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<!--
+  ABRAM OPTIMIST · tier2 · label · STAT
+  Top-left corner overlay for talking-head footage (transparent canvas). A
+  compact white chip pops in carrying a small mono label above a big
+  friendly Manrope 800 ink number that counts up eagerly (fast start, soft
+  landing) the moment the chip lands. Compact corner block, face clear.
+  Slots: label, value.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #t2-label-stat {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: transparent; font-family: var(--font-display);
+        overflow: hidden;
+      }
+
+      #t2-label-stat .chip {
+        position: absolute; top: 72px; left: 96px;
+        display: flex; flex-direction: column; align-items: flex-start;
+        background: var(--white); border-radius: var(--radius);
+        box-shadow: var(--lift);
+        padding: 30px 44px 34px;
+      }
+
+      #t2-label-stat .label {
+        font-family: var(--font-mono); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-mono);
+        text-transform: uppercase; color: var(--ink-soft);
+        margin-bottom: 6px;
+      }
+
+      #t2-label-stat .value {
+        font-family: var(--font-display); font-weight: var(--wt-black);
+        font-size: 96px; letter-spacing: var(--track-tight);
+        color: var(--ink); line-height: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="t2-label-stat" data-composition-id="t2-label-stat" data-start="0" data-width="1920" data-height="1080">
+      <div class="chip">
+        <div class="label" data-slot="label">Learners certified</div>
+        <div class="value" data-slot="value">1,200+</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#t2-label-stat";
+
+      const valueEl = document.querySelector(root + " .value");
+      const raw = (valueEl.textContent || "").trim();
+      const suffixMatch = raw.match(/[^0-9,]+$/);
+      const suffix = suffixMatch ? suffixMatch[0] : "";
+      const target = parseInt(raw.replace(/[^0-9]/g, ""), 10) || 0;
+      valueEl.textContent = "0" + suffix;
+
+      const counter = { v: 0 };
+
+      tl.from(root + " .chip", { autoAlpha: 0, scale: 0.6, duration: 0.45, ease: "back.out(1.7)" }, 0)
+
+        /* eager count-up: fast start, soft landing */
+        .to(counter, {
+          v: target, duration: 1.1, ease: "power3.out",
+          onUpdate: function () {
+            valueEl.textContent = Math.round(counter.v).toLocaleString() + suffix;
+          }
+        }, 0.3)
+
+        .set({}, {}, 6);
+
+      window.__timelines["t2-label-stat"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<!--
+  NICK SARAEV · social · pip · LA PLAQUE VISAGE
+  La respiration entre deux preuves : le talking head détouré posé sur une
+  plaque arrondie qui glisse du bas, sous-titre gras minuscule sur le menton.
+  1 à 2 secondes, pas plus. Le média (face) doit être un PNG/vidéo détouré,
+  ou à défaut un crop serré — la plaque fait le détourage visuel.
+  Slots: face (media), caption.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-face-plate {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden; background: var(--white);
+        font-family: var(--font-body);
+      }
+      #soc-face-plate .plate {
+        position: absolute; left: 40px; right: 40px; top: 58%; bottom: 0;
+        background: var(--white-shade);
+        border-radius: var(--plate-r) var(--plate-r) 0 0;
+        overflow: hidden;
+      }
+      #soc-face-plate .plate img, #soc-face-plate .plate video {
+        position: absolute; left: 50%; bottom: 0;
+        width: 118%; transform: translateX(-50%);
+        object-fit: cover; display: block;
+      }
+      #soc-face-plate .caption {
+        position: absolute; left: 0; right: 0; top: 78%;
+        text-align: center;
+        font-size: var(--fs-caption); font-weight: 700;
+        color: var(--paper-fg);
+        text-shadow: 0 3px 10px rgba(0, 0, 0, 0.55), 0 10px 34px rgba(0, 0, 0, 0.35);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="soc-face-plate" data-composition-id="soc-face-plate" data-start="0" data-width="1080" data-height="1920">
+      <div class="plate">
+        <img data-slot="face" src="../../references/outro-comment-superpose.png" alt="" />
+      </div>
+      <div class="caption" data-slot="caption">try this</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-face-plate";
+      const tl = gsap.timeline({ paused: true });
+
+      tl.fromTo(root + " .plate", { yPercent: 24, autoAlpha: 0 },
+        { yPercent: 0, autoAlpha: 1, duration: 0.3, ease: "power4.out" }, 0.02);
+      tl.fromTo(root + " .caption", { scale: 0.86, autoAlpha: 0 },
+        { scale: 1, autoAlpha: 1, duration: 0.2, ease: "back.out(2)" }, 0.2);
+
+      /* la plaque respire à peine pendant la tenue */
+      tl.to(root + " .plate", { y: -8, duration: 1.6, ease: "none" }, 0.35);
+
+      tl.set({}, {}, 2.0);
+      window.__timelines["soc-face-plate"] = tl;
+    </script>
+  </body>
+</html>

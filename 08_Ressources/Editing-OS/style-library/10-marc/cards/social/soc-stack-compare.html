@@ -1,0 +1,101 @@
+<!doctype html>
+<!--
+  HOUSE · social 9:16 · STACK COMPARE
+  The A/B comparison from reel Dba-jOyIbom: two 16:9 media slots stacked on
+  black, each with a mono label pill bottom-left, brand/kicker header on top
+  (title line + jaune subline). Opaque takeover for the vertical frame.
+  Slots: media1, media2, label1, label2, title, sub.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; background: transparent; }
+
+      #soc-stack-compare {
+        position: absolute; inset: 0; width: 1080px; height: 1920px;
+        overflow: hidden; font-family: var(--font-display);
+        background: var(--navy); color: var(--white);
+      }
+      #soc-stack-compare .wrap {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 36px;
+        padding: 80px 0; box-sizing: border-box;
+      }
+      #soc-stack-compare .head { text-align: center; display: flex; flex-direction: column; gap: 10px; }
+      #soc-stack-compare .title {
+        font-weight: var(--wt-heavy); font-size: 58px; letter-spacing: var(--track-caps);
+        text-transform: uppercase; color: var(--jaune);
+      }
+      #soc-stack-compare .sub {
+        font-family: var(--font-body); font-weight: var(--wt-bold);
+        font-size: 32px; color: var(--white);
+      }
+      #soc-stack-compare .cell { position: relative; width: 1000px; height: 562px;
+        border-radius: 24px; overflow: hidden; background: var(--den); }
+      #soc-stack-compare .cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      #soc-stack-compare .cell .glare {
+        position: absolute; top: -20%; bottom: -20%; width: 30%;
+        background: var(--glare);
+        transform: var(--glare-skew); pointer-events: none;
+      }
+      #soc-stack-compare .tag {
+        position: absolute; left: 24px; bottom: 24px;
+        font-family: var(--font-mono); font-weight: var(--wt-bold);
+        font-size: 26px; letter-spacing: 0.08em; text-transform: uppercase;
+        color: var(--white); background: rgba(10, 12, 18, 0.62);
+        border-radius: var(--radius-sm); padding: 10px 20px;
+        backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+      }
+      #soc-stack-compare .cell.b { outline: 3px solid transparent; outline-offset: -3px; }
+    </style>
+  </head>
+  <body>
+    <div id="soc-stack-compare" data-composition-id="soc-stack-compare" data-start="0" data-width="1080" data-height="1920">
+      <div class="wrap">
+        <div class="head">
+          <div class="title" data-slot="title">GOOGLE OMNI</div>
+          <div class="sub" data-slot="sub">gratuit et illimité pendant 24h</div>
+        </div>
+        <div class="cell a">
+          <img data-slot="media1" alt=""
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1000' height='562'%3E%3Crect width='1000' height='562' fill='%23151b28'/%3E%3Ctext x='500' y='295' text-anchor='middle' font-family='monospace' font-size='40' fill='%235a6478'%3EMEDIA · A%3C/text%3E%3C/svg%3E" />
+          <div class="tag" data-slot="label1">GOOGLE OMNI</div>
+          <div class="glare"></div>
+        </div>
+        <div class="cell b">
+          <img data-slot="media2" alt=""
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1000' height='562'%3E%3Crect width='1000' height='562' fill='%23151b28'/%3E%3Ctext x='500' y='295' text-anchor='middle' font-family='monospace' font-size='40' fill='%235a6478'%3EMEDIA · B%3C/text%3E%3C/svg%3E" />
+          <div class="tag" data-slot="label2">ORIGINAL</div>
+          <div class="glare"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const root = "#soc-stack-compare";
+      const css = getComputedStyle(document.documentElement);
+      const JAUNE = css.getPropertyValue("--jaune").trim();
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from(root + " .head", { autoAlpha: 0, y: -30, duration: 0.45, ease: "expo.out" }, 0.1)
+        .from(root + " .cell.a", { autoAlpha: 0, y: 70, duration: 0.55, ease: "expo.out" }, 0.3)
+        .from(root + " .cell.b", { autoAlpha: 0, y: 70, duration: 0.55, ease: "expo.out" }, 0.5)
+        .from(root + " .tag", { autoAlpha: 0, x: -14, duration: 0.35, ease: "power3.out", stagger: 0.12 }, 0.8)
+
+        /* glare sweeps across both cells, staggered */
+        .fromTo(root + " .glare", { xPercent: -160 }, { xPercent: 500, duration: 0.7, ease: "power2.inOut", stagger: 0.2 }, 0.6)
+
+        /* the jaune outline lands on the top (result) cell a beat later */
+        .to(root + " .cell.a", { outlineColor: JAUNE, outline: "3px solid " + JAUNE, duration: 0.25, ease: "power2.out" }, 1.4)
+
+        .set({}, {}, 8);
+
+      window.__timelines["soc-stack-compare"] = tl;
+    </script>
+  </body>
+</html>

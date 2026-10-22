@@ -1,0 +1,118 @@
+<!doctype html>
+<!--
+  ABRAM OPTIMIST · custom · compare · SCALE
+  Full-screen takeover. A sense-of-scale beat: a mono kicker lands first,
+  then a small ink-bordered square pops in with a mono label chip, then a
+  MUCH larger brand-blue rounded square pops in beside it and visibly dwarfs
+  it, carrying its own chip. A Manrope punchline rises beneath both shapes.
+  Slots: kicker, small, big, punch.
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      html, body { margin: 0; }
+
+      #c-scale {
+        position: absolute; inset: 0; width: 1920px; height: 1080px;
+        background: var(--canvas); color: var(--ink);
+        font-family: var(--font-display); overflow: hidden;
+      }
+
+      #c-scale .kicker {
+        position: absolute; top: 122px; left: 0; right: 0; text-align: center;
+        font-family: var(--font-mono); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-mono);
+        text-transform: uppercase; color: var(--ink-faint);
+      }
+
+      #c-scale .shapes {
+        position: absolute; top: 300px; left: 0; right: 0; height: 560px;
+        display: flex; align-items: flex-end; justify-content: center;
+        gap: 90px;
+      }
+
+      #c-scale .shape-col {
+        display: flex; flex-direction: column; align-items: center;
+        gap: 22px;
+      }
+
+      #c-scale .box-small {
+        width: 110px; height: 110px; border-radius: var(--radius-sm);
+        background: var(--white); border: 6px solid var(--ink);
+      }
+
+      #c-scale .box-big {
+        width: 540px; height: 540px; border-radius: var(--radius);
+        background: var(--accent);
+        box-shadow: var(--lift);
+      }
+
+      #c-scale .chip {
+        font-family: var(--font-mono); font-weight: var(--wt-bold);
+        font-size: var(--size-label); letter-spacing: var(--track-mono);
+        text-transform: uppercase; white-space: nowrap;
+        background: var(--white); color: var(--ink);
+        border-radius: var(--radius-pill);
+        box-shadow: var(--lift);
+        padding: 12px 28px 13px;
+      }
+
+      #c-scale .chip--big {
+        background: var(--ink); color: var(--white);
+      }
+
+      #c-scale .punch {
+        position: absolute; bottom: 118px; left: 0; right: 0; text-align: center;
+        font-weight: var(--wt-black); font-size: var(--size-headline);
+        letter-spacing: var(--track-tight); color: var(--ink);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="c-scale" data-composition-id="c-scale" data-start="0" data-width="1920" data-height="1080">
+      <div class="kicker" data-slot="kicker">One member's first week vs. their first quarter</div>
+
+      <div class="shapes">
+        <div class="shape-col shape-col--small">
+          <div class="box-small"></div>
+          <div class="chip" data-slot="small">Week 1: one script</div>
+        </div>
+        <div class="shape-col shape-col--big">
+          <div class="box-big"></div>
+          <div class="chip chip--big" data-slot="big">Quarter 1: a full agent stack</div>
+        </div>
+      </div>
+
+      <div class="punch" data-slot="punch">Small starts compound faster than you think</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const root = "#c-scale";
+
+      tl.from(root + " .kicker", { autoAlpha: 0, y: 24, duration: 0.5, ease: "expo.out" }, 0.15)
+
+        /* small square pops in first, with its chip */
+        .from(root + " .box-small", { autoAlpha: 0, scale: 0.6, duration: 0.45, ease: "back.out(1.7)" }, 0.6)
+        .from(root + " .shape-col--small .chip", { autoAlpha: 0, scale: 0.6, duration: 0.4, ease: "back.out(1.7)" }, 0.75)
+
+        /* the big square pops in and dwarfs it */
+        .from(root + " .box-big", { autoAlpha: 0, scale: 0.5, duration: 0.55, ease: "back.out(1.7)" }, 1.2)
+        .from(root + " .shape-col--big .chip", { autoAlpha: 0, scale: 0.6, duration: 0.4, ease: "back.out(1.7)" }, 1.5)
+
+        /* punchline rises beneath */
+        .from(root + " .punch", { autoAlpha: 0, y: 30, duration: 0.6, ease: "expo.out" }, 2.05)
+
+        /* one gentle bob on the big square, finite */
+        .to(root + " .box-big", { y: -6, duration: 1.1, ease: "sine.inOut", repeat: 3, yoyo: true }, 2.65)
+
+        .set({}, {}, 8);
+
+      window.__timelines["c-scale"] = tl;
+    </script>
+  </body>
+</html>
