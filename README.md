@@ -8,7 +8,27 @@ Vous n'écrivez rien à la main. Claude vous interviewe, une question à la fois
 
 ## Démarrer
 
-Prérequis : [Claude Code](https://www.anthropic.com/claude-code) et un abonnement Claude payant.
+Prérequis : un abonnement Claude payant. Choisissez l'une des deux voies, le résultat est le même.
+
+### Option 1 : avec l'application Claude (sans Terminal)
+
+La plus simple, aucune ligne de commande.
+
+1. Installez l'application Claude pour ordinateur : [Claude Code](https://claude.com/product/claude-code).
+2. Sur la page de ce dépôt, cliquez sur le bouton vert **Code**, puis sur **Download ZIP**.
+3. Dézippez le fichier, renommez le dossier en `MonOS` et rangez-le dans un endroit dédié (pas dans Documents ni sur le Bureau).
+4. Dans l'application Claude, ouvrez l'onglet **Code** et choisissez le dossier `MonOS` comme dossier de travail.
+5. Dans le chat, écrivez :
+
+```
+Installe mon second cerveau
+```
+
+Sur Mac, le ZIP garde le lien `.claude/skills` intact. Sur Windows, il peut le transformer en simple fichier texte : Claude le détecte et vous propose de le remplacer par une copie du dossier `10_Skills`, répondez oui.
+
+### Option 2 : avec Claude Code dans le Terminal
+
+Pour celles et ceux qui ont déjà Git et [Claude Code](https://www.anthropic.com/claude-code) en ligne de commande.
 
 ```bash
 git clone https://github.com/marcdufraisse/poweros-second-cerveau.git MonOS
@@ -22,7 +42,9 @@ Puis, dans le chat :
 Installe mon second cerveau
 ```
 
-Le dépôt est votre workspace. Il n'y a rien d'autre à installer. Gardez-le dans un dossier dédié (pas dans Documents ni sur le Bureau).
+Ici le lien `.claude/skills` est conservé tel quel.
+
+Dans les deux cas, le dossier est votre workspace. Il n'y a rien d'autre à installer.
 
 ## Ce que Claude va faire avec vous
 
@@ -87,7 +109,7 @@ Chaque dossier de travail a une note du même nom, avec les mêmes sections : Mi
 
 ## Windows
 
-`.claude/skills` est un lien symbolique vers `10_Skills/`. Sur Windows, activez le mode développeur avant de cloner, sinon Claude remplace le lien par une copie du dossier lors de l'installation.
+Avec l'option 2, `.claude/skills` est un lien symbolique vers `10_Skills/` : activez le mode développeur de Windows avant de cloner. Avec l'option 1 (ZIP), rien à faire : si le lien est devenu un fichier texte, Claude le remplace par une copie du dossier.
 
 ## Polices et licences
 
