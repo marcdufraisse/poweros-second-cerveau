@@ -11,12 +11,12 @@ maj: AAAA-MM-JJ
 
 ## Règle
 
-Rien ne reste ici plus de quelques jours. `/inbox-processor` route chaque item vers un projet, un département, un client, `08_Ressources/` ou `11_Archives/`, et ne supprime jamais rien sans un oui.
+Rien ne reste ici plus de quelques jours. `/inbox-processor` route chaque item vers un projet, un département, un client, `07_Ressources/` ou `10_Archives/`, et ne supprime jamais rien sans un oui.
 
 Un gros lot à digérer (export de conversations, dossier entier) va dans `_import/` et se traite par passes avec `/import`.
 
 ## Ne va pas ici
 
 - Un livrable fini : il va dans `00_Livrables/<Type>/` (ou chez le client signé).
-- Une source de veille identifiée : `08_Ressources/Veille/sources/`.
-- Un transcript de call reconnu : `07_Meeting/`.
+- Une source de veille identifiée : `07_Ressources/Veille/sources/`.
+- Un transcript de call reconnu : `06_Meeting/`.

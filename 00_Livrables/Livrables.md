@@ -16,7 +16,7 @@ maj: AAAA-MM-JJ
 
 ## Règles
 
-- Un livrable porte un frontmatter (`type`, `status`, `date`, `maj`, `client` si besoin, `tags`), depuis `08_Ressources/templates/livrable.md`.
-- Nommage `Nom-Sujet_YYYY-MM-DD.ext`. Une seule version visible : les précédentes vont dans `11_Archives/`.
+- Un livrable porte un frontmatter (`type`, `status`, `date`, `maj`, `client` si besoin, `tags`), depuis `07_Ressources/templates/livrable.md`.
+- Nommage `Nom-Sujet_YYYY-MM-DD.ext`. Une seule version visible : les précédentes vont dans `10_Archives/`.
 - Un livrable reste ici le temps qu'il sert, environ quinze jours. Ensuite `/inbox-processor` le range dans son vrai dossier : un projet, un département ou un client.
-- Un livrable pour un client signé va directement dans `06_Clients/<Client>/`, préfixé du nom du client.
+- Un livrable pour un client signé va directement dans `05_Clients/<Client>/`, préfixé du nom du client.
